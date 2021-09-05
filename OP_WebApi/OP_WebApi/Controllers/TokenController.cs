@@ -25,6 +25,23 @@ namespace OP_WebApi.Controllers
             _context = context;
         }
 
+        //// api/Token
+        //[AllowAnonymous]
+        //[HttpPost]
+        //public string CreateToken([FromBody]LoginModel login)
+        //{
+        //    string response = null;
+        //    User user = AuthenticateUser(login);
+
+        //    if (user != null)
+        //    {
+        //        response = BuildToken(); 
+        //    }
+
+        //    return response;
+        //}
+
+
         // api/Token
         [AllowAnonymous]
         [HttpPost]
@@ -32,10 +49,10 @@ namespace OP_WebApi.Controllers
         {
             IActionResult response = Unauthorized();
             User user = AuthenticateUser(login);
+            var tokenString = BuildToken();
 
             if (user != null)
             {
-                var tokenString = BuildToken();
                 response = Ok(new { token = tokenString });
             }
 
@@ -90,7 +107,7 @@ namespace OP_WebApi.Controllers
         {
             // LoginType = 1 : ورود با شناسه کاربری
             // LoginType = 2 : ورود با تلفن همراه
-            public byte LoginType { get; set; }
+            public int LoginType { get; set; }
             public string UserName_Mobile { get; set; }
             public string Password { get; set; }
         }

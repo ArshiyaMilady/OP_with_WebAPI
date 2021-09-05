@@ -13,6 +13,14 @@ namespace OrdersProgress
 {
     static class Stack
     {
+        public static bool Use_Web = true;
+
+        public static string Standard_Salt = "d;lkjWeoj'l;ksDfok';lsdkovjmwEfl;kwikvxc.m,/Zviejkjds;flKjoremwa;lm";  // کاملا رندوم
+
+        public static string API_Uri_start = "http://localhost:6238/api";
+        public static string API_Uri_start_read = "https://localhost:44380/api";
+        public static string token;
+
         public static bool bx;
         public static int ix;
         public static long lx;
@@ -33,7 +41,6 @@ namespace OrdersProgress
         // امکانات کاربر وارد شده را در خود نگه می دارد
         public static List<string> lstUser_ULF_UniquePhrase = new List<string>();
 
-        public static string Standard_Salt = "d;lkjWeoj'l;ksDfok';lsdkovjmwEfl;kwikvxc.m,/Zviejkjds;flKjoremwa;lm";  // کاملا رندوم
         //public static string Standard_Salt = ";hchfghk;h";  // کلمه "کازابلانکا" وقتی کیبورد انگلیسی است
 
 
@@ -312,12 +319,14 @@ namespace OrdersProgress
             (JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
         // WebAPI دریافت توکن از سرور 
-        public static async Task<string> GetToken(string requestUri, string user, string password)
+        public static async Task<string> GetToken(string requestUri,int login_type, string user_name_moile, string password)
         {
-            var bodyString = @"{userIndex: """ + user + @""", password: """ + password + @"""}";
+            var bodyString = @"{""LoginType"": """ + login_type + @""", ""UserName_Mobile"": """ + user_name_moile + @""", ""Password"": """ + password + @"""}";
+            //var bodyString = @"{LoginType: """ + login_type + @""", UserName_Mobile: """ + user_name_moile + @""", Password: """ + password + @"""}";
             var httpClient = new HttpClient();
             var response = await httpClient.PostAsync(requestUri
                 , new StringContent(bodyString, System.Text.Encoding.UTF8, "application/json"));
+
             if (response.IsSuccessStatusCode)
             {
                 var responseString = response.Content.ReadAsStringAsync().Result;

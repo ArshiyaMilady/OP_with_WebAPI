@@ -50,15 +50,29 @@ namespace OrdersProgress
             }
 
             #region Login
-            if (Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 1).Any())
+            if (Stack.Use_Web)
             {
                 Stack.bx = false;
-                new J1950_Login().ShowDialog();
-                if (!Stack.bx)
+                new J1955_Login_from_Web().ShowDialog();
+                ////if (!Stack.bx)
+                ////{
+                ////    Close();
+                ////    System.Environment.Exit(1);
+                ////    return;
+                ////}
+            }
+            else
+            {
+                if (Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 1).Any())
                 {
-                    Close();
-                    System.Environment.Exit(1);
-                    return;
+                    Stack.bx = false;
+                    new J1950_Login().ShowDialog();
+                    if (!Stack.bx)
+                    {
+                        Close();
+                        System.Environment.Exit(1);
+                        return;
+                    }
                 }
             }
             #endregion

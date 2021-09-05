@@ -257,5 +257,10 @@ namespace OrdersProgress
             if (radUseName.Checked) label1.Text = "نام کاربری :";
             else if (radUseMobile.Checked) label1.Text = "شماره همراه :";
         }
+
+        private void Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

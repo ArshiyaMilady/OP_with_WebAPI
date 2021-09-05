@@ -127,6 +127,12 @@
     <Compile Include="J1950_Login.Designer.cs">
       <DependentUpon>J1950_Login.cs</DependentUpon>
     </Compile>
+    <Compile Include="J1955_Login_from_Web.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="J1955_Login_from_Web.Designer.cs">
+      <DependentUpon>J1955_Login_from_Web.cs</DependentUpon>
+    </Compile>
     <Compile Include="J1960_LoginsHistory.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -446,6 +452,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="J1950_Login.resx">
       <DependentUpon>J1950_Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="J1955_Login_from_Web.resx">
+      <DependentUpon>J1955_Login_from_Web.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="J1960_LoginsHistory.resx">
       <DependentUpon>J1960_LoginsHistory.cs</DependentUpon>
