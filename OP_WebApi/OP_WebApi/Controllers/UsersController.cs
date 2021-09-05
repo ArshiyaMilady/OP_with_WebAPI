@@ -27,7 +27,8 @@ namespace OP_WebApi.Controllers
             return await _context.User.ToListAsync();
         }
 
-        // GET: api/Users/5
+        // cid : company_Id : شناسه شرکت
+        // GET: api/Users/5&cid=xxxx
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(long id)
         {

@@ -15,6 +15,7 @@ namespace OP_WebApi
         public static string ConstantKey = "d;lkjWeoj'l;ksDfok';lsdkovjmwEfl;kwikvxc.m,/Zviejkjds;flKjoremwa;lm";
         public static string HashKey = "S@m@nt@7615546"; // 7615546 xor 4814
 
+        public static long Company_Id = -1;
 
 
     }
