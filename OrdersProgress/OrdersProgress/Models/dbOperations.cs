@@ -697,11 +697,13 @@ namespace OrdersProgress.Models
         #region UL_Request_Category
         public List<UL_Request_Category> GetAllUL_Request_CategoriesAsync(long company_index, long user_level_index = 0)
         {
-            if (user_level_index == 0)
-                return _db.Table<UL_Request_Category>().Where(b => b.Company_Id == company_index).ToListAsync().Result;
-            else  
-                return _db.Table<UL_Request_Category>().Where(b => b.Company_Id == company_index)
-                    .Where(d => d.User_Level_Id == user_level_index).ToListAsync().Result;
+            List< UL_Request_Category > lstULRC = _db.Table<UL_Request_Category>().ToListAsync().Result;
+            if(company_index >0) lstULRC=lstULRC.Where(b => b.Company_Id == company_index).ToList();
+
+            if (user_level_index > 0)
+                lstULRC = lstULRC.Where(d => d.User_Level_Id == user_level_index).ToList();
+
+            return lstULRC;
         }
 
         public UL_Request_Category GetUL_Request_CategoryAsync(long id)

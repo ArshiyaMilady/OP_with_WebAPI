@@ -42,8 +42,10 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.textBox10 = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -65,8 +67,6 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.textBox10 = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -241,6 +241,16 @@
             this.label12.TabIndex = 0;
             this.label12.Text = "انبار :";
             // 
+            // label15
+            // 
+            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(345, 229);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(84, 19);
+            this.label15.TabIndex = 0;
+            this.label15.Text = "مقدار سفارش :";
+            // 
             // label14
             // 
             this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -260,6 +270,19 @@
             this.label11.Size = new System.Drawing.Size(77, 19);
             this.label11.TabIndex = 0;
             this.label11.Text = "قیمت فروش :";
+            // 
+            // textBox10
+            // 
+            this.textBox10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox10.Location = new System.Drawing.Point(68, 228);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.ReadOnly = true;
+            this.textBox10.Size = new System.Drawing.Size(272, 26);
+            this.textBox10.TabIndex = 40;
+            this.textBox10.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox10.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox6_KeyPress);
             // 
             // label9
             // 
@@ -313,9 +336,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(345, 72);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(27, 19);
+            this.label2.Size = new System.Drawing.Size(50, 19);
             this.label2.TabIndex = 0;
-            this.label2.Text = "کد :";
+            this.label2.Text = "کد کالا :";
             // 
             // textBox7
             // 
@@ -382,9 +405,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(345, 323);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 19);
+            this.label3.Size = new System.Drawing.Size(70, 19);
             this.label3.TabIndex = 0;
-            this.label3.Text = "نام کامل :";
+            this.label3.Text = "شرح کامل :";
             // 
             // label8
             // 
@@ -457,9 +480,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(345, 40);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 19);
+            this.label1.Size = new System.Drawing.Size(65, 19);
             this.label1.TabIndex = 0;
-            this.label1.Text = "نام :";
+            this.label1.Text = "شرح کالا :";
             // 
             // textBox1
             // 
@@ -490,29 +513,6 @@
             // 
             this.timer1.Interval = 400;
             this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
-            // 
-            // textBox10
-            // 
-            this.textBox10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox10.Location = new System.Drawing.Point(68, 228);
-            this.textBox10.Name = "textBox10";
-            this.textBox10.ReadOnly = true;
-            this.textBox10.Size = new System.Drawing.Size(272, 26);
-            this.textBox10.TabIndex = 40;
-            this.textBox10.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox10.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox6_KeyPress);
-            // 
-            // label15
-            // 
-            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(345, 229);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(84, 19);
-            this.label15.TabIndex = 0;
-            this.label15.Text = "مقدار سفارش :";
             // 
             // K1302_Item_Details
             // 

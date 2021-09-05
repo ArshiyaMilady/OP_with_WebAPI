@@ -1,24 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "E:\\BOX\\D\\OrderProgress\\OrdersProgress\\OP_WebApi\\OP_WebApi\\OP_WebApi.csproj": {}
+    "D:\\Desktop\\BOX\\Personal\\D\\OrderProgress\\OP_with_WebAPI\\OP_WebApi\\OP_WebApi\\OP_WebApi.csproj": {}
   },
   "projects": {
-    "E:\\BOX\\D\\OrderProgress\\OrdersProgress\\OP_WebApi\\OP_WebApi\\OP_WebApi.csproj": {
+    "D:\\Desktop\\BOX\\Personal\\D\\OrderProgress\\OP_with_WebAPI\\OP_WebApi\\OP_WebApi\\OP_WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\BOX\\D\\OrderProgress\\OrdersProgress\\OP_WebApi\\OP_WebApi\\OP_WebApi.csproj",
+        "projectUniqueName": "D:\\Desktop\\BOX\\Personal\\D\\OrderProgress\\OP_with_WebAPI\\OP_WebApi\\OP_WebApi\\OP_WebApi.csproj",
         "projectName": "OP_WebApi",
-        "projectPath": "E:\\BOX\\D\\OrderProgress\\OrdersProgress\\OP_WebApi\\OP_WebApi\\OP_WebApi.csproj",
-        "packagesPath": "C:\\Users\\R856\\.nuget\\packages\\",
-        "outputPath": "E:\\BOX\\D\\OrderProgress\\OrdersProgress\\OP_WebApi\\OP_WebApi\\obj\\",
+        "projectPath": "D:\\Desktop\\BOX\\Personal\\D\\OrderProgress\\OP_with_WebAPI\\OP_WebApi\\OP_WebApi\\OP_WebApi.csproj",
+        "packagesPath": "C:\\Users\\mehdi.rahimi\\.nuget\\packages\\",
+        "outputPath": "D:\\Desktop\\BOX\\Personal\\D\\OrderProgress\\OP_with_WebAPI\\OP_WebApi\\OP_WebApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\R856\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mehdi.rahimi\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],

@@ -944,7 +944,7 @@
             this.Name = "J1000_MainForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "7";
+            this.Text = "   OP";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.J1000_MainForm_Load);
             this.Shown += new System.EventHandler(this.J1000_MainForm_Shown);

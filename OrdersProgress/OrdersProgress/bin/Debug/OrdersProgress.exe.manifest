@@ -67,74 +67,86 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OrdersProgress.exe" size="2816472">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OrdersProgress.exe" size="2816504">
       <assemblyIdentity name="OrdersProgress" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>OohsRHGiInu6puwvIFmYKoMoS8tBpV7V3H4v9DOPA+c=</dsig:DigestValue>
+        <dsig:DigestValue>Erxms1k/oeieMhkULAymHNBTmO6rlom9Ve9UAvQ2eig=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SQLite-net.dll" size="93184">
-      <assemblyIdentity name="SQLite-net" version="1.7.335.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SQLite-net.dll" size="101376">
+      <assemblyIdentity name="SQLite-net" version="1.8.116.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>8UWpCRQ1p0mfs7Fe4gLBkrJ0hP+y1hkyuuAahJqgQsQ=</dsig:DigestValue>
+        <dsig:DigestValue>G0Du6FIHrGQku+Pmrey48gKNhArHSSzdTDxdZdMFkb4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SQLitePCLRaw.batteries_v2.dll" size="6144">
-      <assemblyIdentity name="SQLitePCLRaw.batteries_v2" version="2.0.3.851" publicKeyToken="8226EA5DF37BCAE9" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="SQLitePCLRaw.batteries_v2" version="2.0.4.976" publicKeyToken="8226EA5DF37BCAE9" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>rjbHeMubrV7IwIvgNj3AV65tHUeyixxQd9Crz2ItZpY=</dsig:DigestValue>
+        <dsig:DigestValue>CfW9YSGfunnLgdH6QG8jwazapaObRUXq87nPs7OG2sU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SQLitePCLRaw.core.dll" size="46592">
-      <assemblyIdentity name="SQLitePCLRaw.core" version="2.0.3.851" publicKeyToken="1488E028CA7AB535" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="SQLitePCLRaw.core" version="2.0.4.976" publicKeyToken="1488E028CA7AB535" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>QC3QcGoKCSSMUZ13iHBRtSZW1Wpj7F3sGCLiU3gfUPI=</dsig:DigestValue>
+        <dsig:DigestValue>yRcyT6bqHwOGzBQK2R/Pq5DiOF0McLYibBg0/tELlzI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SQLitePCLRaw.nativelibrary.dll" size="9728">
-      <assemblyIdentity name="SQLitePCLRaw.nativelibrary" version="2.0.3.851" publicKeyToken="502ED628492AB262" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="SQLitePCLRaw.nativelibrary" version="2.0.4.976" publicKeyToken="502ED628492AB262" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>GsJiINYsmKYhKaqdktkBHt+TDV7Um809IJ300gSksr8=</dsig:DigestValue>
+        <dsig:DigestValue>uTAI7pIoEd7MuV5HQ8xOyvQRuefHMSuHN9kbHAd6+/Y=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SQLitePCLRaw.provider.dynamic_cdecl.dll" size="56832">
-      <assemblyIdentity name="SQLitePCLRaw.provider.dynamic_cdecl" version="2.0.3.851" publicKeyToken="B68184102CBA0B3B" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SQLitePCLRaw.provider.dynamic_cdecl.dll" size="57344">
+      <assemblyIdentity name="SQLitePCLRaw.provider.dynamic_cdecl" version="2.0.4.976" publicKeyToken="B68184102CBA0B3B" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>2sQ75lmpMWEvPSr4XgpDjy+B+gmcguwMa/L3nCQVqMw=</dsig:DigestValue>
+        <dsig:DigestValue>RlKEwOHpxJVVOfepV31LUzLidIEBdD+JNMaY+mJgmRE=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SQLitePCLRaw.provider.e_sqlite3.dll" size="39936">
+      <assemblyIdentity name="SQLitePCLRaw.provider.e_sqlite3" version="1.1.13.388" publicKeyToken="9C301DB686D0BD12" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>Il/rpsoDebHzEVRqDPkq+Gzc8bTuwHDYH/5Lty3O/Es=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -1332,40 +1344,58 @@
       <dsig:DigestValue>Q516+qIqZZ95M45EuxY/YoNNAKKGnqQ/hdVTWwYPlIQ=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="OrdersProgress.exe.config" size="160">
+  <file name="OrdersProgress.exe.config" size="782">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>HqN2MyOS1tczkwKtzzaJRVzFYQ4972zrbLRXmp6d9F0=</dsig:DigestValue>
+      <dsig:DigestValue>uI46IC0hBCNvJqaQfYViOEbXH9iLuzZMwsYEAYBcxII=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="runtimes\win-arm\native\e_sqlite3.dll" size="894464">
+  <file name="runtimes\win-arm\native\e_sqlite3.dll" size="1083392">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>9pl1DLiZK27CDybbWblwZ2/uFxXTnnlIgz7IxaaakAc=</dsig:DigestValue>
+      <dsig:DigestValue>YyzrVRaMMceamyW+9BwZeuaXgybuF/gN73TrdfG+R04=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="runtimes\win-x64\native\e_sqlite3.dll" size="1303040">
+  <file name="runtimes\win-x64\native\e_sqlite3.dll" size="1570816">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>pSOxL7axuRS8nL1nxE2y6aonMtOTXpnyuYAZIv34zz0=</dsig:DigestValue>
+      <dsig:DigestValue>8cU/Q4GXmMV3659KyDuz+rOPohqvVl3v6Fc7L8p2gjA=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="runtimes\win-x86\native\e_sqlite3.dll" size="1018368">
+  <file name="runtimes\win-x86\native\e_sqlite3.dll" size="1184256">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>+VmqCWN0yMCbJTTkYsYaD68kkvZA6L6ti6IOhZdd57w=</dsig:DigestValue>
+      <dsig:DigestValue>A+8VVX7Isd2NjR9VUuyW3y5ewn3joaz8scFteopVmsk=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="x64\e_sqlite3.dll" size="1307648">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>NgB6o35/W6kNvD3JL1pwHZJN7d43eMEuaO02XWVR18k=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="x86\e_sqlite3.dll" size="1006080">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>eb08mPxoORmVF1XpgYx8DOWVY4qaTLjo51rFz2WAJJ8=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

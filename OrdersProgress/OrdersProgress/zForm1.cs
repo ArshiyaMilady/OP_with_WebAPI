@@ -30,12 +30,12 @@ namespace OrdersProgress
             //dgvData.DataSource = Program.dbOperations.GetAllOrdersAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllCustomersAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllOrder_LevelsAsync(0); //  Stack.Company_Id);
-            dgvData.DataSource = Program.dbOperations.GetAllProperties(0,0);// Stack.Company_Id,0);
+            //dgvData.DataSource = Program.dbOperations.GetAllProperties(0,0);// Stack.Company_Id,0);
             //dgvData.DataSource = Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllCategoriesAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllWarehousesAsync(Stack.Company_Id,false);
             //dgvData.DataSource = Program.dbOperations.GetAllUL_Confirm_UL_RequestsAsync(Stack.Company_Id);
-            //dgvData.DataSource = Program.dbOperations.GetAllUL_Request_CategoriesAsync(Stack.Company_Id);
+            dgvData.DataSource = Program.dbOperations.GetAllUL_Request_CategoriesAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllWarehouse_RequestsAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllWarehouse_Request_RowsAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllItemsAsync(0, 0, 100); //(Stack.Company_Id,0,100);

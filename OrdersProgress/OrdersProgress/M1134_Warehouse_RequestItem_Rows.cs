@@ -243,11 +243,11 @@ namespace OrdersProgress
                 #region تعیین وضعیت درخواست
                 string wr_History_Description = null;
                 if (Any_Confirmed && !Any_Canceled)
-                    wr_History_Description = "تمام موارد مربوطه توسط " + Stack.UserName + " تأیید شدند";
+                    wr_History_Description = "موارد مربوطه توسط " + Stack.UserName + " تأیید شدند";
                 else if (Any_Confirmed && Any_Canceled)
                     wr_History_Description = "بعضی از موارد توسط " + Stack.UserName + " لغو شدند";
                 else if (!Any_Confirmed && Any_Canceled)
-                    wr_History_Description = "تمام موارد مربوطه توسط " + Stack.UserName + " لغو شد";
+                    wr_History_Description = "موارد مربوطه توسط " + Stack.UserName + " لغو شد";
 
                 // اگر وضعیت تمام ردیف های درخواست مشخص شده باشد
                 Models.Warehouse_Request wr = Program.dbOperations.GetWarehouse_RequestAsync(warehouse_request_index);
@@ -280,7 +280,7 @@ namespace OrdersProgress
                     else
                     {
                         wr.Sent_to_Warehouse = true;
-                        wr.Status_Description = "تمام موارد درخواست تأیید شدند.به انبار مراجعه نمایید";
+                        wr.Status_Description = "تمام موارد درخواست تأیید شدند. درخواست به انبار ارسال شد";
                         wr_History_Description = "در خواست به انبار ارسال شد";
                     }
 

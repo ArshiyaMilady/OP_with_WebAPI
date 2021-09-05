@@ -100,12 +100,12 @@
             this.tsmiDelete});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(156, 158);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(155, 158);
             // 
             // tsmiItem_Details
             // 
             this.tsmiItem_Details.Name = "tsmiItem_Details";
-            this.tsmiItem_Details.Size = new System.Drawing.Size(155, 22);
+            this.tsmiItem_Details.Size = new System.Drawing.Size(154, 22);
             this.tsmiItem_Details.Text = "جزییات";
             this.tsmiItem_Details.Click += new System.EventHandler(this.TsmiItem_Details_Click);
             // 
@@ -115,27 +115,27 @@
             this.tsmiAdd_ChangeItemImage,
             this.tsmiDeleteItemImage});
             this.tsmiImage.Name = "tsmiImage";
-            this.tsmiImage.Size = new System.Drawing.Size(155, 22);
+            this.tsmiImage.Size = new System.Drawing.Size(154, 22);
             this.tsmiImage.Text = "تصویر کالا";
             // 
             // tsmiAdd_ChangeItemImage
             // 
             this.tsmiAdd_ChangeItemImage.Name = "tsmiAdd_ChangeItemImage";
-            this.tsmiAdd_ChangeItemImage.Size = new System.Drawing.Size(191, 22);
+            this.tsmiAdd_ChangeItemImage.Size = new System.Drawing.Size(181, 22);
             this.tsmiAdd_ChangeItemImage.Text = "افزودن یا ویرایش تصویر";
             this.tsmiAdd_ChangeItemImage.Click += new System.EventHandler(this.TsmiAdd_ChangeItemImage_Click);
             // 
             // tsmiDeleteItemImage
             // 
             this.tsmiDeleteItemImage.Name = "tsmiDeleteItemImage";
-            this.tsmiDeleteItemImage.Size = new System.Drawing.Size(191, 22);
+            this.tsmiDeleteItemImage.Size = new System.Drawing.Size(181, 22);
             this.tsmiDeleteItemImage.Text = "حذف تصویر";
             this.tsmiDeleteItemImage.Click += new System.EventHandler(this.TsmiDeleteItemImage_Click);
             // 
             // tsmiDiagram
             // 
             this.tsmiDiagram.Name = "tsmiDiagram";
-            this.tsmiDiagram.Size = new System.Drawing.Size(155, 22);
+            this.tsmiDiagram.Size = new System.Drawing.Size(154, 22);
             this.tsmiDiagram.Text = "دیاگرام زیرساخت";
             this.tsmiDiagram.Visible = false;
             this.tsmiDiagram.Click += new System.EventHandler(this.TsmiDiagram_Click);
@@ -143,21 +143,21 @@
             // tsmiItemStructure
             // 
             this.tsmiItemStructure.Name = "tsmiItemStructure";
-            this.tsmiItemStructure.Size = new System.Drawing.Size(155, 22);
+            this.tsmiItemStructure.Size = new System.Drawing.Size(154, 22);
             this.tsmiItemStructure.Text = "ساختار کالا";
             this.tsmiItemStructure.Click += new System.EventHandler(this.tsmiItemStructure_Click);
             // 
             // tsmiProperties
             // 
             this.tsmiProperties.Name = "tsmiProperties";
-            this.tsmiProperties.Size = new System.Drawing.Size(155, 22);
+            this.tsmiProperties.Size = new System.Drawing.Size(154, 22);
             this.tsmiProperties.Text = "مشخصه ها";
             this.tsmiProperties.Click += new System.EventHandler(this.TsmiProperties_Click);
             // 
             // tsmiItem_Warehouse
             // 
             this.tsmiItem_Warehouse.Name = "tsmiItem_Warehouse";
-            this.tsmiItem_Warehouse.Size = new System.Drawing.Size(155, 22);
+            this.tsmiItem_Warehouse.Size = new System.Drawing.Size(154, 22);
             this.tsmiItem_Warehouse.Text = "تعیین انبار";
             this.tsmiItem_Warehouse.Visible = false;
             this.tsmiItem_Warehouse.Click += new System.EventHandler(this.TsmiItem_Warehouse_Click);
@@ -165,7 +165,7 @@
             // tsmiDelete
             // 
             this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(155, 22);
+            this.tsmiDelete.Size = new System.Drawing.Size(154, 22);
             this.tsmiDelete.Text = "حذف";
             this.tsmiDelete.Visible = false;
             this.tsmiDelete.Click += new System.EventHandler(this.TsmiDelete_Click);
@@ -175,7 +175,7 @@
             this.btnImportDataFromExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnImportDataFromExcel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnImportDataFromExcel.BackgroundImage")));
             this.btnImportDataFromExcel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnImportDataFromExcel.Location = new System.Drawing.Point(3, 410);
+            this.btnImportDataFromExcel.Location = new System.Drawing.Point(3, 447);
             this.btnImportDataFromExcel.Name = "btnImportDataFromExcel";
             this.btnImportDataFromExcel.Size = new System.Drawing.Size(34, 34);
             this.btnImportDataFromExcel.TabIndex = 80;
@@ -188,7 +188,7 @@
             // 
             this.btnReturn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnReturn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnReturn.Location = new System.Drawing.Point(3, 449);
+            this.btnReturn.Location = new System.Drawing.Point(3, 486);
             this.btnReturn.Name = "btnReturn";
             this.btnReturn.Size = new System.Drawing.Size(75, 29);
             this.btnReturn.TabIndex = 80;
@@ -199,7 +199,7 @@
             // progressBar1
             // 
             this.progressBar1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.progressBar1.Location = new System.Drawing.Point(399, 219);
+            this.progressBar1.Location = new System.Drawing.Point(399, 237);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(100, 23);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
@@ -226,7 +226,7 @@
             this.panel1.Controls.Add(this.dgvData);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(884, 484);
+            this.panel1.Size = new System.Drawing.Size(884, 521);
             this.panel1.TabIndex = 0;
             // 
             // label4
@@ -544,7 +544,7 @@
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox1.BackColor = System.Drawing.SystemColors.Window;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(424, 203);
+            this.pictureBox1.Location = new System.Drawing.Point(424, 221);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(49, 54);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -617,7 +617,7 @@
             // btnDeleteAllItems
             // 
             this.btnDeleteAllItems.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDeleteAllItems.Location = new System.Drawing.Point(84, 449);
+            this.btnDeleteAllItems.Location = new System.Drawing.Point(84, 486);
             this.btnDeleteAllItems.Name = "btnDeleteAllItems";
             this.btnDeleteAllItems.Size = new System.Drawing.Size(75, 29);
             this.btnDeleteAllItems.TabIndex = 75;
@@ -628,12 +628,12 @@
             // 
             // btnAddNew
             // 
-            this.btnAddNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAddNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAddNew.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.btnAddNew.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnAddNew.ForeColor = System.Drawing.SystemColors.Window;
             this.btnAddNew.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnAddNew.Location = new System.Drawing.Point(665, 2);
+            this.btnAddNew.Location = new System.Drawing.Point(664, 484);
             this.btnAddNew.Name = "btnAddNew";
             this.btnAddNew.Size = new System.Drawing.Size(217, 32);
             this.btnAddNew.TabIndex = 70;
@@ -652,7 +652,7 @@
             this.dgvData.Name = "dgvData";
             this.dgvData.ReadOnly = true;
             this.dgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvData.Size = new System.Drawing.Size(494, 448);
+            this.dgvData.Size = new System.Drawing.Size(494, 485);
             this.dgvData.TabIndex = 90;
             this.dgvData.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.DgvData_CellBeginEdit);
             this.dgvData.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvData_CellDoubleClick);
@@ -680,7 +680,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnReturn;
-            this.ClientSize = new System.Drawing.Size(883, 483);
+            this.ClientSize = new System.Drawing.Size(883, 520);
             this.Controls.Add(this.panel1);
             this.Name = "K1300_Items";
             this.Text = "   کالاها";
