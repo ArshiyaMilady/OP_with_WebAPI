@@ -22,10 +22,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/User_Levels
+        // GET: api/User_UL?all=vvv&user_id=xxx
         [HttpGet, Authorize]
-        public async Task<ActionResult<IEnumerable<User_Level>>> GetUser_Level()
+        public async Task<ActionResult<IEnumerable<User_Level>>> GetUser_Level(string all="yes",long company_id=0)
         {
-            return await _context.User_Level.ToListAsync();
+            if(all.Equals("all"))
+                return await _context.User_Level.ToListAsync();
+            else
+                return await _context.User_Level.Where(d=>d.Company_Id == company_id).ToListAsync();
         }
 
         // GET: api/User_Levels/5

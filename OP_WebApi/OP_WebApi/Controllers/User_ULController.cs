@@ -46,7 +46,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/User_UL/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutUser_UL(long id, User_UL user_UL)
         {
             if (id != user_UL.Id)
@@ -76,7 +76,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/User_UL
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<User_UL>> PostUser_UL(User_UL user_UL)
         {
             _context.User_UL.Add(user_UL);
@@ -86,7 +86,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/User_UL/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<User_UL>> DeleteUser_UL(long id)
         {
             var user_UL = await _context.User_UL.FindAsync(id);

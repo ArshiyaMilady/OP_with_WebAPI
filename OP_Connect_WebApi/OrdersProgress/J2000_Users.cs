@@ -19,7 +19,7 @@ namespace OrdersProgress
             InitializeComponent();
         }
 
-        private void J2000_Users_Shown(object sender, EventArgs e)
+        private async void J2000_Users_Shown(object sender, EventArgs e)
         {
             comboBox1.SelectedIndex = 2;
             cmbST_Name.SelectedIndex = 0;
@@ -38,7 +38,7 @@ namespace OrdersProgress
             btnAddNew.Visible = (Stack.UserLevel_Type == 1) || (Stack.UserLevel_Type == 2);
 
 
-            dgvData.DataSource = GetData();
+            dgvData.DataSource = await GetData();
             ShowData();
         }
 
@@ -59,7 +59,8 @@ namespace OrdersProgress
                         lstUL_See_ULs = await HttpClientExtensions.GetT<List<Models.UL_See_UL>>
                             (Stack.API_Uri_start_read + "/UL_See_UL?company_id=" + Stack.Company_Id
                             + "&main_ul_id=" + Stack.UserLevel_Id, Stack.token);
-                        lstAllUsers = 
+                        lstAllUsers = await HttpClientExtensions.GetT<List<Models.User>>
+                            (Stack.API_Uri_start_read + "/Users?all=no&company_id=" + Stack.Company_Id, Stack.token);
                     }
                     else
                     {
@@ -70,7 +71,8 @@ namespace OrdersProgress
                     foreach (Models.User user in lstAllUsers)
                     {
                         if(Stack.Use_Web)
-                        { }
+                        lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
+                            (Stack.API_Uri_start_read + "/User_UL?type=no&user_id=" + user.Id, Stack.token);
                         else lstUUL = Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user.Id);
 
                         foreach (Models.User_UL user_ul in lstUUL)
@@ -82,7 +84,7 @@ namespace OrdersProgress
                 }
                 else  // برای سطح کاربرانی که نوع سطح آنها غیر صفر است مانند ادمین ها و کاربران ارشد
                 {
-                    lstUsers = WhichUsers(Stack.UserLevel_Type);
+                    lstUsers = await WhichUsers(Stack.UserLevel_Type);
                 }
 
 
@@ -539,16 +541,30 @@ namespace OrdersProgress
 
 
 
-        public List<Models.User> WhichUsers(int ul_type)
+        public async Task<List<Models.User>> WhichUsers(int ul_type)
         {
-            List<Models.User> lstUsers = Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0);
-            if (Stack.UserLevel_Type > 1)
+            List<Models.User> lstUsers = new List<Models.User>();
+
+            if(Stack.Use_Web)
+                lstUsers = await HttpClientExtensions.GetT<List<Models.User>>
+                    (Stack.API_Uri_start_read + "/Users?all=no&company_id=" + Stack.Company_Id, Stack.token);
+            else  lstUsers = Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0);
+
+            if (lstUsers.Any() && (Stack.UserLevel_Type > 1))
             {
-                List<long> lstUL_Type_notSeen = Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id, 1)
-                    .Where(d =>(d.Type>0) && (d.Type <= Stack.UserLevel_Type)).Select(d => d.Id).ToList();
-                List<long> lstUsersUL_Type_Seen = Program.dbOperations.GetAllUser_ULsAsync
-                    (Stack.Company_Id).Where(d => !lstUL_Type_notSeen.Contains(d.UL_Id)).Select(d => d.User_Id).ToList();
-                lstUsers = lstUsers.Where(d => lstUsersUL_Type_Seen.Contains(d.Id)).ToList();
+                List<Models.User_Level> lstUL_Type_notSeen = new List<Models.User_Level>();
+                if (Stack.Use_Web)
+                    lstUL_Type_notSeen = (await HttpClientExtensions.GetT<List<Models.User_Level>>
+                    (Stack.API_Uri_start_read + "/User_Levels?all=no&company_id=" + Stack.Company_Id, Stack.token))
+                    .Where(d=>d.Enabled).ToList();
+                else
+                    lstUL_Type_notSeen = Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id, 1);
+
+                List<long> lstUL_Type_notSeen_Id = lstUL_Type_notSeen
+                    .Where(d => (d.Type > 0) && (d.Type <= Stack.UserLevel_Type)).Select(d => d.Id).ToList();
+                List<long> lstUsersUL_Type_Seen_Id = Program.dbOperations.GetAllUser_ULsAsync
+                    (Stack.Company_Id).Where(d => !lstUL_Type_notSeen_Id.Contains(d.UL_Id)).Select(d => d.User_Id).ToList();
+                lstUsers = lstUsers.Where(d => lstUsersUL_Type_Seen_Id.Contains(d.Id)).ToList();
             }
             return lstUsers;
         }

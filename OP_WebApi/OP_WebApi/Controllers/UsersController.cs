@@ -23,9 +23,12 @@ namespace OP_WebApi.Controllers
 
         // GET: api/Users
         [HttpGet, Authorize]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<ActionResult<IEnumerable<User>>> GetUser(string all="yes",long company_id=0)
         {
-            return await _context.User.ToListAsync();
+            if (all.Equals("yes"))
+                return await _context.User.ToListAsync();
+            else
+                return await _context.User.Where(d => d.Company_Id == company_id).ToListAsync();
         }
 
         // GET: api/Users/5
