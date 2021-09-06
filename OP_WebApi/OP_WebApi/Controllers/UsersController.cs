@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,23 +22,27 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Users
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
             return await _context.User.ToListAsync();
         }
 
-        // cid : company_Id : شناسه شرکت
-        // GET: api/Users/5&cid=xxxx
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(long id)
+        // GET: api/Users/5
+        // GET: api/Users/0?user_name=xxxx
+        [HttpGet("{id}"), Authorize]
+        public async Task<ActionResult<User>> GetUser(long id,string user_name=null)
         {
-            var user = await _context.User.FindAsync(id);
+            User user = null;
+            if (id > 0)
+                user = await _context.User.FindAsync(id);
+            else if (!string.IsNullOrEmpty(user_name))
+                user = await _context.User.FirstOrDefaultAsync(d => d.Name.ToLower().Equals(user_name.ToLower()));
+
 
             if (user == null)
-            {
                 return NotFound();
-            }
+            else user.Password = null;
 
             return user;
         }

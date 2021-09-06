@@ -1,6 +1,7 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 
@@ -140,9 +141,15 @@ namespace OrdersProgress.Models
         [PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
-        //public long Index { get; set; }
+
+        [ForeignKey("User")]
         public long User_Id { get; set; }
+        //public User User { get; set; }
+
+        [ForeignKey("User_Level")]
         public long UL_Id { get; set; }
+        //public User_Level User_Level { get; set; }
+
         public string UL_Description { get; set; }
     }
 

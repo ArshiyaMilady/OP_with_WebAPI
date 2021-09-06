@@ -8,6 +8,8 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+
 
 namespace OrdersProgress
 {
@@ -141,6 +143,28 @@ namespace OrdersProgress
             }
 
             Stack.bWarehouse_Booking_MaxHours = Program.dbOperations.GetCompanyAsync(user.Company_Id).Warehouse_AutomaticBooking;
+
+            return ((Stack.UserId > 0) && (Stack.UserLevel_Id > 0) && (Stack.UserLevel_Type >= 0));
+        }
+
+        // شناسه، سطح دسترسی و ... را برای یک کاربر با معلوم بودن نام بر میگرداند
+        public static async Task<bool> GetAllUserData_web(Models.User user)
+        {
+            Stack.UserName = user.Name;
+            Stack.UserId = user.Id;
+            Stack.Company_Id = user.Company_Id;
+            List<Models.User_UL> lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
+                (Stack.API_Uri_start_read + "/User_UL/0?user_id=" + user.Id, Stack.token);
+            if (lstUUL.Any())
+            {
+                Stack.UserLevel_Id = lstUUL.First().UL_Id;
+                Models.User_Level ul = await HttpClientExtensions.GetT<Models.User_Level>
+                    (Stack.API_Uri_start_read + "/User_Levels/" + Stack.UserLevel_Id, Stack.token);
+                Stack.UserLevel_Type = ul.Type;
+                //Program.dbOperations.GetUser_LevelAsync(Stack.UserLevel_Id).Type;
+            }
+
+            //Stack.bWarehouse_Booking_MaxHours = Program.dbOperations.GetCompanyAsync(user.Company_Id).Warehouse_AutomaticBooking;
 
             return ((Stack.UserId > 0) && (Stack.UserLevel_Id > 0) && (Stack.UserLevel_Type >= 0));
         }
@@ -321,12 +345,14 @@ namespace OrdersProgress
         // WebAPI دریافت توکن از سرور 
         public static async Task<string> GetToken(string requestUri,int login_type, string user_name_moile, string password)
         {
-            var bodyString = @"{""LoginType"": """ + login_type + @""", ""UserName_Mobile"": """ + user_name_moile + @""", ""Password"": """ + password + @"""}";
-            //var bodyString = @"{LoginType: """ + login_type + @""", UserName_Mobile: """ + user_name_moile + @""", Password: """ + password + @"""}";
+            //var bodyString = @"{""LoginType"": """ + login_type + @""", ""UserName_Mobile"": """ + user_name_moile + @""", ""Password"": """ + password + @"""}";
+            var bodyString = @"{LoginType: """ + login_type + @""", UserName_Mobile: """ 
+                + user_name_moile + @""", Password: """ + password + @"""}";
+
             var httpClient = new HttpClient();
             var response = await httpClient.PostAsync(requestUri
                 , new StringContent(bodyString, System.Text.Encoding.UTF8, "application/json"));
-
+            response.EnsureSuccessStatusCode();
             if (response.IsSuccessStatusCode)
             {
                 var responseString = response.Content.ReadAsStringAsync().Result;

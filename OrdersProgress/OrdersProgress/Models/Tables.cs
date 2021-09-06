@@ -141,6 +141,7 @@ namespace OrdersProgress.Models
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
+        [ForeignKey("User")]
         public long User_Id { get; set; }
         public long UL_Id { get; set; }
         public string UL_Description { get; set; }

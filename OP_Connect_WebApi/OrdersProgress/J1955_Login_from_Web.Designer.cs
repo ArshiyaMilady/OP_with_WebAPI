@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(J1955_Login_from_Web));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.radUseMobile = new System.Windows.Forms.RadioButton();
             this.radUseName = new System.Windows.Forms.RadioButton();
@@ -45,11 +46,10 @@
             this.btnExit = new System.Windows.Forms.Button();
             this.lblAdmin = new System.Windows.Forms.Label();
             this.lblMaster = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -65,8 +65,21 @@
             this.panel1.Controls.Add(this.lblMaster);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(302, 303);
+            this.panel1.Size = new System.Drawing.Size(302, 263);
             this.panel1.TabIndex = 1;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(136, 118);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(31, 27);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 20;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Visible = false;
             // 
             // panel2
             // 
@@ -87,7 +100,7 @@
             this.panel2.Controls.Add(this.label1);
             this.panel2.Location = new System.Drawing.Point(26, 24);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(252, 254);
+            this.panel2.Size = new System.Drawing.Size(252, 214);
             this.panel2.TabIndex = 0;
             // 
             // radUseMobile
@@ -120,8 +133,6 @@
             // 
             this.chkDefaultUser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkDefaultUser.AutoSize = true;
-            this.chkDefaultUser.Checked = true;
-            this.chkDefaultUser.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkDefaultUser.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkDefaultUser.Location = new System.Drawing.Point(59, 183);
             this.chkDefaultUser.Name = "chkDefaultUser";
@@ -129,6 +140,7 @@
             this.chkDefaultUser.TabIndex = 17;
             this.chkDefaultUser.Text = "کاربر پیش فرض";
             this.chkDefaultUser.UseVisualStyleBackColor = true;
+            this.chkDefaultUser.Visible = false;
             // 
             // lblExit
             // 
@@ -137,7 +149,7 @@
             this.lblExit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblExit.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblExit.ForeColor = System.Drawing.Color.DarkRed;
-            this.lblExit.Location = new System.Drawing.Point(6, 231);
+            this.lblExit.Location = new System.Drawing.Point(6, 191);
             this.lblExit.Name = "lblExit";
             this.lblExit.Size = new System.Drawing.Size(37, 17);
             this.lblExit.TabIndex = 16;
@@ -150,7 +162,7 @@
             this.lblChangePassword.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblChangePassword.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblChangePassword.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.lblChangePassword.Location = new System.Drawing.Point(163, 229);
+            this.lblChangePassword.Location = new System.Drawing.Point(163, 189);
             this.lblChangePassword.Name = "lblChangePassword";
             this.lblChangePassword.Size = new System.Drawing.Size(85, 17);
             this.lblChangePassword.TabIndex = 16;
@@ -225,7 +237,7 @@
             this.btnExit.FlatAppearance.BorderSize = 0;
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExit.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnExit.Location = new System.Drawing.Point(90, 248);
+            this.btnExit.Location = new System.Drawing.Point(90, 208);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(64, 23);
             this.btnExit.TabIndex = 19;
@@ -239,7 +251,7 @@
             this.lblAdmin.Cursor = System.Windows.Forms.Cursors.Default;
             this.lblAdmin.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAdmin.ForeColor = System.Drawing.Color.Black;
-            this.lblAdmin.Location = new System.Drawing.Point(3, 281);
+            this.lblAdmin.Location = new System.Drawing.Point(3, 241);
             this.lblAdmin.Name = "lblAdmin";
             this.lblAdmin.Size = new System.Drawing.Size(32, 17);
             this.lblAdmin.TabIndex = 16;
@@ -257,25 +269,12 @@
             this.lblMaster.TabIndex = 16;
             this.lblMaster.Text = "ورود";
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(136, 138);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(31, 27);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 20;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Visible = false;
-            // 
             // J1955_Login_from_Web
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowText;
-            this.ClientSize = new System.Drawing.Size(303, 302);
+            this.ClientSize = new System.Drawing.Size(303, 262);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "J1955_Login_from_Web";
@@ -283,9 +282,9 @@
             this.Shown += new System.EventHandler(this.J1955_Login_from_Web_Shown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }

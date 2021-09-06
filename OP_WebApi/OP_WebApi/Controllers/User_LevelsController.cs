@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,14 +22,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/User_Levels
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<User_Level>>> GetUser_Level()
         {
             return await _context.User_Level.ToListAsync();
         }
 
         // GET: api/User_Levels/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<User_Level>> GetUser_Level(long id)
         {
             var user_Level = await _context.User_Level.FindAsync(id);

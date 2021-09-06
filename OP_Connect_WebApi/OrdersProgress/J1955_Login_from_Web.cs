@@ -23,7 +23,7 @@ namespace OrdersProgress
 
         }
 
-        private void BtnLogin_Click(object sender, EventArgs e)
+        private async void BtnLogin_Click(object sender, EventArgs e)
         {
             #region خطایابی
             if (string.IsNullOrWhiteSpace(txtNM.Text))
@@ -39,16 +39,40 @@ namespace OrdersProgress
             }
             #endregion
 
+            pictureBox1.Visible = true;
+            panel2.Enabled = false;
+
             int login_type = radUseName.Checked ? 1 : 2;
-            Models.User user = GetUser_by_Name_or_Mobile(login_type,txtNM.Text,txtPassword.Text);
-            return;
+            Models.User user = null;
+            try {  user = await GetUser_by_Name_or_Mobile(login_type, txtNM.Text, txtPassword.Text); }
+            catch { }
+
             if (user == null)
             {
+                panel2.Enabled = true;
+                pictureBox1.Visible = false;
+
                 MessageBox.Show(label1.Text.Substring(0, label1.Text.Length - 2) + " یا رمز ورود نادرست است", "خطا");
                 return;
             }
             else
             {
+                var b = 
+                if (await Stack_Methods.GetAllUserData_web(user).Status)
+                {
+                    MessageBox.Show(Stack.UserLevel_Type.ToString());
+                    Stack.bx = true;
+                    Close();
+                }
+                else
+                {
+                    panel2.Enabled = true;
+                    pictureBox1.Visible = false;
+                    MessageBox.Show("جهت بررسی مشکل با شرکت تماس بگیرید", "خطا در اطلاعات کاربری");
+                }
+                return;
+
+                /*
                 CryptographyProcessor cryptographyProcessor = new CryptographyProcessor();
                 if (!cryptographyProcessor.GenerateHash(txtPassword.Text, Stack.Standard_Salt).Equals(user.Password))
                 {
@@ -107,42 +131,28 @@ namespace OrdersProgress
                             Time = Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 8),
                         });
                     #endregion
+
                     //MessageBox.Show(Stack.UserLevel_Type.ToString());
-                    Stack.bx = true;
-                    Close();
-                    return;
                 }
+                */
             }
 
         }
 
-        private Models.User GetUser_by_Name_or_Mobile(int login_type, string name_mobile, string password)
+        private async Task<Models.User> GetUser_by_Name_or_Mobile(int login_type, string name_mobile, string password)
         {
-            //MessageBox.Show(@"{""LoginType"": """ + login_type + @""", ""UserName_Mobile"": """ + name_mobile + @""", ""Password"": """ + password + @"""}");
-
-            //MessageBox.Show(login_type + "\n" + name_mobile + "\n" + password);
-
-            //return null;
             Models.User user = null;
 
-            //var httpClient = new HttpClient();
-            string response = HttpClientExtensions.GetToken(Stack.API_Uri_start + "/Token"
-                , login_type, name_mobile, password).Result;
-            //MessageBox.Show(response);
+            string response = await HttpClientExtensions.GetToken(Stack.API_Uri_start + "/Token"
+                , login_type, name_mobile, password);
+
             if (!string.IsNullOrEmpty(response))
             {
                 Stack.token = response;
-                MessageBox.Show(Stack.token);
+                return await HttpClientExtensions.GetT<Models.User>(Stack.API_Uri_start_read
+                    + "/Users/0?user_name=" + name_mobile,Stack.token);
+                //MessageBox.Show(Stack.token);
             }
-            else 
-            {
-                MessageBox.Show("null");
-            }
-
-
-            //CryptographyProcessor cryptographyProcessor = new CryptographyProcessor();
-            //if (!cryptographyProcessor.GenerateHash(txtPassword.Text, Stack.Standard_Salt).Equals(user.Password))
-            //    return null;
 
             return user;
         }
