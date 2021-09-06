@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,14 +22,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/LoginHistories
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<LoginHistory>>> GetLoginHistory()
         {
             return await _context.LoginHistory.ToListAsync();
         }
 
         // GET: api/LoginHistories/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<LoginHistory>> GetLoginHistory(long id)
         {
             var loginHistory = await _context.LoginHistory.FindAsync(id);
@@ -42,7 +43,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/LoginHistories/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutLoginHistory(long id, LoginHistory loginHistory)
         {
             if (id != loginHistory.Id)
@@ -72,7 +73,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/LoginHistories
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<LoginHistory>> PostLoginHistory(LoginHistory loginHistory)
         {
             _context.LoginHistory.Add(loginHistory);
@@ -82,7 +83,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/LoginHistories/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<LoginHistory>> DeleteLoginHistory(long id)
         {
             var loginHistory = await _context.LoginHistory.FindAsync(id);

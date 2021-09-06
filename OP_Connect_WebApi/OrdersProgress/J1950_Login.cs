@@ -228,7 +228,9 @@ namespace OrdersProgress
                 Stack.UserId = Program.dbOperations.GetUserAsync("real_admin").Id;
                 Stack.UserName = "real_admin";
                 //Stack.UserName = Program.dbOperations.GetUserAsync(Stack.UserId).Name;
-                Stack.Company_Id = 1;
+                //Stack.Company_Id = 1;
+                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations
+                    .GetAllUL_FeaturesAsync(Stack.Company_Id, 0).Select(d => d.Unique_Phrase).ToList();
                 Stack.bx = true;
                 Close();
                 return;

@@ -57,10 +57,27 @@ namespace OrdersProgress
             }
             else
             {
-                var b = 
-                if (await Stack_Methods.GetAllUserData_web(user).Status)
+                //bool b =;
+                if (await Stack_Methods.GetAllUserData_web(user))
                 {
-                    MessageBox.Show(Stack.UserLevel_Type.ToString());
+                    #region ثبت در تایخچه
+                    if (Stack.UserLevel_Type != 1)
+                    {
+                        Models.LoginHistory loginHistory = new Models.LoginHistory
+                        {
+                            Company_Id = user.Company_Id,
+                            User_Id = user.Id,
+                            User_RealName = user.Real_Name,
+                            DateTime_mi = DateTime.Now,
+                            Date_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now),
+                            Time = Stack_Methods.NowTime_HHMMSSFFF(":", false),
+                        };
+
+                        await HttpClientExtensions.PostAsJsonAsync<Models.LoginHistory>
+                            (Stack.API_Uri_start + "/LoginHistories", loginHistory, Stack.token);
+                    }
+                    #endregion
+
                     Stack.bx = true;
                     Close();
                 }
@@ -71,70 +88,6 @@ namespace OrdersProgress
                     MessageBox.Show("جهت بررسی مشکل با شرکت تماس بگیرید", "خطا در اطلاعات کاربری");
                 }
                 return;
-
-                /*
-                CryptographyProcessor cryptographyProcessor = new CryptographyProcessor();
-                if (!cryptographyProcessor.GenerateHash(txtPassword.Text, Stack.Standard_Salt).Equals(user.Password))
-                {
-                    MessageBox.Show(label1.Text.Substring(0, label1.Text.Length - 2) + " یا رمز ورود نادرست است", "خطا");
-                    return;
-                }
-                else
-                {
-                    if (!Stack_Methods.GetAllUserData(user.Name))
-                    {
-                        //MessageBox.Show(Stack.UserName,"name");
-                        //MessageBox.Show(Stack.UserLevel_Type.ToString(),"type");
-                        //MessageBox.Show(Stack.UserId.ToString(),"user id");
-                        //MessageBox.Show(Stack.UserLevel_Id.ToString(), "UserLevel_Id");
-                        MessageBox.Show("جهت بررسی مشکل با شرکت تماس بگیرید", "خطا در اطلاعات کاربری");
-                        return;
-                    }
-
-                    #region کاربر پیش فرض
-                    if (!user.IsDefault)
-                    {
-                        //MessageBox.Show("200");
-                        if (chkDefaultUser.Checked)
-                        {
-                            //MessageBox.Show("300");
-                            //if (!user.Name.Equals("real_admin"))
-                            if ((Stack.UserLevel_Type != 1) && (Stack.UserLevel_Type != 2))
-                            {
-                                //MessageBox.Show("400");
-                                Models.User default_user = Program.dbOperations.GetAllUsersAsync
-                                    (Stack.Company_Id, 1).FirstOrDefault(d => d.IsDefault);
-                                if (default_user != null)
-                                {
-                                    default_user.IsDefault = false;
-                                    Program.dbOperations.UpdateUserAsync(default_user);
-                                }
-                                //MessageBox.Show(user.Name);
-                                user.IsDefault = true;
-                                Program.dbOperations.UpdateUserAsync(user);
-                            }
-                        }
-                    }
-                    //MessageBox.Show("500",user.IsDefault.ToString());
-
-                    #endregion
-
-                    #region ذخیره در تاریخچه ورود
-                    if (Stack.UserLevel_Type != 1)
-                        Program.dbOperations.AddLoginHistoryAsync(new Models.LoginHistory
-                        {
-                            Company_Id = user.Company_Id,
-                            User_Id = user.Id,
-                            User_RealName = user.Real_Name,
-                            DateTime_mi = DateTime.Now,
-                            Date_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now),
-                            Time = Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 8),
-                        });
-                    #endregion
-
-                    //MessageBox.Show(Stack.UserLevel_Type.ToString());
-                }
-                */
             }
 
         }
@@ -155,6 +108,34 @@ namespace OrdersProgress
             }
 
             return user;
+        }
+
+        private void LblExit_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void J1955_Login_from_Web_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!Stack.bx)
+            {
+                if (MessageBox.Show("آیا از برنامه خارج می شوید؟", ""
+                    , MessageBoxButtons.YesNo) != DialogResult.Yes) e.Cancel = true;
+            }
+        }
+
+        private void LblMaster_Click(object sender, EventArgs e)
+        {
+            radUseName.Checked = true;
+            txtNM.Text = "real_admin";
+            txtPassword.Text = "9999";
+        }
+
+        private void LblAdmin_Click(object sender, EventArgs e)
+        {
+            radUseName.Checked = true;
+            txtNM.Text = "admin";
+            txtPassword.Text = "9999";
         }
 
 

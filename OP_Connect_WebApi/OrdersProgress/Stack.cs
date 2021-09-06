@@ -31,6 +31,7 @@ namespace OrdersProgress
         // فعلا شناسه کاربر 1201 باشد
         public static long UserId = -1; // شناسه کاربری که با نرم افزار کار می کند
         public static string UserName = null;
+        public static string User_RealName = null;
         public static int UserLevel_Type = -1;   // سطح کاربری عادی  = تمام سطوح به غیر از ادمین و ادمین واقعی
         public static long UserLevel_Id = -1;
         public static long Company_Id = 1;
@@ -134,16 +135,45 @@ namespace OrdersProgress
         {
             Stack.UserName = user_name;
             Models.User user = Program.dbOperations.GetUserAsync(user_name);
+            Stack.User_RealName = user.Real_Name;
             Stack.UserId = user.Id;
             Stack.Company_Id = user.Company_Id;
             if (Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, Stack.UserId).Any())
             {
                 Stack.UserLevel_Id = Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, Stack.UserId).First().UL_Id;
-                Stack.UserLevel_Type = Program.dbOperations.GetUser_LevelAsync(Stack.UserLevel_Id).Type;
+                Models.User_Level user_level = Program.dbOperations.GetUser_LevelAsync(Stack.UserLevel_Id);
+                Stack.UserLevel_Type = user_level.Type;
+                // نام و سطح دسترسی کاربر
+                Stack.sx = user.Real_Name + " / " + user_level.Description;
             }
+
 
             Stack.bWarehouse_Booking_MaxHours = Program.dbOperations.GetCompanyAsync(user.Company_Id).Warehouse_AutomaticBooking;
 
+            #region تعیین دسترسی های کاربر با توجه به سطح کاربری
+            // ادمین واقعی
+            if (Stack.UserLevel_Type == 1)
+            //if (Stack.UserName.Equals("real_admin"))
+            {
+                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations
+                    .GetAllUL_FeaturesAsync(Stack.Company_Id, 0).Select(d => d.Unique_Phrase).ToList();
+
+                //MessageBox.Show(Stack.UserLevel_Type.ToString());
+            }
+            else if (Stack.UserLevel_Type == 2)
+            {
+                // تمام امکانات به غیر از امکانات ادمین واقعی
+                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id)
+                    .Where(d => !d.Unique_Phrase.Substring(0, 1).Equals("d"))
+                    .Select(d => d.Unique_Phrase).ToList();
+            }
+            else
+            {
+                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations
+                   .GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id, Stack.UserLevel_Id)
+                   .Select(d => d.UL_Feature_Unique_Phrase).ToList();
+            }
+            #endregion
             return ((Stack.UserId > 0) && (Stack.UserLevel_Id > 0) && (Stack.UserLevel_Type >= 0));
         }
 
@@ -151,20 +181,35 @@ namespace OrdersProgress
         public static async Task<bool> GetAllUserData_web(Models.User user)
         {
             Stack.UserName = user.Name;
+            Stack.User_RealName = user.Real_Name;
             Stack.UserId = user.Id;
-            Stack.Company_Id = user.Company_Id;
+            Stack.Company_Id = user.Company_Id;   
+            //MessageBox.Show(Stack.UserId.ToString(),"1");
             List<Models.User_UL> lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
-                (Stack.API_Uri_start_read + "/User_UL/0?user_id=" + user.Id, Stack.token);
-            if (lstUUL.Any())
+                (Stack.API_Uri_start_read + "/User_UL?type=a&user_id=" + user.Id, Stack.token);
+            if ((lstUUL!=null) && lstUUL.Any())
             {
                 Stack.UserLevel_Id = lstUUL.First().UL_Id;
-                Models.User_Level ul = await HttpClientExtensions.GetT<Models.User_Level>
+                Models.User_Level user_level = await HttpClientExtensions.GetT<Models.User_Level>
                     (Stack.API_Uri_start_read + "/User_Levels/" + Stack.UserLevel_Id, Stack.token);
-                Stack.UserLevel_Type = ul.Type;
-                //Program.dbOperations.GetUser_LevelAsync(Stack.UserLevel_Id).Type;
+                Stack.UserLevel_Type = user_level.Type;
+                // نام و سطح دسترسی کاربر
+                Stack.sx = user.Real_Name + " / " + user_level.Description;
             }
+            //MessageBox.Show(user.Company_Id.ToString());
+            Models.Company company = await HttpClientExtensions.GetT<Models.Company>
+                (Stack.API_Uri_start_read + "/Companies/" + user.Company_Id, Stack.token);
+            Stack.bWarehouse_Booking_MaxHours = company.Warehouse_AutomaticBooking;
 
-            //Stack.bWarehouse_Booking_MaxHours = Program.dbOperations.GetCompanyAsync(user.Company_Id).Warehouse_AutomaticBooking;
+            //MessageBox.Show(Stack.UserLevel_Type.ToString());
+            #region تعیین دسترسی های کاربر با توجه به سطح کاربری
+            // ادمین واقعی
+            var res1 = await HttpClientExtensions.GetT<List<Models.UL_Feature>>
+                (Stack.API_Uri_start_read + "/UL_Feature?company_Id=" + Stack.Company_Id
+                + "&EnableType=" + 1 + "&ul_Id=" + Stack.UserLevel_Id, Stack.token);
+            Stack.lstUser_ULF_UniquePhrase = res1.Select(d => d.Unique_Phrase).ToList();
+            //MessageBox.Show(Stack.lstUser_ULF_UniquePhrase.Count.ToString());
+            #endregion
 
             return ((Stack.UserId > 0) && (Stack.UserLevel_Id > 0) && (Stack.UserLevel_Type >= 0));
         }

@@ -42,7 +42,7 @@ namespace OrdersProgress
             ShowData();
         }
 
-        private List<Models.User> GetData()
+        private async Task<List<Models.User>> GetData()
         {
             // اگر لیست خالی است
             if(!lstUsers.Any())
@@ -50,65 +50,39 @@ namespace OrdersProgress
 
                 if (Stack.UserLevel_Type == 0)
                 {
-                    List<Models.UL_See_UL> lstUL_See_ULs = Program.dbOperations.GetAllUL_See_ULsAsync(Stack.Company_Id, Stack.UserLevel_Id);
-                    foreach(Models.User user in Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0))
+                    List<Models.UL_See_UL> lstUL_See_ULs = new List<Models.UL_See_UL>();
+                    List<Models.User> lstAllUsers = new List<Models.User>();
+                    List<Models.User_UL> lstUUL = new List<Models.User_UL>();
+
+                    if(Stack.Use_Web)
                     {
-                        foreach(Models.User_UL user_ul in Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user.Id))
+                        lstUL_See_ULs = await HttpClientExtensions.GetT<List<Models.UL_See_UL>>
+                            (Stack.API_Uri_start_read + "/UL_See_UL?company_id=" + Stack.Company_Id
+                            + "&main_ul_id=" + Stack.UserLevel_Id, Stack.token);
+                        lstAllUsers = 
+                    }
+                    else
+                    {
+                        lstUL_See_ULs = Program.dbOperations.GetAllUL_See_ULsAsync(Stack.Company_Id, Stack.UserLevel_Id);
+                        lstAllUsers = Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0);
+                    }
+
+                    foreach (Models.User user in lstAllUsers)
+                    {
+                        if(Stack.Use_Web)
+                        { }
+                        else lstUUL = Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user.Id);
+
+                        foreach (Models.User_UL user_ul in lstUUL)
                         {
                             if (lstUL_See_ULs.Any(d => d.UL_Id == user_ul.UL_Id))
                                 lstUsers.Add(user);
                         }
                     }
                 }
-                else  // برای سطح کاربرانی که توع آنها غیر صفر است
+                else  // برای سطح کاربرانی که نوع سطح آنها غیر صفر است مانند ادمین ها و کاربران ارشد
                 {
                     lstUsers = WhichUsers(Stack.UserLevel_Type);
-
-                    #region ---
-                    //#region عدم نمایش کاربر ادمین اصلی
-                    //if (!Stack.lstUser_ULF_UniquePhrase.Contains("dk1140"))
-                    //{
-                    //    if (Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id).Any(d => d.Type == 1))
-                    //    {
-                    //        long main_admin_ul_index = Program.dbOperations
-                    //            .GetAllUser_LevelsAsync(Stack.Company_Id).FirstOrDefault(d => d.Type == 1).Id;
-                    //        List<Models.User_UL> lstMainAdminUser_UL = Program.dbOperations
-                    //            .GetAllUser_ULsAsync(Stack.Company_Id).Where(d => d.UL_Id == main_admin_ul_index).ToList();
-                    //        foreach (Models.User_UL user_ul in lstMainAdminUser_UL)
-                    //        {
-                    //            if (lstUsers.Any(d => d.Id == user_ul.User_Id))
-                    //            {
-                    //                Models.User ma_user = lstUsers.First(d => d.Id == user_ul.User_Id);
-                    //                lstUsers.Remove(ma_user);
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    //#endregion
-
-                    //#region عدم نمایش کاربر(ان) ادمین 
-                    //if (!Stack.lstUser_ULF_UniquePhrase.Contains("dk1150"))
-                    //{
-                    //    if (Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id).Any(d => d.Type == 2))
-                    //    {
-                    //        foreach (long admin_ul_index in Program.dbOperations
-                    //            .GetAllUser_LevelsAsync(Stack.Company_Id).Where(d => d.Type == 2).Select(d => d.Id).ToList())
-                    //        {
-                    //            List<Models.User_UL> lstAdminUser_UL = Program.dbOperations
-                    //                .GetAllUser_ULsAsync(Stack.Company_Id).Where(d => d.UL_Id == admin_ul_index).ToList();
-                    //            foreach (Models.User_UL user_ul in lstAdminUser_UL)
-                    //            {
-                    //                if (lstUsers.Any(d => d.Id == user_ul.User_Id))
-                    //                {
-                    //                    Models.User ma_user = lstUsers.First(d => d.Id == user_ul.User_Id);
-                    //                    lstUsers.Remove(ma_user);
-                    //                }
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    //#endregion
-                    #endregion
                 }
 
 

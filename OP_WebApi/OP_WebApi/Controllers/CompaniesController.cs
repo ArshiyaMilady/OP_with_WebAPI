@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,14 +22,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Companies
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompany()
         {
             return await _context.Company.ToListAsync();
         }
 
         // GET: api/Companies/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<Company>> GetCompany(long id)
         {
             var company = await _context.Company.FindAsync(id);
@@ -42,7 +43,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Companies/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutCompany(long id, Company company)
         {
             if (id != company.Id)

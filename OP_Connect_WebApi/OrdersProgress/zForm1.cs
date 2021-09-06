@@ -23,6 +23,7 @@ namespace OrdersProgress
             //dgvData.DataSource = Program.dbOperations.GetAllCompaniesAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUsersAsync(0);// Stack.Company_Id);
+            //dgvData.DataSource = Program.dbOperations.GetAllUser_ULsAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUser_LevelsAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllOrder_Item_PropertiesAsync();
@@ -35,12 +36,12 @@ namespace OrdersProgress
             //dgvData.DataSource = Program.dbOperations.GetAllCategoriesAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllWarehousesAsync(Stack.Company_Id,false);
             //dgvData.DataSource = Program.dbOperations.GetAllUL_Confirm_UL_RequestsAsync(Stack.Company_Id);
-            dgvData.DataSource = Program.dbOperations.GetAllUL_Request_CategoriesAsync(0);// Stack.Company_Id);
+            //dgvData.DataSource = Program.dbOperations.GetAllUL_Request_CategoriesAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllWarehouse_RequestsAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllWarehouse_Request_RowsAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllItemsAsync(0, 0, 100); //(Stack.Company_Id,0,100);
             //dgvData.DataSource = Program.dbOperations.GetAllFilesAsync(0); //(Stack.Company_Id,0,100);
-            //dgvData.DataSource = Program.dbOperations.GetAllLoginHistorysAsync(Stack.Company_Id)
+            dgvData.DataSource = Program.dbOperations.GetAllLoginHistorysAsync(Stack.Company_Id);
             //    .OrderByDescending(d=>d.DateTime_mi).ToList();
 
             //List<long> lstEnabled_OL = Program.dbOperations.GetAllOrder_LevelsAsync(Stack.Company_Id).Select(d => d.Id).ToList();
@@ -70,10 +71,10 @@ namespace OrdersProgress
             //        Program.dbOperations.DeleteCustomerAsync(customer);
             //}
 
-            foreach (Models.Property property in Program.dbOperations.GetAllProperties(0,0)) //, 0))
+            foreach (Models.User_UL user_UL in Program.dbOperations.GetAllUser_ULsAsync(0)) //, 0))
             {
-                if(property.Company_Id == 0)
-                    Program.dbOperations.DeletePropertyAsync(property);
+                if(user_UL.Company_Id == 0)
+                    Program.dbOperations.DeleteUser_ULAsync(user_UL);
             }
 
             #endregion

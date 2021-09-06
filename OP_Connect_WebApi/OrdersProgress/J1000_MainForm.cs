@@ -28,10 +28,15 @@ namespace OrdersProgress
             //childForm.MdiParent = Stack.MainForm;
             //childForm.Text = "Window " + childFormNumber++;
             childForm.Show();
+
+            toolStripStatusLabel.Text = "";
         }
 
         private void J1000_MainForm_Load(object sender, EventArgs e)
         {
+            // آیا از وب استفاده شود؟
+            Stack.Use_Web = File.Exists(Path.Combine(Application.StartupPath, "System.Web.con"));
+
             // SetCompanies();
             //CreateUser_RealAdmin();
             //SetUserLevels();
@@ -50,41 +55,30 @@ namespace OrdersProgress
             }
 
             #region Login
+            Stack.bx = false;
             if (Stack.Use_Web)
             {
-                Stack.bx = false;
                 new J1955_Login_from_Web().ShowDialog();
-                ////if (!Stack.bx)
-                ////{
-                ////    Close();
-                ////    System.Environment.Exit(1);
-                ////    return;
-                ////}
             }
             else
             {
                 if (Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 1).Any())
                 {
-                    Stack.bx = false;
                     new J1950_Login().ShowDialog();
-                    if (!Stack.bx)
-                    {
-                        Close();
-                        System.Environment.Exit(1);
-                        return;
-                    }
                 }
             }
+
+            if (!Stack.bx)
+            {
+                Close();
+                System.Environment.Exit(1);
+                return;
+            }
+
             #endregion
 
-            if (Stack.UserLevel_Type == 1)
-            {
-                //tabControl1.Visible = true;
-                toolStripStatusLabel.Text = "";
-            }
-            else
-                toolStripStatusLabel.Text = Program.dbOperations.GetUserAsync(Stack.UserId).Real_Name + " / "
-                    + Program.dbOperations.GetUser_LevelAsync(Stack.UserLevel_Id).Description;
+            if (Stack.UserLevel_Type != 1)
+                toolStripStatusLabel.Text = Stack.sx;
         }
 
         private void J1000_MainForm_Shown(object sender, EventArgs e)
@@ -99,31 +93,6 @@ namespace OrdersProgress
                 Close();
             }
 
-            #region تعیین دسترسی های کاربر با توجه به سطح کاربری
-            // ادمین واقعی
-            if (Stack.UserLevel_Type == 1)
-            //if (Stack.UserName.Equals("real_admin"))
-            {
-                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations
-                    .GetAllUL_FeaturesAsync(Stack.Company_Id,0).Select(d => d.Unique_Phrase).ToList();
-
-                //MessageBox.Show(Stack.UserLevel_Type.ToString());
-            }
-            else if (Stack.UserLevel_Type == 2)
-            {
-                // تمام امکانات به غیر از امکانات ادمین واقعی
-                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id)
-                    .Where(d=>!d.Unique_Phrase.Substring(0,1).Equals("d"))
-                    .Select(d => d.Unique_Phrase).ToList();
-            }
-            else
-            {
-                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations
-                   .GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id,Stack.UserLevel_Id)
-                   .Select(d => d.UL_Feature_Unique_Phrase).ToList();
-            }
-            #endregion
-
             // قابل مشاهده بودن یا نبودن منوها و زیرمنوها
             //Initial_Menus_Settings();
             
@@ -136,7 +105,7 @@ namespace OrdersProgress
             menuStrip.Enabled = true;
             btnClose.Enabled = true;
 
-            //if (Stack.UserLevel_Type==1) new zForm1().ShowDialog();
+            if (Stack.UserLevel_Type==1) new zForm1().ShowDialog();
 
         }
 

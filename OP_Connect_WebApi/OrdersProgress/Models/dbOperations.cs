@@ -268,13 +268,13 @@ namespace OrdersProgress.Models
 
         // ********** LoginHistory *************
         #region LoginHistory
-        public List<LoginHistory> GetAllLoginHistorysAsync(long company_index, long user_index = -1)
+        public List<LoginHistory> GetAllLoginHistorysAsync(long company_index, long user_id = -1)
         {
             List<LoginHistory> lstLH = _db.Table<LoginHistory>()
                 .Where(b => b.Company_Id == company_index).ToListAsync().Result;
 
-            if (user_index > 0)
-                return lstLH.Where(d => d.User_Id == user_index).ToList();
+            if (user_id > 0)
+                return lstLH.Where(d => d.User_Id == user_id).ToList();
             else
                 return lstLH;
         }
@@ -438,7 +438,11 @@ namespace OrdersProgress.Models
         #region User_UL
         public List<User_UL> GetAllUser_ULsAsync(long company_index, long user_index = 0, long ul_index = 0)
         {
-            List<User_UL> lstUser_UL = _db.Table<User_UL>().Where(b => b.Company_Id == company_index).ToListAsync().Result;
+            List<User_UL> lstUser_UL = _db.Table<User_UL>().ToListAsync().Result;
+
+            if (company_index > 0)
+                lstUser_UL = lstUser_UL.Where(b => b.Company_Id == company_index).ToList();
+
             if (user_index > 0)
                 return _db.Table<User_UL>().Where(b => b.Company_Id == company_index).Where(d => d.User_Id == user_index).ToListAsync().Result;
             if (ul_index > 0)

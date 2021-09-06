@@ -21,7 +21,7 @@ namespace OP_WebApi.Models
         public virtual DbSet<UL_See_UL> UL_See_UL { get; set; }
         public virtual DbSet<User_UL> User_UL { get; set; }
         public virtual DbSet<UL_Feature> UL_Feature { get; set; }
-        public virtual DbSet<User_Level_UL_Feature> Level_UL_Feature { get; set; }
+        public virtual DbSet<User_Level_UL_Feature> User_Level_UL_Feature { get; set; }
         public virtual DbSet<UL_See_OL> UL_See_OL { get; set; }
         public virtual DbSet<UL_Request_Category> UL_Request_Category { get; set; }
         public virtual DbSet<User_File> User_File { get; set; }

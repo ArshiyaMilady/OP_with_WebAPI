@@ -23,11 +23,11 @@ namespace OP_WebApi.Models
         public string Mobile { get; set; }  // شماره همراه رابط
         public string Phone { get; set; }       // تلفن ثابت رابط شرکت
         public string EMail { get; set; }       // ایمیل شرکت
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
 
         // از این تاریخ به بعد کاربر غیر فعال می شود
-        public DateTime End_DateTime_mi { get; set; }   // زمان پایان فعالیت به میلادی
+        //public DateTime End_DateTime_mi { get; set; }   // زمان پایان فعالیت به میلادی
         public string End_DateTime_sh { get; set; }   // زمان پایان فعالیت به شمسی
 
         // false : رزرو کالاها از انبار به صورت دستی
@@ -99,7 +99,7 @@ namespace OP_WebApi.Models
 
         public long User_Id { get; set; }
         public string User_RealName { get; set; }
-        public DateTime DateTime_mi { get; set; }
+        //public DateTime DateTime_mi { get; set; }
         public string Date_sh { get; set; } // تاریخ ورود
         public string Time { get; set; }    // ساعت ورود
     }
@@ -549,7 +549,7 @@ namespace OP_WebApi.Models
 
         //public long Index { get; set; } // شناسه منحصربفرد که باید در شرکت به خود بگیرد
         public bool IsCompleted { get; set; }   // آیا کامل شده است؟
-        public DateTime DateTime_mi { get; set; }   // زمان تجمیع سفارشها
+        //public DateTime DateTime_mi { get; set; }   // زمان تجمیع سفارشها
         public string DateTime_sh { get; set; }   // زمان به شمسی
 
         public long PreviousLevel_Index { get; set; }   // آخرین مرحله ای که سفارش گذرانده است
@@ -684,7 +684,7 @@ namespace OP_WebApi.Models
         public bool Confirm_LineManager { get; set; }   // تأیید سرپرست تولید
         public bool Confirm_QC { get; set; }    // تأیید کنترل کیفی
 
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
 
         public string C_S1 { get; set; }
@@ -1275,7 +1275,7 @@ namespace OP_WebApi.Models
 
         // اگر نیاز به ذکر توضیحی باشد مانند علت عدم تأیید و ... ، این توضیح در فیلد ذخیره می شود
         public string Description { get; set; }
-        public DateTime DateTime_mi { get; set; }   // زمان انجام به میلادی
+        //public DateTime DateTime_mi { get; set; }   // زمان انجام به میلادی
         public string Date_sh { get; set; }     // تاریخ انجام به شمسی
         public string Time { get; set; }        // زمان انجام به شمسی
     }
@@ -1292,7 +1292,7 @@ namespace OP_WebApi.Models
         public int Warehouse_Id { get; set; }   // شناسه انبار
         public string User_Id { get; set; }  // شناسه ثبت کننده حواله
         public string User_Name { get; set; }  // نام ثبت کننده حواله
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
 
         // 100 : رسید ورود
@@ -1339,7 +1339,7 @@ namespace OP_WebApi.Models
         public string User_Name { get; set; }     // نام شخصی که عملی را انجام داده است
         public long User_Level_Id { get; set; }    // شناسۀ شخصی که عملی را انجام داده است
         public string Description { get; set; }
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
     }
 

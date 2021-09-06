@@ -75,7 +75,7 @@
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(136, 118);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(31, 27);
+            this.pictureBox1.Size = new System.Drawing.Size(27, 27);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 20;
             this.pictureBox1.TabStop = false;
@@ -154,6 +154,7 @@
             this.lblExit.Size = new System.Drawing.Size(37, 17);
             this.lblExit.TabIndex = 16;
             this.lblExit.Text = "خروج";
+            this.lblExit.Click += new System.EventHandler(this.LblExit_Click);
             // 
             // lblChangePassword
             // 
@@ -167,6 +168,7 @@
             this.lblChangePassword.Size = new System.Drawing.Size(85, 17);
             this.lblChangePassword.TabIndex = 16;
             this.lblChangePassword.Text = "تغییر رمز ورود";
+            this.lblChangePassword.Visible = false;
             // 
             // btnLogin
             // 
@@ -256,6 +258,7 @@
             this.lblAdmin.Size = new System.Drawing.Size(32, 17);
             this.lblAdmin.TabIndex = 16;
             this.lblAdmin.Text = "ورود";
+            this.lblAdmin.Click += new System.EventHandler(this.LblAdmin_Click);
             // 
             // lblMaster
             // 
@@ -268,9 +271,11 @@
             this.lblMaster.Size = new System.Drawing.Size(32, 17);
             this.lblMaster.TabIndex = 16;
             this.lblMaster.Text = "ورود";
+            this.lblMaster.Click += new System.EventHandler(this.LblMaster_Click);
             // 
             // J1955_Login_from_Web
             // 
+            this.AcceptButton = this.btnLogin;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowText;
@@ -279,6 +284,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "J1955_Login_from_Web";
             this.Text = "J1950_Login_from_Web";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.J1955_Login_from_Web_FormClosing);
             this.Shown += new System.EventHandler(this.J1955_Login_from_Web_Shown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

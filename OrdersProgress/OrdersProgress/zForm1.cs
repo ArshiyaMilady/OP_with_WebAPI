@@ -20,7 +20,7 @@ namespace OrdersProgress
         private void ZForm1_Shown(object sender, EventArgs e)
         {
             //MessageBox.Show(Stack.UserLevel_Type.ToString());
-            //dgvData.DataSource = Program.dbOperations.GetAllCompaniesAsync(0);// Stack.Company_Id);
+            dgvData.DataSource = Program.dbOperations.GetAllCompaniesAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUsersAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id);
@@ -35,7 +35,7 @@ namespace OrdersProgress
             //dgvData.DataSource = Program.dbOperations.GetAllCategoriesAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllWarehousesAsync(Stack.Company_Id,false);
             //dgvData.DataSource = Program.dbOperations.GetAllUL_Confirm_UL_RequestsAsync(Stack.Company_Id);
-            dgvData.DataSource = Program.dbOperations.GetAllUL_Request_CategoriesAsync(0);// Stack.Company_Id);
+            //dgvData.DataSource = Program.dbOperations.GetAllUL_Request_CategoriesAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllWarehouse_RequestsAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllWarehouse_Request_RowsAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllItemsAsync(0, 0, 100); //(Stack.Company_Id,0,100);

@@ -22,14 +22,15 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/User_UL
-        // GET: api/User_UL?user_id=xxx
+        // GET: api/User_UL?type=vvv&user_id=xxx
         [HttpGet, Authorize]
         // نوع داده شناسه را رشته قرار دادم که با تابع بعدی اشت
-        public async Task<ActionResult<IEnumerable<User_UL>>> GetUser_UL(string user_id=null)
+        public async Task<ActionResult<IEnumerable<User_UL>>> GetUser_UL(string type = "all", string user_id=null)
         {
-            if (string.IsNullOrEmpty(user_id))
+            if (type.Equals("all"))
                 return await _context.User_UL.ToListAsync();
-            else return await _context.User_UL.Where(d => d.User_Id == Convert.ToInt64(user_id)).ToListAsync();
+            else //if (string.IsNullOrEmpty(user_id))
+                return await _context.User_UL.Where(d => d.User_Id == Convert.ToInt64(user_id)).ToListAsync();
         }
 
         // GET: api/User_UL/5

@@ -12,29 +12,34 @@ namespace OrdersProgress
 {
     public partial class J1960_LoginsHistory : X210_ExampleForm_Normal
     {
-        long user_index = 0;
+        long user_id = 0;
 
-        public J1960_LoginsHistory(long _user_index=0)
+        public J1960_LoginsHistory(long _user_id=0)
         {
             InitializeComponent();
 
-            if (_user_index > 0)
+            if (_user_id > 0)
             {
-                user_index = _user_index;
-                Text = Program.dbOperations.GetUserAsync(user_index).Real_Name;
+                user_id = _user_id;
+                Text = Stack.User_RealName;
             }
         }
 
-        private void J1960_LoginsHistory_Shown(object sender, EventArgs e)
+        private async void J1960_LoginsHistory_Shown(object sender, EventArgs e)
         {
-            dgvData.DataSource = GetData();
+            dgvData.DataSource = await GetData();
             ShowData();
         }
 
-        private List<Models.LoginHistory> GetData()//bool NeedToCorrect_C_B1 = true)
+        private async Task<List<Models.LoginHistory>> GetData()//bool NeedToCorrect_C_B1 = true)
         {
-            return Program.dbOperations.GetAllLoginHistorysAsync(Stack.Company_Id, user_index)
-                .OrderByDescending(d=>d.DateTime_mi).ToList();
+            if (Stack.Use_Web)
+                return (await HttpClientExtensions.GetT<List<Models.LoginHistory>>
+                    (Stack.API_Uri_start_read+ "/LoginHistories",Stack.token))
+                    .OrderByDescending(d => d.Date_sh).ThenByDescending(j=>j.Time).ToList();
+            else
+                return Program.dbOperations.GetAllLoginHistorysAsync(Stack.Company_Id, user_id)
+                    .OrderByDescending(d=>d.DateTime_mi).ToList();
         }
 
         private void ShowData()//bool ChangeHeaderTexts = true)
