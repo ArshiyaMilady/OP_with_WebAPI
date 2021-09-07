@@ -47,12 +47,11 @@ namespace OrdersProgress
             // اگر لیست خالی است
             if(!lstUsers.Any())
             {
-
                 if (Stack.UserLevel_Type == 0)
                 {
                     List<Models.UL_See_UL> lstUL_See_ULs = new List<Models.UL_See_UL>();
                     List<Models.User> lstAllUsers = new List<Models.User>();
-                    List<Models.User_UL> lstUUL = new List<Models.User_UL>();
+                    List<Models.User_UL> lstAllUUL = new List<Models.User_UL>();
 
                     if(Stack.Use_Web)
                     {
@@ -60,6 +59,8 @@ namespace OrdersProgress
                             (Stack.API_Uri_start_read + "/UL_See_UL?company_id=" + Stack.Company_Id
                             + "&main_ul_id=" + Stack.UserLevel_Id, Stack.token);
                         lstAllUsers = await HttpClientExtensions.GetT<List<Models.User>>
+                            (Stack.API_Uri_start_read + "/Users?all=no&company_id=" + Stack.Company_Id, Stack.token);
+                        lstAllUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
                             (Stack.API_Uri_start_read + "/Users?all=no&company_id=" + Stack.Company_Id, Stack.token);
                     }
                     else
@@ -70,7 +71,8 @@ namespace OrdersProgress
 
                     foreach (Models.User user in lstAllUsers)
                     {
-                        if(Stack.Use_Web)
+                        List<Models.User_UL> lstUUL = new List<Models.User_UL>();
+                        if (Stack.Use_Web)
                         lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
                             (Stack.API_Uri_start_read + "/User_UL?type=no&user_id=" + user.Id, Stack.token);
                         else lstUUL = Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user.Id);
