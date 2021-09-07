@@ -19,6 +19,8 @@ namespace OrdersProgress
 
         public static string Standard_Salt = "d;lkjWeoj'l;ksDfok';lsdkovjmwEfl;kwikvxc.m,/Zviejkjds;flKjoremwa;lm";  // کاملا رندوم
 
+        //public static string API_Uri_start = "http://www.opwa.somee.com/api";
+        //public static string API_Uri_start_read = "http://www.opwa.somee.com/api";
         public static string API_Uri_start = "http://localhost:6238/api";
         public static string API_Uri_start_read = "https://localhost:44380/api";
         public static string token;
@@ -185,13 +187,13 @@ namespace OrdersProgress
             Stack.UserId = user.Id;
             Stack.Company_Id = user.Company_Id;   
             //MessageBox.Show(Stack.UserId.ToString(),"1");
-            List<Models.User_UL> lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
-                (Stack.API_Uri_start_read + "/User_UL?type=a&user_id=" + user.Id, Stack.token);
-            if ((lstUUL!=null) && lstUUL.Any())
+            //List<Models.User_UL> lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
+            //    (Stack.API_Uri_start_read + "/User_UL?all=no&company_id="+Stack.Company_Id+"&user_id=" + user.Id, Stack.token);
+            //if ((lstUUL!=null) && lstUUL.Any())
             {
-                Stack.UserLevel_Id = lstUUL.First().UL_Id;
                 Models.User_Level user_level = await HttpClientExtensions.GetT<Models.User_Level>
-                    (Stack.API_Uri_start_read + "/User_Levels/" + Stack.UserLevel_Id, Stack.token);
+                    (Stack.API_Uri_start_read + "/User_Levels/0?user_id=" + Stack.UserId, Stack.token);
+                Stack.UserLevel_Id = user_level.Id;
                 Stack.UserLevel_Type = user_level.Type;
                 // نام و سطح دسترسی کاربر
                 Stack.sx = user.Real_Name + " / " + user_level.Description;

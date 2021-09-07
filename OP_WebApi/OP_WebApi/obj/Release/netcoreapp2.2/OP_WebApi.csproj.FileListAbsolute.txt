@@ -1,0 +1,14 @@
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\bin\Release\netcoreapp2.2\OP_WebApi.deps.json
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\bin\Release\netcoreapp2.2\OP_WebApi.runtimeconfig.json
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\bin\Release\netcoreapp2.2\OP_WebApi.runtimeconfig.dev.json
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\bin\Release\netcoreapp2.2\OP_WebApi.dll
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\bin\Release\netcoreapp2.2\OP_WebApi.pdb
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.csprojAssemblyReference.cache
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.csproj.CoreCompileInputs.cache
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.RazorAssemblyInfo.cache
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.RazorAssemblyInfo.cs
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.AssemblyInfoInputs.cache
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.AssemblyInfo.cs
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.RazorTargetAssemblyInfo.cache
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.dll
+E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.pdb

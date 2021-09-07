@@ -40,6 +40,8 @@ namespace OrdersProgress
 
             dgvData.DataSource = await GetData();
             ShowData();
+            Application.DoEvents();
+            panel1.Enabled = false;
         }
 
         private async Task<List<Models.User>> GetData()
@@ -61,21 +63,18 @@ namespace OrdersProgress
                         lstAllUsers = await HttpClientExtensions.GetT<List<Models.User>>
                             (Stack.API_Uri_start_read + "/Users?all=no&company_id=" + Stack.Company_Id, Stack.token);
                         lstAllUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
-                            (Stack.API_Uri_start_read + "/Users?all=no&company_id=" + Stack.Company_Id, Stack.token);
+                            (Stack.API_Uri_start_read + "/User_UL?all=no&company_id=" + Stack.Company_Id, Stack.token);
                     }
                     else
                     {
                         lstUL_See_ULs = Program.dbOperations.GetAllUL_See_ULsAsync(Stack.Company_Id, Stack.UserLevel_Id);
                         lstAllUsers = Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0);
+                        lstAllUUL = Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id);
                     }
 
                     foreach (Models.User user in lstAllUsers)
                     {
-                        List<Models.User_UL> lstUUL = new List<Models.User_UL>();
-                        if (Stack.Use_Web)
-                        lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
-                            (Stack.API_Uri_start_read + "/User_UL?type=no&user_id=" + user.Id, Stack.token);
-                        else lstUUL = Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user.Id);
+                        List<Models.User_UL> lstUUL = lstAllUUL.Where(d => d.User_Id == user.Id).ToList();
 
                         foreach (Models.User_UL user_ul in lstUUL)
                         {

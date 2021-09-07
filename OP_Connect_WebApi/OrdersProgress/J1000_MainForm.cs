@@ -34,7 +34,7 @@ namespace OrdersProgress
 
         private void J1000_MainForm_Load(object sender, EventArgs e)
         {
-            MessageBox.Show(DateTime.Today.Date.ToString());
+            //MessageBox.Show(DateTime.Today.Date.ToString());
 
             // آیا از وب استفاده شود؟
             Stack.Use_Web = File.Exists(Path.Combine(Application.StartupPath, "System.Web.con"));

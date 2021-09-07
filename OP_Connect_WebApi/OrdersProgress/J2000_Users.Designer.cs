@@ -82,6 +82,7 @@
             this.panel1.Controls.Add(this.btnDeleteAll);
             this.panel1.Controls.Add(this.btnAddNew);
             this.panel1.Controls.Add(this.dgvData);
+            this.panel1.Enabled = false;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(864, 300);

@@ -33,10 +33,21 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/User_Levels/5
+        // GET: api/User_Levels/0?user_id=xxx
         [HttpGet("{id}"), Authorize]
-        public async Task<ActionResult<User_Level>> GetUser_Level(long id)
+        public async Task<ActionResult<User_Level>> GetUser_Level(long id,long user_id=0)
         {
-            var user_Level = await _context.User_Level.FindAsync(id);
+            User_Level user_Level = null;
+            if (user_id > 0)
+            {
+                if (await _context.User_UL.AnyAsync(d => d.User_Id == user_id))
+                {
+                    long ul_id = (await _context.User_UL.FirstOrDefaultAsync(d => d.User_Id == user_id)).Id;
+                    user_Level = await _context.User_Level.FirstOrDefaultAsync(d=>d.Id == ul_id);
+                }
+            }
+            else
+                user_Level = await _context.User_Level.FindAsync(id);
 
             if (user_Level == null)
             {
