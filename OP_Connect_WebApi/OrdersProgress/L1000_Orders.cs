@@ -99,7 +99,7 @@ namespace OrdersProgress
                 else
                 {
                     // شناسه کاربران ادمین و کاربران ارشد
-                    List<long> lstStandardUserIndex = Stack_Methods.GetStandardUsersIndex(1);
+                    List<long> lstStandardUserIndex = GetStandardUsersIndex(1);
 
                     //if (Stack.UserLevel_Type == 0)
                     {
@@ -814,6 +814,28 @@ namespace OrdersProgress
             new M2200_Order_StockItems(OrderIndex).ShowDialog();
         }
 
+        // شناسه تمام کاربران استاندارد مانند ادمین اصلی و ادمین و کاربر ارشد را بر میگرداند
+        public List<long> GetStandardUsersIndex(long user_level_type = 100)
+        {
+            List<long> lstUL = new List<long>();
+            if (user_level_type == 10)
+            {
+                foreach (Models.User_Level ul in Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id)
+                    .Where(d => d.Type > 0).ToList())
+                    lstUL.Add(ul.Id);
+            }
+            else
+            {
+                foreach (Models.User_Level ul in Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id)
+                    .Where(d => d.Type == user_level_type).ToList())
+                    lstUL.Add(ul.Id);
+            }
+            List<long> lstResult = new List<long>();
+            foreach (long ul_index in lstUL)
+                lstResult.AddRange(Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, 0, ul_index)
+                    .Select(d => d.User_Id).ToArray());
+            return lstResult;
+        }
 
 
 

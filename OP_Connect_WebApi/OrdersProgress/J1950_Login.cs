@@ -85,7 +85,7 @@ namespace OrdersProgress
                 }
                 else
                 {
-                    if (!Stack_Methods.GetAllUserData(user.Name))
+                    if (!GetAllUserData(user.Name))
                     {
                         //MessageBox.Show(Stack.UserName,"name");
                         //MessageBox.Show(Stack.UserLevel_Type.ToString(),"type");
@@ -264,5 +264,53 @@ namespace OrdersProgress
         {
 
         }
+
+        // شناسه، سطح دسترسی و ... را برای یک کاربر با معلوم بودن نام بر میگرداند
+        public bool GetAllUserData(string user_name)
+        {
+            Stack.UserName = user_name;
+            Models.User user = Program.dbOperations.GetUserAsync(user_name);
+            Stack.User_RealName = user.Real_Name;
+            Stack.UserId = user.Id;
+            Stack.Company_Id = user.Company_Id;
+            if (Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, Stack.UserId).Any())
+            {
+                Stack.UserLevel_Id = Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, Stack.UserId).First().UL_Id;
+                Models.User_Level user_level = Program.dbOperations.GetUser_LevelAsync(Stack.UserLevel_Id);
+                Stack.UserLevel_Type = user_level.Type;
+                // نام و سطح دسترسی کاربر
+                Stack.sx = user.Real_Name + " / " + user_level.Description;
+            }
+
+            Stack.bWarehouse_Booking_MaxHours = Program.dbOperations.GetCompanyAsync(user.Company_Id).Warehouse_AutomaticBooking;
+
+            #region تعیین دسترسی های کاربر با توجه به سطح کاربری
+            // ادمین واقعی
+            if (Stack.UserLevel_Type == 1)
+            //if (Stack.UserName.Equals("real_admin"))
+            {
+                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations
+                    .GetAllUL_FeaturesAsync(Stack.Company_Id, 0).Select(d => d.Unique_Phrase).ToList();
+
+                //MessageBox.Show(Stack.UserLevel_Type.ToString());
+            }
+            else if (Stack.UserLevel_Type == 2)
+            {
+                // تمام امکانات به غیر از امکانات ادمین واقعی
+                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id)
+                    .Where(d => !d.Unique_Phrase.Substring(0, 1).Equals("d"))
+                    .Select(d => d.Unique_Phrase).ToList();
+            }
+            else
+            {
+                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations
+                   .GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id, Stack.UserLevel_Id)
+                   .Select(d => d.UL_Feature_Unique_Phrase).ToList();
+            }
+            #endregion
+            return ((Stack.UserId > 0) && (Stack.UserLevel_Id > 0) && (Stack.UserLevel_Type >= 0));
+        }
+
+
     }
 }

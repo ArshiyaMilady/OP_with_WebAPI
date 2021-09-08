@@ -62,12 +62,14 @@
             this.tsmiDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -340,9 +342,9 @@
             this.btnImportDataFromExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnImportDataFromExcel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnImportDataFromExcel.BackgroundImage")));
             this.btnImportDataFromExcel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnImportDataFromExcel.Location = new System.Drawing.Point(407, 263);
+            this.btnImportDataFromExcel.Location = new System.Drawing.Point(407, 253);
             this.btnImportDataFromExcel.Name = "btnImportDataFromExcel";
-            this.btnImportDataFromExcel.Size = new System.Drawing.Size(34, 34);
+            this.btnImportDataFromExcel.Size = new System.Drawing.Size(34, 40);
             this.btnImportDataFromExcel.TabIndex = 80;
             this.btnImportDataFromExcel.UseVisualStyleBackColor = true;
             this.btnImportDataFromExcel.Visible = false;
@@ -351,9 +353,9 @@
             // 
             this.btnReturn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnReturn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnReturn.Location = new System.Drawing.Point(3, 267);
+            this.btnReturn.Location = new System.Drawing.Point(3, 257);
             this.btnReturn.Name = "btnReturn";
-            this.btnReturn.Size = new System.Drawing.Size(75, 29);
+            this.btnReturn.Size = new System.Drawing.Size(75, 33);
             this.btnReturn.TabIndex = 80;
             this.btnReturn.Text = "بازگشت";
             this.btnReturn.UseVisualStyleBackColor = true;
@@ -362,9 +364,9 @@
             // btnDeleteAll
             // 
             this.btnDeleteAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDeleteAll.Location = new System.Drawing.Point(84, 267);
+            this.btnDeleteAll.Location = new System.Drawing.Point(84, 257);
             this.btnDeleteAll.Name = "btnDeleteAll";
-            this.btnDeleteAll.Size = new System.Drawing.Size(75, 29);
+            this.btnDeleteAll.Size = new System.Drawing.Size(75, 33);
             this.btnDeleteAll.TabIndex = 75;
             this.btnDeleteAll.Text = "حذف همه";
             this.btnDeleteAll.UseVisualStyleBackColor = true;
@@ -374,9 +376,9 @@
             // btnAddNew
             // 
             this.btnAddNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddNew.Location = new System.Drawing.Point(447, 264);
+            this.btnAddNew.Location = new System.Drawing.Point(447, 254);
             this.btnAddNew.Name = "btnAddNew";
-            this.btnAddNew.Size = new System.Drawing.Size(141, 32);
+            this.btnAddNew.Size = new System.Drawing.Size(141, 38);
             this.btnAddNew.TabIndex = 70;
             this.btnAddNew.Text = "تعریف کاربر جدید";
             this.btnAddNew.UseVisualStyleBackColor = true;
@@ -392,7 +394,7 @@
             this.dgvData.Location = new System.Drawing.Point(1, 2);
             this.dgvData.Name = "dgvData";
             this.dgvData.ReadOnly = true;
-            this.dgvData.Size = new System.Drawing.Size(587, 259);
+            this.dgvData.Size = new System.Drawing.Size(587, 245);
             this.dgvData.TabIndex = 90;
             this.dgvData.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.DgvData_CellBeginEdit);
             this.dgvData.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvData_CellEndEdit);
@@ -408,12 +410,12 @@
             this.tsmiDelete});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(158, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(155, 92);
             // 
             // tsmiSetUserLevel
             // 
             this.tsmiSetUserLevel.Name = "tsmiSetUserLevel";
-            this.tsmiSetUserLevel.Size = new System.Drawing.Size(157, 22);
+            this.tsmiSetUserLevel.Size = new System.Drawing.Size(154, 22);
             this.tsmiSetUserLevel.Text = "تعیین سطح کاربر";
             this.tsmiSetUserLevel.Visible = false;
             this.tsmiSetUserLevel.Click += new System.EventHandler(this.TsmiSetUserLevel_Click);
@@ -421,7 +423,7 @@
             // tsmiChangePassword
             // 
             this.tsmiChangePassword.Name = "tsmiChangePassword";
-            this.tsmiChangePassword.Size = new System.Drawing.Size(157, 22);
+            this.tsmiChangePassword.Size = new System.Drawing.Size(154, 22);
             this.tsmiChangePassword.Text = "تغییر رمز ورود";
             this.tsmiChangePassword.Visible = false;
             this.tsmiChangePassword.Click += new System.EventHandler(this.TsmiChangePassword_Click_1);
@@ -429,7 +431,7 @@
             // tsmiLoginsHistory
             // 
             this.tsmiLoginsHistory.Name = "tsmiLoginsHistory";
-            this.tsmiLoginsHistory.Size = new System.Drawing.Size(157, 22);
+            this.tsmiLoginsHistory.Size = new System.Drawing.Size(154, 22);
             this.tsmiLoginsHistory.Text = "تاریخچه ورود";
             this.tsmiLoginsHistory.Visible = false;
             this.tsmiLoginsHistory.Click += new System.EventHandler(this.TsmiLoginsHistory_Click);
@@ -437,7 +439,7 @@
             // tsmiDelete
             // 
             this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(157, 22);
+            this.tsmiDelete.Size = new System.Drawing.Size(154, 22);
             this.tsmiDelete.Text = "حذف";
             this.tsmiDelete.Visible = false;
             this.tsmiDelete.Click += new System.EventHandler(this.TsmiDelete_Click);
@@ -460,12 +462,26 @@
             this.timer1.Interval = 400;
             this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+            this.pictureBox3.Location = new System.Drawing.Point(396, 251);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(46, 44);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox3.TabIndex = 92;
+            this.pictureBox3.TabStop = false;
+            this.pictureBox3.Visible = false;
+            // 
             // J2000_Users
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnReturn;
             this.ClientSize = new System.Drawing.Size(863, 300);
+            this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.panel1);
             this.Name = "J2000_Users";
@@ -480,6 +496,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -518,5 +535,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ToolStripMenuItem tsmiSetUserLevel;
         private System.Windows.Forms.ToolStripMenuItem tsmiLoginsHistory;
+        private System.Windows.Forms.PictureBox pictureBox3;
     }
 }

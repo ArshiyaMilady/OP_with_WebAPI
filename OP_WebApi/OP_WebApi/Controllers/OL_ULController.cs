@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/OL_UL
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<OL_UL>>> GetOL_UL()
         {
             return await _context.OL_UL.ToListAsync();
         }
 
         // GET: api/OL_UL/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<OL_UL>> GetOL_UL(long id)
         {
             var oL_UL = await _context.OL_UL.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/OL_UL/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutOL_UL(long id, OL_UL oL_UL)
         {
             if (id != oL_UL.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/OL_UL
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<OL_UL>> PostOL_UL(OL_UL oL_UL)
         {
             _context.OL_UL.Add(oL_UL);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/OL_UL/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<OL_UL>> DeleteOL_UL(long id)
         {
             var oL_UL = await _context.OL_UL.FindAsync(id);

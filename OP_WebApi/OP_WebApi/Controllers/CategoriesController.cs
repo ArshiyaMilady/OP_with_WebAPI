@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Categories
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
         {
             return await _context.Category.ToListAsync();
         }
 
         // GET: api/Categories/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
             var category = await _context.Category.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Categories/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutCategory(int id, Category category)
         {
             if (id != category.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Categories
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
             _context.Category.Add(category);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Categories/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<Category>> DeleteCategory(int id)
         {
             var category = await _context.Category.FindAsync(id);

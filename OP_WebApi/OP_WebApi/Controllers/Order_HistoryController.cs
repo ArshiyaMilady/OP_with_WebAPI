@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Order_History
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<Order_History>>> GetOrder_History()
         {
             return await _context.Order_History.ToListAsync();
         }
 
         // GET: api/Order_History/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<Order_History>> GetOrder_History(int id)
         {
             var order_History = await _context.Order_History.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Order_History/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutOrder_History(int id, Order_History order_History)
         {
             if (id != order_History.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Order_History
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<Order_History>> PostOrder_History(Order_History order_History)
         {
             _context.Order_History.Add(order_History);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Order_History/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<Order_History>> DeleteOrder_History(int id)
         {
             var order_History = await _context.Order_History.FindAsync(id);

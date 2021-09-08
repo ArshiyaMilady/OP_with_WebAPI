@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/CostCenters
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<CostCenter>>> GetCostCenter()
         {
             return await _context.CostCenter.ToListAsync();
         }
 
         // GET: api/CostCenters/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<CostCenter>> GetCostCenter(long id)
         {
             var costCenter = await _context.CostCenter.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/CostCenters/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutCostCenter(long id, CostCenter costCenter)
         {
             if (id != costCenter.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/CostCenters
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<CostCenter>> PostCostCenter(CostCenter costCenter)
         {
             _context.CostCenter.Add(costCenter);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/CostCenters/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<CostCenter>> DeleteCostCenter(long id)
         {
             var costCenter = await _context.CostCenter.FindAsync(id);

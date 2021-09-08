@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/User_Level_UL_Feature
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<User_Level_UL_Feature>>> GetLevel_UL_Feature()
         {
             return await _context.User_Level_UL_Feature.ToListAsync();
         }
 
         // GET: api/User_Level_UL_Feature/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<User_Level_UL_Feature>> GetUser_Level_UL_Feature(long id)
         {
             var user_Level_UL_Feature = await _context.User_Level_UL_Feature.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/User_Level_UL_Feature/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutUser_Level_UL_Feature(long id, User_Level_UL_Feature user_Level_UL_Feature)
         {
             if (id != user_Level_UL_Feature.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/User_Level_UL_Feature
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<User_Level_UL_Feature>> PostUser_Level_UL_Feature(User_Level_UL_Feature user_Level_UL_Feature)
         {
             _context.User_Level_UL_Feature.Add(user_Level_UL_Feature);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/User_Level_UL_Feature/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<User_Level_UL_Feature>> DeleteUser_Level_UL_Feature(long id)
         {
             var user_Level_UL_Feature = await _context.User_Level_UL_Feature.FindAsync(id);

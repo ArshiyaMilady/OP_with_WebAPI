@@ -27,7 +27,7 @@ namespace OP_WebApi.Controllers
 
         //// api/Token
         //[AllowAnonymous]
-        //[HttpPost]
+        //[HttpPost, Authorize]
         //public string CreateToken([FromBody]LoginModel login)
         //{
         //    string response = null;
@@ -44,7 +44,7 @@ namespace OP_WebApi.Controllers
 
         // api/Token
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult CreateToken([FromBody]LoginModel login)
         {
             IActionResult response = Unauthorized();

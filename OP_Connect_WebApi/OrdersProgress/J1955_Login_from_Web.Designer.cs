@@ -57,15 +57,14 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Controls.Add(this.pictureBox1);
+            this.panel1.BackColor = System.Drawing.SystemColors.WindowText;
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.btnExit);
             this.panel1.Controls.Add(this.lblAdmin);
             this.panel1.Controls.Add(this.lblMaster);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(302, 263);
+            this.panel1.Size = new System.Drawing.Size(302, 262);
             this.panel1.TabIndex = 1;
             // 
             // pictureBox1
@@ -73,9 +72,9 @@
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(136, 118);
+            this.pictureBox1.Location = new System.Drawing.Point(31, 156);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(27, 27);
+            this.pictureBox1.Size = new System.Drawing.Size(40, 38);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 20;
             this.pictureBox1.TabStop = false;
@@ -100,7 +99,7 @@
             this.panel2.Controls.Add(this.label1);
             this.panel2.Location = new System.Drawing.Point(26, 24);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(252, 214);
+            this.panel2.Size = new System.Drawing.Size(252, 213);
             this.panel2.TabIndex = 0;
             // 
             // radUseMobile
@@ -149,7 +148,7 @@
             this.lblExit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblExit.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblExit.ForeColor = System.Drawing.Color.DarkRed;
-            this.lblExit.Location = new System.Drawing.Point(6, 191);
+            this.lblExit.Location = new System.Drawing.Point(6, 190);
             this.lblExit.Name = "lblExit";
             this.lblExit.Size = new System.Drawing.Size(37, 17);
             this.lblExit.TabIndex = 16;
@@ -163,19 +162,20 @@
             this.lblChangePassword.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblChangePassword.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblChangePassword.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.lblChangePassword.Location = new System.Drawing.Point(163, 189);
+            this.lblChangePassword.Location = new System.Drawing.Point(163, 188);
             this.lblChangePassword.Name = "lblChangePassword";
             this.lblChangePassword.Size = new System.Drawing.Size(85, 17);
             this.lblChangePassword.TabIndex = 16;
             this.lblChangePassword.Text = "تغییر رمز ورود";
             this.lblChangePassword.Visible = false;
+            this.lblChangePassword.Click += new System.EventHandler(this.LblChangePassword_Click);
             // 
             // btnLogin
             // 
             this.btnLogin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLogin.Location = new System.Drawing.Point(12, 136);
+            this.btnLogin.Location = new System.Drawing.Point(46, 136);
             this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(142, 32);
+            this.btnLogin.Size = new System.Drawing.Size(108, 32);
             this.btnLogin.TabIndex = 15;
             this.btnLogin.Text = "ورود";
             this.btnLogin.UseVisualStyleBackColor = false;
@@ -239,7 +239,7 @@
             this.btnExit.FlatAppearance.BorderSize = 0;
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExit.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnExit.Location = new System.Drawing.Point(90, 208);
+            this.btnExit.Location = new System.Drawing.Point(90, 207);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(64, 23);
             this.btnExit.TabIndex = 19;
@@ -253,7 +253,7 @@
             this.lblAdmin.Cursor = System.Windows.Forms.Cursors.Default;
             this.lblAdmin.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAdmin.ForeColor = System.Drawing.Color.Black;
-            this.lblAdmin.Location = new System.Drawing.Point(3, 241);
+            this.lblAdmin.Location = new System.Drawing.Point(3, 240);
             this.lblAdmin.Name = "lblAdmin";
             this.lblAdmin.Size = new System.Drawing.Size(32, 17);
             this.lblAdmin.TabIndex = 16;
@@ -278,8 +278,9 @@
             this.AcceptButton = this.btnLogin;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.WindowText;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(303, 262);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "J1955_Login_from_Web";

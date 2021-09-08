@@ -242,9 +242,11 @@ namespace OrdersProgress.Models
             return _db.DeleteAsync(user).Result;
         }
 
-        public void DeleteUser(User user)
+        public int DeleteUser(User user)
         {
-            _db.DeleteAsync(user).Wait();
+            var res = _db.DeleteAsync(user);
+            res.Wait();
+            return res.Result;
         }
 
         public int DeleteAllUsersAsync()

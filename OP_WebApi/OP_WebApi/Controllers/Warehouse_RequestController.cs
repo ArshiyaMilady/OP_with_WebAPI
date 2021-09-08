@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Warehouse_Request
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<Warehouse_Request>>> GetWarehouse_Request()
         {
             return await _context.Warehouse_Request.ToListAsync();
         }
 
         // GET: api/Warehouse_Request/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<Warehouse_Request>> GetWarehouse_Request(long id)
         {
             var warehouse_Request = await _context.Warehouse_Request.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Warehouse_Request/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutWarehouse_Request(long id, Warehouse_Request warehouse_Request)
         {
             if (id != warehouse_Request.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Warehouse_Request
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<Warehouse_Request>> PostWarehouse_Request(Warehouse_Request warehouse_Request)
         {
             _context.Warehouse_Request.Add(warehouse_Request);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Warehouse_Request/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<Warehouse_Request>> DeleteWarehouse_Request(long id)
         {
             var warehouse_Request = await _context.Warehouse_Request.FindAsync(id);

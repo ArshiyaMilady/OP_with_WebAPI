@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Collections
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<Collection>>> GetCollection()
         {
             return await _context.Collection.ToListAsync();
         }
 
         // GET: api/Collections/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<Collection>> GetCollection(long id)
         {
             var collection = await _context.Collection.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Collections/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutCollection(long id, Collection collection)
         {
             if (id != collection.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Collections
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<Collection>> PostCollection(Collection collection)
         {
             _context.Collection.Add(collection);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Collections/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<Collection>> DeleteCollection(long id)
         {
             var collection = await _context.Collection.FindAsync(id);

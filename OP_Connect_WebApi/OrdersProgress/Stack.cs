@@ -2,7 +2,9 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
@@ -19,10 +21,11 @@ namespace OrdersProgress
 
         public static string Standard_Salt = "d;lkjWeoj'l;ksDfok';lsdkovjmwEfl;kwikvxc.m,/Zviejkjds;flKjoremwa;lm";  // کاملا رندوم
 
-        //public static string API_Uri_start = "http://www.opwa.somee.com/api";
-        //public static string API_Uri_start_read = "http://www.opwa.somee.com/api";
-        public static string API_Uri_start = "http://localhost:6238/api";
-        public static string API_Uri_start_read = "https://localhost:44380/api";
+        public static string API_Uri_start = "http://www.opwa.somee.com/api";
+        public static string API_Uri_start_read = "http://www.opwa.somee.com/api";
+        //public static string API_Uri_start = "http://localhost:6238/api";
+        //public static string API_Uri_start_read = "https://localhost:44380/api";
+
         public static string token;
 
         public static bool bx;
@@ -132,111 +135,39 @@ namespace OrdersProgress
             }
         }
 
-        // شناسه، سطح دسترسی و ... را برای یک کاربر با معلوم بودن نام بر میگرداند
-        public static bool GetAllUserData(string user_name)
+        public static bool CheckForInternetConnection(int timeoutMs = 10000)
         {
-            Stack.UserName = user_name;
-            Models.User user = Program.dbOperations.GetUserAsync(user_name);
-            Stack.User_RealName = user.Real_Name;
-            Stack.UserId = user.Id;
-            Stack.Company_Id = user.Company_Id;
-            if (Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, Stack.UserId).Any())
+            try
             {
-                Stack.UserLevel_Id = Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, Stack.UserId).First().UL_Id;
-                Models.User_Level user_level = Program.dbOperations.GetUser_LevelAsync(Stack.UserLevel_Id);
-                Stack.UserLevel_Type = user_level.Type;
-                // نام و سطح دسترسی کاربر
-                Stack.sx = user.Real_Name + " / " + user_level.Description;
+                string n = CultureInfo.InstalledUICulture.Name;
+                //MessageBox.Show(n);
+                if (n.Length > 1)
+                {
+                    string url = null;
+                    switch (n.Substring(0, 2))
+                    {
+                        case "fa":
+                            url = "https://www.aparat.com";
+                            break;
+                        case "zh":
+                            url = "http://www.baidu.com";
+                            break;
+                        default:
+                            url = "https://www.google.com";
+                            break;
+                    }
+                    var request = (HttpWebRequest)WebRequest.Create(url);
+                    request.KeepAlive = false;
+                    request.Timeout = timeoutMs;
+                    using (var response = (HttpWebResponse)request.GetResponse())
+                        return true;
+                }
+                else return false;
             }
-
-
-            Stack.bWarehouse_Booking_MaxHours = Program.dbOperations.GetCompanyAsync(user.Company_Id).Warehouse_AutomaticBooking;
-
-            #region تعیین دسترسی های کاربر با توجه به سطح کاربری
-            // ادمین واقعی
-            if (Stack.UserLevel_Type == 1)
-            //if (Stack.UserName.Equals("real_admin"))
+            catch
             {
-                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations
-                    .GetAllUL_FeaturesAsync(Stack.Company_Id, 0).Select(d => d.Unique_Phrase).ToList();
-
-                //MessageBox.Show(Stack.UserLevel_Type.ToString());
+                return false;
             }
-            else if (Stack.UserLevel_Type == 2)
-            {
-                // تمام امکانات به غیر از امکانات ادمین واقعی
-                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id)
-                    .Where(d => !d.Unique_Phrase.Substring(0, 1).Equals("d"))
-                    .Select(d => d.Unique_Phrase).ToList();
-            }
-            else
-            {
-                Stack.lstUser_ULF_UniquePhrase = Program.dbOperations
-                   .GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id, Stack.UserLevel_Id)
-                   .Select(d => d.UL_Feature_Unique_Phrase).ToList();
-            }
-            #endregion
-            return ((Stack.UserId > 0) && (Stack.UserLevel_Id > 0) && (Stack.UserLevel_Type >= 0));
-        }
-
-        // شناسه، سطح دسترسی و ... را برای یک کاربر با معلوم بودن نام بر میگرداند
-        public static async Task<bool> GetAllUserData_web(Models.User user)
-        {
-            Stack.UserName = user.Name;
-            Stack.User_RealName = user.Real_Name;
-            Stack.UserId = user.Id;
-            Stack.Company_Id = user.Company_Id;   
-            //MessageBox.Show(Stack.UserId.ToString(),"1");
-            //List<Models.User_UL> lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
-            //    (Stack.API_Uri_start_read + "/User_UL?all=no&company_id="+Stack.Company_Id+"&user_id=" + user.Id, Stack.token);
-            //if ((lstUUL!=null) && lstUUL.Any())
-            {
-                Models.User_Level user_level = await HttpClientExtensions.GetT<Models.User_Level>
-                    (Stack.API_Uri_start_read + "/User_Levels/0?user_id=" + Stack.UserId, Stack.token);
-                Stack.UserLevel_Id = user_level.Id;
-                Stack.UserLevel_Type = user_level.Type;
-                // نام و سطح دسترسی کاربر
-                Stack.sx = user.Real_Name + " / " + user_level.Description;
-            }
-            //MessageBox.Show(user.Company_Id.ToString());
-            Models.Company company = await HttpClientExtensions.GetT<Models.Company>
-                (Stack.API_Uri_start_read + "/Companies/" + user.Company_Id, Stack.token);
-            Stack.bWarehouse_Booking_MaxHours = company.Warehouse_AutomaticBooking;
-
-            //MessageBox.Show(Stack.UserLevel_Type.ToString());
-            #region تعیین دسترسی های کاربر با توجه به سطح کاربری
-            // ادمین واقعی
-            var res1 = await HttpClientExtensions.GetT<List<Models.UL_Feature>>
-                (Stack.API_Uri_start_read + "/UL_Feature?company_Id=" + Stack.Company_Id
-                + "&EnableType=" + 1 + "&ul_Id=" + Stack.UserLevel_Id, Stack.token);
-            Stack.lstUser_ULF_UniquePhrase = res1.Select(d => d.Unique_Phrase).ToList();
-            //MessageBox.Show(Stack.lstUser_ULF_UniquePhrase.Count.ToString());
-            #endregion
-
-            return ((Stack.UserId > 0) && (Stack.UserLevel_Id > 0) && (Stack.UserLevel_Type >= 0));
-        }
-
-        // شناسه تمام کاربران استاندارد مانند ادمین اصلی و ادمین و کاربر ارشد را بر میگرداند
-        public static List<long> GetStandardUsersIndex(long user_level_type=100)
-        {
-            List<long> lstUL = new List<long>();
-            if(user_level_type == 10)
-            {
-                foreach(Models.User_Level ul in Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id)
-                    .Where(d=>d.Type>0).ToList())
-                        lstUL.Add(ul.Id);
-            }
-            else
-            {
-                foreach (Models.User_Level ul in Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id)
-                    .Where(d => d.Type ==user_level_type).ToList())
-                        lstUL.Add(ul.Id);
-            }
-            List<long> lstResult = new List<long>();
-            foreach (long ul_index in lstUL)
-                lstResult.AddRange(Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, 0, ul_index)
-                    .Select(d=>d.User_Id).ToArray());
-            return lstResult;
         }
     }
 
@@ -295,9 +226,11 @@ namespace OrdersProgress
 
     public static class HttpClientExtensions
     {
-        public static async Task<string> GetAsJsonAsync_String(string requestUri)
+        public static async Task<string> GetAsJsonAsync_String(string requestUri, string BeererAuthorizedToken = null)
         {
             HttpClient httpClient = new HttpClient();
+            if (!string.IsNullOrEmpty(BeererAuthorizedToken))
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", BeererAuthorizedToken);
             HttpResponseMessage res = await httpClient.GetAsync(requestUri);
             res.EnsureSuccessStatusCode();
             if (res.IsSuccessStatusCode)
@@ -318,6 +251,7 @@ namespace OrdersProgress
             //return Nullable<T>();
         }
 
+        // نیاز معرفی مورد نیاز به حذف دارد
         public static async Task<HttpResponseMessage> DeleteAsJsonAsync<T>
             (string requestUri, T data, string BeererAuthorizedToken = null)
         {
@@ -334,7 +268,8 @@ namespace OrdersProgress
             else return null;
         }
 
-        public static async Task<HttpResponseMessage> DeleteAsJsonAsync2<T>
+        // نیاز معرفی مورد نیاز به حذف دارد و انحصارا بر اساس آدرس عمل می کند
+        public static async Task<HttpResponseMessage> DeleteAsJsonAsync2
             (string requestUri, string BeererAuthorizedToken = null)
         {
             HttpClient httpClient = new HttpClient();
@@ -360,12 +295,12 @@ namespace OrdersProgress
             { Content = Serialize(data) });
         }
 
+        // چک می کند که آیا چنین موردی در دیتابیس هست یا خیر؟
         public static async Task<HttpResponseMessage> PutAsJsonAsync_byCheck<T>(string requestUri, T data, string BeererAuthorizedToken = null)
         {
             HttpClient httpClient = new HttpClient();
             if (!string.IsNullOrEmpty(BeererAuthorizedToken))
-                httpClient.DefaultRequestHeaders.Authorization
-                    = new AuthenticationHeaderValue("Bearer", BeererAuthorizedToken);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", BeererAuthorizedToken);
             HttpResponseMessage res = await httpClient.GetAsync(requestUri);
             //res.EnsureSuccessStatusCode();
             if (res.IsSuccessStatusCode)

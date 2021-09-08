@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Order_Customer
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<Order_Customer>>> GetOrder_Customer()
         {
             return await _context.Order_Customer.ToListAsync();
         }
 
         // GET: api/Order_Customer/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<Order_Customer>> GetOrder_Customer(long id)
         {
             var order_Customer = await _context.Order_Customer.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Order_Customer/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutOrder_Customer(long id, Order_Customer order_Customer)
         {
             if (id != order_Customer.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Order_Customer
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<Order_Customer>> PostOrder_Customer(Order_Customer order_Customer)
         {
             _context.Order_Customer.Add(order_Customer);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Order_Customer/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<Order_Customer>> DeleteOrder_Customer(long id)
         {
             var order_Customer = await _context.Order_Customer.FindAsync(id);

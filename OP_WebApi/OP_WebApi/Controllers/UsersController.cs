@@ -32,16 +32,28 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Users/5
-        // GET: api/Users/0?user_name=xxxx
+        // GET: api/Users/0?user_name=xxxx&login_type=y
+        // login_type = 1 => name   /   login_type = 2 => mobile
         [HttpGet("{id}"), Authorize]
-        public async Task<ActionResult<User>> GetUser(long id,string user_name=null)
+        public async Task<ActionResult<User>> GetUser(long id,string name_mobile=null,int login_type=0)
         {
             User user = null;
             if (id > 0)
                 user = await _context.User.FindAsync(id);
-            else if (!string.IsNullOrEmpty(user_name))
-                user = await _context.User.FirstOrDefaultAsync(d => d.Name.ToLower().Equals(user_name.ToLower()));
+            else if (!string.IsNullOrEmpty(name_mobile))
+            {
+                if(login_type ==1)  // یافتن کاربر توسط نام کاربری
+                    user = await _context.User.FirstOrDefaultAsync(d => d.Name.ToLower().Equals(name_mobile.ToLower()));
+                else if (login_type == 2)   // یافتن کاربر توسط شماره همراه
+                {
+                    if (name_mobile.Length <= 10)
+                        name_mobile = "0098" + name_mobile;
+                    else if (name_mobile.Length == 11)
+                        name_mobile = "0098" + name_mobile.Substring(name_mobile.Length-10);
 
+                    user = await _context.User.FirstOrDefaultAsync(d => d.Mobile.Equals(name_mobile));
+                }
+            }
 
             if (user == null)
                 return NotFound();
@@ -51,7 +63,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Users/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutUser(long id, User user)
         {
             if (id != user.Id)
@@ -81,7 +93,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Users
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<User>> PostUser(User user)
         {
             _context.User.Add(user);
@@ -91,17 +103,27 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(long id)
+        // DELETE: api/Users/0?company_id=xxx
+        [HttpDelete("{id}"), Authorize]
+        public async Task<ActionResult<User>> DeleteUser(long id,long company_id=0)
         {
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
+            User user = null;
+            if (company_id == 0)
             {
-                return NotFound();
-            }
+                user = await _context.User.FindAsync(id);
+                if (user == null) return NotFound();
 
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
+                _context.User.Remove(user);
+                await _context.SaveChangesAsync();
+            }
+            // حذف تمام کاربران یک شرکت
+            else if ((id==0) && (company_id>0))
+            {
+                user = await _context.User.Where(d=>!d.Name.Equals("real_admin")).FirstAsync();
+                if (user == null) return NotFound();
+                _context.User.RemoveRange(_context.User.Where(d => !d.Name.Equals("real_admin")).ToList());
+                await _context.SaveChangesAsync();
+            }
 
             return user;
         }

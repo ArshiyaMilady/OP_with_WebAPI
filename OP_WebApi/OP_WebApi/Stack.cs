@@ -20,68 +20,68 @@ namespace OP_WebApi
 
     }
 
-    public static class HttpClientExtensions
-    {
-        public static async Task<string> GetAsJsonAsync_String(string requestUri)
-        {
-            HttpClient httpClient = new HttpClient();
-            HttpResponseMessage res = await httpClient.GetAsync(requestUri);
-            res.EnsureSuccessStatusCode();
-            if (res.IsSuccessStatusCode)
-                return await res.Content.ReadAsStringAsync();
-            else return null;
-        }
+    //public static class HttpClientExtensions
+    //{
+    //    public static async Task<string> GetAsJsonAsync_String(string requestUri)
+    //    {
+    //        HttpClient httpClient = new HttpClient();
+    //        HttpResponseMessage res = await httpClient.GetAsync(requestUri);
+    //        res.EnsureSuccessStatusCode();
+    //        if (res.IsSuccessStatusCode)
+    //            return await res.Content.ReadAsStringAsync();
+    //        else return null;
+    //    }
 
-        public static async Task<T> GetT<T>(string requestUri)
-        {
-            HttpClient httpClient = new HttpClient();
-            //if (httpClient.GetStringAsync(requestUri).Status == TaskStatus.RanToCompletion)
-            {
-                var response = await httpClient.GetStringAsync(requestUri);
-                return JsonConvert.DeserializeObject<T>(response);
-            }
-        }
+    //    public static async Task<T> GetT<T>(string requestUri)
+    //    {
+    //        HttpClient httpClient = new HttpClient();
+    //        //if (httpClient.GetStringAsync(requestUri).Status == TaskStatus.RanToCompletion)
+    //        {
+    //            var response = await httpClient.GetStringAsync(requestUri);
+    //            return JsonConvert.DeserializeObject<T>(response);
+    //        }
+    //    }
 
-        public static async Task<HttpResponseMessage> DeleteAsJsonAsync<T>
-            (string requestUri, T data)
-        {
-            HttpClient httpClient = new HttpClient();
-            //HttpResponseMessage res = await httpClient.GetAsync(requestUri);
-            //res.EnsureSuccessStatusCode();
-            //if (res.IsSuccessStatusCode)
-            var res1 = await httpClient.SendAsync(new HttpRequestMessage
-                (HttpMethod.Delete, requestUri)
-            { Content = Serialize(data) });
-            if (res1.IsSuccessStatusCode) return res1;
-            else return null;
-        }
+    //    public static async Task<HttpResponseMessage> DeleteAsJsonAsync<T>
+    //        (string requestUri, T data)
+    //    {
+    //        HttpClient httpClient = new HttpClient();
+    //        //HttpResponseMessage res = await httpClient.GetAsync(requestUri);
+    //        //res.EnsureSuccessStatusCode();
+    //        //if (res.IsSuccessStatusCode)
+    //        var res1 = await httpClient.SendAsync(new HttpRequestMessage
+    //            (HttpMethod.Delete, requestUri)
+    //        { Content = Serialize(data) });
+    //        if (res1.IsSuccessStatusCode) return res1;
+    //        else return null;
+    //    }
 
-        public static async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T data)
-        {
-            HttpClient httpClient = new HttpClient();
-            HttpResponseMessage res = await httpClient.GetAsync(requestUri);
-            //res.EnsureSuccessStatusCode();
-            if (res.IsSuccessStatusCode)
-                return await httpClient.SendAsync(new HttpRequestMessage
-                    (HttpMethod.Put, requestUri)
-                { Content = Serialize(data) });
-            else return null;
-        }
+    //    public static async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T data)
+    //    {
+    //        HttpClient httpClient = new HttpClient();
+    //        HttpResponseMessage res = await httpClient.GetAsync(requestUri);
+    //        //res.EnsureSuccessStatusCode();
+    //        if (res.IsSuccessStatusCode)
+    //            return await httpClient.SendAsync(new HttpRequestMessage
+    //                (HttpMethod.Put, requestUri)
+    //            { Content = Serialize(data) });
+    //        else return null;
+    //    }
 
-        public static async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T data, string BeererAuthorizedToken = null)
-        {
-            var httpClient = new HttpClient();
-            var Json = JsonConvert.SerializeObject(data);
-            HttpContent httpContent = new StringContent(Json);
-            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/Json");
-            if (!string.IsNullOrEmpty(BeererAuthorizedToken))
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", BeererAuthorizedToken);
-            return await httpClient.PostAsync(requestUri, httpContent);
-        }
+    //    public static async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T data, string BeererAuthorizedToken = null)
+    //    {
+    //        var httpClient = new HttpClient();
+    //        var Json = JsonConvert.SerializeObject(data);
+    //        HttpContent httpContent = new StringContent(Json);
+    //        httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/Json");
+    //        if (!string.IsNullOrEmpty(BeererAuthorizedToken))
+    //            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", BeererAuthorizedToken);
+    //        return await httpClient.PostAsync(requestUri, httpContent);
+    //    }
 
-        public static HttpContent Serialize(object data) => new StringContent
-            (JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-    }
+    //    public static HttpContent Serialize(object data) => new StringContent
+    //        (JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+    //}
 
     public class CryptographyProcessor
     {

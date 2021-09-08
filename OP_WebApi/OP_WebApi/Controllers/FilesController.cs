@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Files
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<File>>> GetFile()
         {
             return await _context.File.ToListAsync();
         }
 
         // GET: api/Files/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<File>> GetFile(long id)
         {
             var file = await _context.File.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Files/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutFile(long id, File file)
         {
             if (id != file.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Files
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<File>> PostFile(File file)
         {
             _context.File.Add(file);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Files/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<File>> DeleteFile(long id)
         {
             var file = await _context.File.FindAsync(id);

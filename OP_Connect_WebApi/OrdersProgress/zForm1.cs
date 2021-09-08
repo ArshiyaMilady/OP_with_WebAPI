@@ -23,7 +23,7 @@ namespace OrdersProgress
             //dgvData.DataSource = Program.dbOperations.GetAllCompaniesAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUsersAsync(0);// Stack.Company_Id);
-            //dgvData.DataSource = Program.dbOperations.GetAllUser_ULsAsync(0);// Stack.Company_Id);
+            dgvData.DataSource = Program.dbOperations.GetAllUser_ULsAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUser_LevelsAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllOrder_Item_PropertiesAsync();
@@ -41,7 +41,7 @@ namespace OrdersProgress
             //dgvData.DataSource = Program.dbOperations.GetAllWarehouse_Request_RowsAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllItemsAsync(0, 0, 100); //(Stack.Company_Id,0,100);
             //dgvData.DataSource = Program.dbOperations.GetAllFilesAsync(0); //(Stack.Company_Id,0,100);
-            dgvData.DataSource = Program.dbOperations.GetAllLoginHistorysAsync(Stack.Company_Id);
+            //dgvData.DataSource = Program.dbOperations.GetAllLoginHistorysAsync(Stack.Company_Id);
             //    .OrderByDescending(d=>d.DateTime_mi).ToList();
 
             //List<long> lstEnabled_OL = Program.dbOperations.GetAllOrder_LevelsAsync(Stack.Company_Id).Select(d => d.Id).ToList();

@@ -73,7 +73,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Companies
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<Company>> PostCompany(Company company)
         {
             _context.Company.Add(company);
@@ -83,7 +83,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Companies/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<Company>> DeleteCompany(long id)
         {
             var company = await _context.Company.FindAsync(id);

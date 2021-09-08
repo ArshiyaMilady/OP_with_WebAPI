@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Orders
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrder()
         {
             return await _context.Order.ToListAsync();
         }
 
         // GET: api/Orders/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<Order>> GetOrder(long id)
         {
             var order = await _context.Order.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Orders/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutOrder(long id, Order order)
         {
             if (id != order.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Orders
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
             _context.Order.Add(order);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Orders/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<Order>> DeleteOrder(long id)
         {
             var order = await _context.Order.FindAsync(id);

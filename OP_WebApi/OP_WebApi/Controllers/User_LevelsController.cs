@@ -22,14 +22,15 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/User_Levels
-        // GET: api/User_UL?all=vvv&user_id=xxx
+        // GET: api/User_UL?all=vvv&company_id=xxx
         [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<User_Level>>> GetUser_Level(string all="yes",long company_id=0)
         {
-            if(all.Equals("all"))
+            //return await _context.User_Level.ToListAsync();
+            if (all.Equals("yes"))
                 return await _context.User_Level.ToListAsync();
             else
-                return await _context.User_Level.Where(d=>d.Company_Id == company_id).ToListAsync();
+                return await _context.User_Level.Where(d => d.Company_Id == company_id).ToListAsync();
         }
 
         // GET: api/User_Levels/5
@@ -40,10 +41,10 @@ namespace OP_WebApi.Controllers
             User_Level user_Level = null;
             if (user_id > 0)
             {
-                if (await _context.User_UL.AnyAsync(d => d.User_Id == user_id))
+                if (_context.User_UL.Any(d => d.User_Id == user_id))
                 {
-                    long ul_id = (await _context.User_UL.FirstOrDefaultAsync(d => d.User_Id == user_id)).Id;
-                    user_Level = await _context.User_Level.FirstOrDefaultAsync(d=>d.Id == ul_id);
+                    long ul_id =  _context.User_UL.First(d => d.User_Id == user_id).UL_Id;
+                    user_Level = await _context.User_Level.FirstOrDefaultAsync(d => d.Id == ul_id);
                 }
             }
             else
@@ -58,7 +59,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/User_Levels/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutUser_Level(long id, User_Level user_Level)
         {
             if (id != user_Level.Id)
@@ -88,7 +89,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/User_Levels
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<User_Level>> PostUser_Level(User_Level user_Level)
         {
             _context.User_Level.Add(user_Level);
@@ -98,7 +99,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/User_Levels/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<User_Level>> DeleteUser_Level(long id)
         {
             var user_Level = await _context.User_Level.FindAsync(id);

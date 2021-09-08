@@ -41,7 +41,7 @@ namespace OrdersProgress
             dgvData.DataSource = await GetData();
             ShowData();
             Application.DoEvents();
-            panel1.Enabled = false;
+            panel1.Enabled = true;
         }
 
         private async Task<List<Models.User>> GetData()
@@ -55,7 +55,7 @@ namespace OrdersProgress
                     List<Models.User> lstAllUsers = new List<Models.User>();
                     List<Models.User_UL> lstAllUUL = new List<Models.User_UL>();
 
-                    if(Stack.Use_Web)
+                    if(Stack.Use_Web)   // استفاده از اینترنت
                     {
                         lstUL_See_ULs = await HttpClientExtensions.GetT<List<Models.UL_See_UL>>
                             (Stack.API_Uri_start_read + "/UL_See_UL?company_id=" + Stack.Company_Id
@@ -175,13 +175,21 @@ namespace OrdersProgress
             #endregion
         }
 
-        private void btnDeleteAll_Click(object sender, EventArgs e)
+        private async void btnDeleteAll_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("آیا از حذف همه کاربران اطمینان دارید؟"
                 , "اخطار", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                 == DialogResult.No) return;
 
-            Program.dbOperations.DeleteAllUsersAsync();
+            if(Stack.Use_Web)
+            {
+                await HttpClientExtensions.DeleteAsJsonAsync2(Stack.API_Uri_start
+                    + "/Users/0?company_id=" + Stack.Company_Id, Stack.token);
+            }
+            else
+                Program.dbOperations.DeleteAllUsersAsync();
+
+
             dgvData.DataSource = GetData();
 
             pictureBox1.Visible = true;
@@ -189,22 +197,32 @@ namespace OrdersProgress
             timer1.Enabled = true;
         }
 
-        private void TsmiDelete_Click(object sender, EventArgs e)
+        private async void TsmiDelete_Click(object sender, EventArgs e)
         {
-            long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-            Models.User user = Program.dbOperations.GetUserAsync(index);
+            long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+            Models.User user = Program.dbOperations.GetUserAsync(id);
 
             if (MessageBox.Show("آیا از حذف این کاربر اطمینان دارید؟"
                , user.Name, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                == DialogResult.No) return;
 
-            Program.dbOperations.DeleteUser(user);
+            bool Delete_OK = false;
+            if(Stack.Use_Web)
+            {
+                Delete_OK = await HttpClientExtensions.DeleteAsJsonAsync2(Stack.API_Uri_start
+                     + "/Users/" + id, Stack.token) != null;
+            }
+            else
+                Delete_OK = Program.dbOperations.DeleteUser(user) > 0;
 
-            user = lstUsers.First(d => d.Id == user.Id);
-            lstUsers.Remove(user);
+            if (Delete_OK)
+            {
+                user = lstUsers.First(d => d.Id == user.Id);
+                lstUsers.Remove(user);
 
-            //MessageBox.Show(lstUsers.Count.ToString());
-            dgvData.DataSource = GetData();
+                //MessageBox.Show(lstUsers.Count.ToString());
+                dgvData.DataSource = GetData();
+            }
 
             pictureBox1.Visible = true;
             Application.DoEvents();
@@ -239,16 +257,19 @@ namespace OrdersProgress
             InitailValue = dgvData[e.ColumnIndex, e.RowIndex].Value;//.ToString();
         }
 
-        private void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private async void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
             if (Convert.ToString(dgvData[e.ColumnIndex, e.RowIndex].Value).Equals(Convert.ToString(InitailValue))) return;
 
+            panel1.Enabled = !Stack.Use_Web;
+            pictureBox3.Visible = Stack.Use_Web;
+
             bool bSaveChange = true;   // آیا تغییر ذخیره شود؟
 
-            long index = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
+            long id = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
 
-            Models.User user = Program.dbOperations.GetUserAsync(index);
+            Models.User user = lstUsers.First(d => d.Id == id); // Program.dbOperations.GetUserAsync(id);
             switch (dgvData.Columns[e.ColumnIndex].Name)
             {
                 case "Active":
@@ -258,7 +279,7 @@ namespace OrdersProgress
                     user.Name = Convert.ToString(dgvData["Name", e.RowIndex].Value);
                     if (string.IsNullOrWhiteSpace(user.Name)) return;
                     #region اگر کاربر دیگر با این نام تعریف شده باشد
-                    else if (Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0).Where(d => d.Id != index)
+                    else if (Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0).Where(d => d.Id != id)
                         .Any(j => j.Name.ToLower().Equals(user.Name.ToLower())))
                     {
                         bSaveChange = false;
@@ -282,7 +303,7 @@ namespace OrdersProgress
                             MessageBox.Show("لطفا شماره موبایل را بدرستی وارد نمایید", "خطا");
                             bSaveChange = false;
                         }
-                        else if (Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0).Where(d => d.Id != index)
+                        else if (Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0).Where(d => d.Id != id)
                             .Where(j => j.Mobile != null).Where(n => n.Mobile.Length >= 10)
                             .Any(q => q.Mobile.Substring(q.Mobile.Length - 10)
                             .Equals(user.Mobile.Substring(q.Mobile.Length - 10))))
@@ -308,14 +329,6 @@ namespace OrdersProgress
 
             if (bSaveChange)
             {
-                // برای ذخیره تغییرات در ردیف جدید ، پیغامی نمایش داده نشود
-                //if ((e.RowIndex == iNewRow))
-                //{
-                //    Program.dbOperations.UpdateItemAsync(user);
-                //    AddUpdateItem_to_WarehouseInventory(user, true, JustEdit);
-                //    JustEdit = true;
-                //}
-                //else
                 {
                     if (chkCanEdit.Checked)
                     {
@@ -331,7 +344,23 @@ namespace OrdersProgress
 
             if (bSaveChange)
             {
-                Program.dbOperations.UpdateUserAsync(user);
+                if(Stack.Use_Web)
+                {
+                    var res = await HttpClientExtensions.PutAsJsonAsync<Models.User>(Stack.API_Uri_start
+                        + "/Users/"+user.Id, user, Stack.token);
+                    if(res.IsSuccessStatusCode)
+                    {
+                        pictureBox3.Visible = false;
+                        panel1.Enabled = true;
+                    }
+                    //MessageBox.Show((await HttpClientExtensions.PutAsJsonAsync<Models.User>(Stack.API_Uri_start
+                    //    + "/Users/"+user.Id, user, Stack.token)).StatusCode.ToString());
+                }
+                else
+                    Program.dbOperations.UpdateUserAsync(user);
+
+                lstUsers.Remove(lstUsers.First(d => d.Id == id));
+                lstUsers.Add(user);
             }
             else
             {
@@ -350,8 +379,8 @@ namespace OrdersProgress
 
         private void TsmiChangePassword_Click_1(object sender, EventArgs e)
         {
-            long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-            new J2110_ChangePassword(index).ShowDialog();
+            long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+            new J2110_ChangePassword(id).ShowDialog();
         }
 
         private void BtnAddNew_Click(object sender, EventArgs e)

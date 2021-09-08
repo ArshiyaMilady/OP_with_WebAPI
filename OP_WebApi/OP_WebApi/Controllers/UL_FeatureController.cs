@@ -37,7 +37,7 @@ namespace OP_WebApi.Controllers
 
                 // بنا به سطح کاربر، امکانات را مشخص کرده و بر می گرداند
                 #region دسترسی های کاربر با توجه به سطح کاربری
-                if (ul_Id>=0)
+                if (ul_Id>0)
                 {
                     int ul_type = _context.User_Level.FirstOrDefault(d => d.Id == ul_Id).Type;
                     if (ul_type != 1)
@@ -49,8 +49,8 @@ namespace OP_WebApi.Controllers
                         }
                         else
                         {
-                            List<User_Level_UL_Feature> lstULULF = await _context.User_Level_UL_Feature
-                                .Where(d => d.User_Level_Id == ul_Id).ToListAsync();
+                            List<User_Level_UL_Feature> lstULULF = _context.User_Level_UL_Feature
+                                .Where(d => d.User_Level_Id == ul_Id).ToList();
                             lstULF = lstULF.Where(d => lstULULF.Any(j => j.UL_Feature_Id == d.Id)).ToList();
                         }
                     }
@@ -76,7 +76,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/UL_Feature/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutUL_Feature(long id, UL_Feature uL_Feature)
         {
             if (id != uL_Feature.Id)
@@ -106,7 +106,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/UL_Feature
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<UL_Feature>> PostUL_Feature(UL_Feature uL_Feature)
         {
             _context.UL_Feature.Add(uL_Feature);
@@ -116,7 +116,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/UL_Feature/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<UL_Feature>> DeleteUL_Feature(long id)
         {
             var uL_Feature = await _context.UL_Feature.FindAsync(id);

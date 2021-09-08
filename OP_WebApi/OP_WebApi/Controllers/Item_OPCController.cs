@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Item_OPC
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<Item_OPC>>> GetItem_OPC()
         {
             return await _context.Item_OPC.ToListAsync();
         }
 
         // GET: api/Item_OPC/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<Item_OPC>> GetItem_OPC(long id)
         {
             var item_OPC = await _context.Item_OPC.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Item_OPC/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutItem_OPC(long id, Item_OPC item_OPC)
         {
             if (id != item_OPC.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Item_OPC
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<Item_OPC>> PostItem_OPC(Item_OPC item_OPC)
         {
             _context.Item_OPC.Add(item_OPC);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Item_OPC/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<Item_OPC>> DeleteItem_OPC(long id)
         {
             var item_OPC = await _context.Item_OPC.FindAsync(id);

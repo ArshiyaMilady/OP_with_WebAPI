@@ -49,18 +49,25 @@ namespace OrdersProgress
             
             //new zForm1().ShowDialog();
 
-            if (File.Exists(Path.Combine(Application.StartupPath, "System.SQLite.DB.db3")))
-            {
-                // ایجاد فایل دیتابیس کاذب
-                File.Copy(Path.Combine(Application.StartupPath, "System.SQLite.DB.db3"),
-                    Path.Combine(Application.StartupPath, "Database.db"), true);
-            }
+            //if (File.Exists(Path.Combine(Application.StartupPath, "System.SQLite.DB.db3")))
+            //{
+            //    // ایجاد فایل دیتابیس کاذب
+            //    File.Copy(Path.Combine(Application.StartupPath, "System.SQLite.DB.db3"),
+            //        Path.Combine(Application.StartupPath, "Database.db"), true);
+            //}
 
             #region Login
             Stack.bx = false;
             if (Stack.Use_Web)
             {
-                new J1955_Login_from_Web().ShowDialog();
+                if(!Stack_Methods.CheckForInternetConnection())
+                {
+                    MessageBox.Show("عدم امکان اتصال به اینترنت", "خطا");
+                    System.Environment.Exit(1);
+                    Close();
+                }
+                else
+                    new J1955_Login_from_Web().ShowDialog();
             }
             else
             {
@@ -820,7 +827,6 @@ namespace OrdersProgress
             //tabControl1.Visible = true;
             panel1.Visible = true;
         }
-
 
 
 

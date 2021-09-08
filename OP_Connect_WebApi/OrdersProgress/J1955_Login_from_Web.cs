@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -59,7 +55,7 @@ namespace OrdersProgress
             else
             {
                 //bool b =;
-                if (await Stack_Methods.GetAllUserData_web(user))
+                if (await GetAllUserData_web(user))
                 {
                     #region ثبت در تایخچه
                     if (Stack.UserLevel_Type != 1)
@@ -105,7 +101,7 @@ namespace OrdersProgress
                 Stack.token = response;
                 //MessageBox.Show(Stack.token);
                 user = await HttpClientExtensions.GetT<Models.User>(Stack.API_Uri_start_read
-                    + "/Users/0?user_name=" + name_mobile,Stack.token);
+                    + "/Users/0?user_name=" + name_mobile + "&login_type="+login_type,Stack.token);
                 //MessageBox.Show(user.Real_Name);
             }
 
@@ -138,6 +134,59 @@ namespace OrdersProgress
             radUseName.Checked = true;
             txtNM.Text = "admin";
             txtPassword.Text = "9999";
+        }
+
+        // شناسه، سطح دسترسی و ... را برای یک کاربر با معلوم بودن نام بر میگرداند
+        public async Task<bool> GetAllUserData_web(Models.User user)
+        {
+            Stack.UserName = user.Name;
+            Stack.User_RealName = user.Real_Name;
+            Stack.UserId = user.Id;
+            Stack.Company_Id = user.Company_Id;
+            //MessageBox.Show(Stack.UserId.ToString(),"1");
+            //List<Models.User_UL> lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
+            //    (Stack.API_Uri_start_read + "/User_UL?all=no&company_id="+Stack.Company_Id+"&user_id=" + user.Id, Stack.token);
+            //if ((lstUUL!=null) && lstUUL.Any())
+            {
+                Models.User_Level user_level = await HttpClientExtensions.GetT<Models.User_Level>
+                    (Stack.API_Uri_start_read + "/User_Levels/0?user_id=" + Stack.UserId, Stack.token);
+                Stack.UserLevel_Id = user_level.Id;
+                Stack.UserLevel_Type = user_level.Type;
+                // نام و سطح دسترسی کاربر
+                Stack.sx = user.Real_Name + " / " + user_level.Description;
+            }
+            //MessageBox.Show(user.Company_Id.ToString());
+            Models.Company company = await HttpClientExtensions.GetT<Models.Company>
+                (Stack.API_Uri_start_read + "/Companies/" + user.Company_Id, Stack.token);
+            Stack.bWarehouse_Booking_MaxHours = company.Warehouse_AutomaticBooking;
+
+            //MessageBox.Show(Stack.UserLevel_Type.ToString());
+            #region تعیین دسترسی های کاربر با توجه به سطح کاربری
+            var res1 = await HttpClientExtensions.GetT<List<Models.UL_Feature>>
+                (Stack.API_Uri_start_read + "/UL_Feature?company_Id=" + Stack.Company_Id
+                + "&EnableType=" + 1 + "&ul_Id=" + Stack.UserLevel_Id, Stack.token);
+            Stack.lstUser_ULF_UniquePhrase = res1.Select(d => d.Unique_Phrase).ToList();
+            //MessageBox.Show(Stack.lstUser_ULF_UniquePhrase.Count.ToString());
+            #endregion
+
+            return (Stack.UserId > 0) && (Stack.UserLevel_Id > 0) && (Stack.UserLevel_Type >= 0);
+        }
+
+        private void LblChangePassword_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtNM.Text))
+            {
+                MessageBox.Show("نام کاربری / شماره همراه ؟");
+                return;
+            }
+
+            Models.User user = GetUser_by_Name_or_Mobile();
+            if (user == null)
+            {
+                MessageBox.Show(label1.Text.Substring(0, label1.Text.Length - 2) + " اشتباه است", "خطا");
+                return;
+            }
+            new J2110_ChangePassword(user.Id).ShowDialog();
         }
 
 

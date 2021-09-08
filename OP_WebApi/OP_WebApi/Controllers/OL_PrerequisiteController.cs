@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/OL_Prerequisite
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<OL_Prerequisite>>> GetOL_Prerequisite()
         {
             return await _context.OL_Prerequisite.ToListAsync();
         }
 
         // GET: api/OL_Prerequisite/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<OL_Prerequisite>> GetOL_Prerequisite(long id)
         {
             var oL_Prerequisite = await _context.OL_Prerequisite.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/OL_Prerequisite/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutOL_Prerequisite(long id, OL_Prerequisite oL_Prerequisite)
         {
             if (id != oL_Prerequisite.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/OL_Prerequisite
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<OL_Prerequisite>> PostOL_Prerequisite(OL_Prerequisite oL_Prerequisite)
         {
             _context.OL_Prerequisite.Add(oL_Prerequisite);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/OL_Prerequisite/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<OL_Prerequisite>> DeleteOL_Prerequisite(long id)
         {
             var oL_Prerequisite = await _context.OL_Prerequisite.FindAsync(id);

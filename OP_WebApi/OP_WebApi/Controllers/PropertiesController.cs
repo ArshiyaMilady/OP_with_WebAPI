@@ -21,14 +21,14 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Properties
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<Property>>> GetProperty()
         {
             return await _context.Property.ToListAsync();
         }
 
         // GET: api/Properties/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<Property>> GetProperty(long id)
         {
             var @property = await _context.Property.FindAsync(id);
@@ -42,7 +42,7 @@ namespace OP_WebApi.Controllers
         }
 
         // PUT: api/Properties/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutProperty(long id, Property @property)
         {
             if (id != @property.Id)
@@ -72,7 +72,7 @@ namespace OP_WebApi.Controllers
         }
 
         // POST: api/Properties
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<Property>> PostProperty(Property @property)
         {
             _context.Property.Add(@property);
@@ -82,7 +82,7 @@ namespace OP_WebApi.Controllers
         }
 
         // DELETE: api/Properties/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<Property>> DeleteProperty(long id)
         {
             var @property = await _context.Property.FindAsync(id);
