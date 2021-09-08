@@ -828,6 +828,11 @@ namespace OrdersProgress
             panel1.Visible = true;
         }
 
+        private void BtnChangePassword_Click(object sender, EventArgs e)
+        {
+            new J2110_ChangePassword(Stack.UserId).ShowDialog();
+        }
+
 
 
 

@@ -172,21 +172,30 @@ namespace OrdersProgress
             return (Stack.UserId > 0) && (Stack.UserLevel_Id > 0) && (Stack.UserLevel_Type >= 0);
         }
 
+        // --- با توجه به نبود توکن تا این مرحله ، امکان تغییر رمز در اینجا وجود ندارد
         private void LblChangePassword_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtNM.Text))
-            {
-                MessageBox.Show("نام کاربری / شماره همراه ؟");
-                return;
-            }
+            //if (string.IsNullOrWhiteSpace(txtNM.Text))
+            //{
+            //    MessageBox.Show("نام کاربری / شماره همراه ؟");
+            //    return;
+            //}
 
-            Models.User user = GetUser_by_Name_or_Mobile();
-            if (user == null)
-            {
-                MessageBox.Show(label1.Text.Substring(0, label1.Text.Length - 2) + " اشتباه است", "خطا");
-                return;
-            }
-            new J2110_ChangePassword(user.Id).ShowDialog();
+            //int login_type = radUseName.Checked ? 1 : 2;
+            //Models.User user = null;
+            ////try
+            //{
+            //    user = await HttpClientExtensions.GetT<Models.User>
+            //        (Stack.API_Uri_start_read + "/Users/0?user_name=" + txtNM.Text + "&login_type=" + login_type, Stack.token);
+            //}
+            ////catch { }
+
+            //if (user == null)
+            //{
+            //    MessageBox.Show(label1.Text.Substring(0, label1.Text.Length - 2) + " اشتباه است", "خطا");
+            //    return;
+            //}
+            //new J2110_ChangePassword(user.Id).ShowDialog();
         }
 
 

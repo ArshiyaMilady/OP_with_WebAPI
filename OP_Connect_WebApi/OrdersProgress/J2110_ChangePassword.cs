@@ -12,13 +12,13 @@ namespace OrdersProgress
 {
     public partial class J2110_ChangePassword : X210_ExampleForm_Normal
     {
-        long user_index;
+        long user_id;
 
-        public J2110_ChangePassword(long _user_index)
+        public J2110_ChangePassword(long _user_id)
         {
             InitializeComponent();
 
-            user_index = _user_index;
+            user_id = _user_id;
         }
 
       
@@ -65,12 +65,23 @@ namespace OrdersProgress
             Close();
         }
 
-        private void BtnSave_Click(object sender, EventArgs e)
+        private async void BtnSave_Click(object sender, EventArgs e)
         {
             CryptographyProcessor cryptographyProcessor = new CryptographyProcessor();
-            Models.User user = Program.dbOperations.GetUserAsync(user_index);
+            Models.User user = null;
+            if (Stack.Use_Web)
+                user = await HttpClientExtensions.GetT<Models.User>
+                    (Stack.API_Uri_start_read + "/Users/" + user_id, Stack.token);
+            else
+                user = Program.dbOperations.GetUserAsync(user_id);
 
             #region خطایابی
+            if (user == null)
+            {
+                MessageBox.Show("An error has occured!", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(textBox1.Text))
             {
                 MessageBox.Show("رمز فعلی؟", "خطا");
@@ -108,7 +119,20 @@ namespace OrdersProgress
             #endregion
 
             user.Password = cryptographyProcessor.GenerateHash(textBox2.Text, Stack.Standard_Salt);
-            Program.dbOperations.UpdateUserAsync(user);
+
+            if(Stack.Use_Web)
+            {
+                var res = await HttpClientExtensions.PutAsJsonAsync<Models.User>(Stack.API_Uri_start
+                    + "/Users/" + user.Id, user, Stack.token);
+                if (!res.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("خطا در تغییر رمز","",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    panel1.Enabled = true;
+                    return;
+                }
+            }
+            else
+                Program.dbOperations.UpdateUserAsync(user);
 
             MessageBox.Show("رمز ورود با موفقیت تغییر کرد");
             Close();

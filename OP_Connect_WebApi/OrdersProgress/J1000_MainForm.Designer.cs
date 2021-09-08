@@ -105,6 +105,10 @@
             this.btnProperties = new System.Windows.Forms.Button();
             this.btnCategories = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.tpPersonalInformation = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel8 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnChangePassword = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -127,6 +131,9 @@
             this.grpProducts.SuspendLayout();
             this.flowLayoutPanel10.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.tpPersonalInformation.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.flowLayoutPanel8.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -462,6 +469,7 @@
             // 
             // tabControl1
             // 
+            this.tabControl1.Controls.Add(this.tpPersonalInformation);
             this.tabControl1.Controls.Add(this.tpInternalFeatures);
             this.tabControl1.Controls.Add(this.tpOrders);
             this.tabControl1.Controls.Add(this.tpWarehouse);
@@ -680,6 +688,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.flowLayoutPanel5);
             this.groupBox4.Location = new System.Drawing.Point(669, 3);
             this.groupBox4.Name = "groupBox4";
@@ -925,6 +934,53 @@
             this.panel1.TabIndex = 11;
             this.panel1.Visible = false;
             // 
+            // tpPersonalInformation
+            // 
+            this.tpPersonalInformation.Controls.Add(this.groupBox1);
+            this.tpPersonalInformation.Location = new System.Drawing.Point(4, 28);
+            this.tpPersonalInformation.Name = "tpPersonalInformation";
+            this.tpPersonalInformation.Padding = new System.Windows.Forms.Padding(3);
+            this.tpPersonalInformation.Size = new System.Drawing.Size(863, 159);
+            this.tpPersonalInformation.TabIndex = 3;
+            this.tpPersonalInformation.Text = "اطلاعات شخصی";
+            this.tpPersonalInformation.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.flowLayoutPanel8);
+            this.groupBox1.Location = new System.Drawing.Point(673, 4);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(185, 151);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
+            // 
+            // flowLayoutPanel8
+            // 
+            this.flowLayoutPanel8.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel8.BackColor = System.Drawing.Color.Transparent;
+            this.flowLayoutPanel8.Controls.Add(this.btnChangePassword);
+            this.flowLayoutPanel8.Location = new System.Drawing.Point(6, 19);
+            this.flowLayoutPanel8.Name = "flowLayoutPanel8";
+            this.flowLayoutPanel8.Size = new System.Drawing.Size(173, 126);
+            this.flowLayoutPanel8.TabIndex = 1;
+            // 
+            // btnChangePassword
+            // 
+            this.btnChangePassword.FlatAppearance.BorderSize = 0;
+            this.btnChangePassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnChangePassword.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnChangePassword.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.btnChangePassword.Location = new System.Drawing.Point(0, 3);
+            this.btnChangePassword.Name = "btnChangePassword";
+            this.btnChangePassword.Size = new System.Drawing.Size(170, 25);
+            this.btnChangePassword.TabIndex = 0;
+            this.btnChangePassword.Text = "تغییر رمز ورود";
+            this.btnChangePassword.UseVisualStyleBackColor = false;
+            this.btnChangePassword.Click += new System.EventHandler(this.BtnChangePassword_Click);
+            // 
             // J1000_MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -972,6 +1028,9 @@
             this.grpProducts.ResumeLayout(false);
             this.flowLayoutPanel10.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.tpPersonalInformation.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.flowLayoutPanel8.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1054,6 +1113,10 @@
         private System.Windows.Forms.Button btnProperties;
         private System.Windows.Forms.Button btnCategories;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TabPage tpPersonalInformation;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel8;
+        private System.Windows.Forms.Button btnChangePassword;
     }
 }
 

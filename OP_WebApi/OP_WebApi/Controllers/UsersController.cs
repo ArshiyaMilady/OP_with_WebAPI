@@ -32,10 +32,10 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Users/5
-        // GET: api/Users/0?user_name=xxxx&login_type=y
+        // GET: api/Users/0?user_name=xxxx&login_type=y&remove_password=0
         // login_type = 1 => name   /   login_type = 2 => mobile
         [HttpGet("{id}"), Authorize]
-        public async Task<ActionResult<User>> GetUser(long id,string name_mobile=null,int login_type=0)
+        public async Task<ActionResult<User>> GetUser(long id,string name_mobile=null,int login_type=0,int remove_password=1)
         {
             User user = null;
             if (id > 0)
@@ -57,7 +57,7 @@ namespace OP_WebApi.Controllers
 
             if (user == null)
                 return NotFound();
-            else user.Password = null;
+            else { if(remove_password==1) user.Password = null; }
 
             return user;
         }
