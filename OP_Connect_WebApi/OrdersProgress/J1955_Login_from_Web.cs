@@ -48,8 +48,10 @@ namespace OrdersProgress
             {
                 panel2.Enabled = true;
                 pictureBox1.Visible = false;
-
-                MessageBox.Show(label1.Text.Substring(0, label1.Text.Length - 2) + " یا رمز ورود نادرست است", "خطا");
+                if(Stack.bx)
+                    MessageBox.Show(label1.Text.Substring(0, label1.Text.Length - 2) + " یا رمز ورود نادرست است", "خطا");
+                else
+                    MessageBox.Show("اشکال در ارتباط با سرور. لطفا مجددا امتحان نمایید", "خطا");
                 return;
             }
             else
@@ -91,6 +93,7 @@ namespace OrdersProgress
 
         private async Task<Models.User> GetUser_by_Name_or_Mobile(int login_type, string name_mobile, string password)
         {
+            Stack.bx = true;
             Models.User user = null;
 
             string response = await HttpClientExtensions.GetToken(Stack.API_Uri_start + "/Token"
@@ -105,7 +108,7 @@ namespace OrdersProgress
                     user = await HttpClientExtensions.GetT<Models.User>(Stack.API_Uri_start_read
                         + "/Users/0?name_mobile=" + name_mobile + "&login_type=" + login_type, Stack.token);
                 }
-                catch { }
+                catch { Stack.bx = false; }
                 //MessageBox.Show(user.Real_Name);
             }
 

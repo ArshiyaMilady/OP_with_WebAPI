@@ -21,10 +21,10 @@ namespace OrdersProgress
 
         public static string Standard_Salt = "d;lkjWeoj'l;ksDfok';lsdkovjmwEfl;kwikvxc.m,/Zviejkjds;flKjoremwa;lm";  // کاملا رندوم
 
-        //public static string API_Uri_start = "http://www.opwa.somee.com/api";
-        //public static string API_Uri_start_read = "http://www.opwa.somee.com/api";
-        public static string API_Uri_start = "http://localhost:6238/api";
-        public static string API_Uri_start_read = "https://localhost:44380/api";
+        public static string API_Uri_start = "http://www.opwa.somee.com/api";
+        public static string API_Uri_start_read = "http://www.opwa.somee.com/api";
+        //public static string API_Uri_start = "http://localhost:6238/api";   // for POST
+        //public static string API_Uri_start_read = "https://localhost:44380/api";    // for GET, PUT
 
         public static string token;
 

@@ -39,7 +39,6 @@ namespace OrdersProgress
             btnDeleteAll.Visible = (Stack.UserLevel_Type == 1);
             btnAddNew.Visible = (Stack.UserLevel_Type == 1) || (Stack.UserLevel_Type == 2);
 
-
             dgvData.DataSource = await GetData();
             ShowData();
             Application.DoEvents();
@@ -48,24 +47,31 @@ namespace OrdersProgress
 
         private async Task<List<Models.User>> GetData()
         {
+            //MessageBox.Show("a05");
             // اگر لیست خالی است
-            if(!lstUsers.Any())
+            if (!lstUsers.Any())
             {
+                //MessageBox.Show("a06", Stack.UserLevel_Type.ToString());
                 if (Stack.UserLevel_Type == 0)
                 {
+                    //MessageBox.Show("a07");
                     List<Models.UL_See_UL> lstUL_See_ULs = new List<Models.UL_See_UL>();
                     List<Models.User> lstAllUsers = new List<Models.User>();
                     List<Models.User_UL> lstAllUUL = new List<Models.User_UL>();
 
                     if(Stack.Use_Web)   // استفاده از اینترنت
                     {
+                        //MessageBox.Show("a10");
                         lstUL_See_ULs = await HttpClientExtensions.GetT<List<Models.UL_See_UL>>
                             (Stack.API_Uri_start_read + "/UL_See_UL?company_id=" + Stack.Company_Id
                             + "&main_ul_id=" + Stack.UserLevel_Id, Stack.token);
+                        ////MessageBox.Show("a20");
                         lstAllUsers = await HttpClientExtensions.GetT<List<Models.User>>
                             (Stack.API_Uri_start_read + "/Users?all=no&company_id=" + Stack.Company_Id, Stack.token);
+                        //MessageBox.Show("a30");
                         lstAllUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
                             (Stack.API_Uri_start_read + "/User_UL?all=no&company_id=" + Stack.Company_Id, Stack.token);
+                        //MessageBox.Show("a40");
                     }
                     else
                     {
@@ -76,6 +82,7 @@ namespace OrdersProgress
 
                     if(lstAllUsers.Any(d => d.User_Id_Creator == Stack.UserId))
                         lstUsers.AddRange(lstAllUsers.Where(d => d.User_Id_Creator == Stack.UserId).ToList());
+                    //MessageBox.Show("a50");
 
                     foreach (Models.User user in lstAllUsers.Where(d => d.User_Id_Creator != Stack.UserId).ToList())
                     {
@@ -90,11 +97,12 @@ namespace OrdersProgress
                 }
                 else  // برای سطح کاربرانی که نوع سطح آنها غیر صفر است مانند ادمین ها و کاربران ارشد
                 {
-                    lstUsers = await WhichUsers(Stack.UserLevel_Type);
+                    await WhichUsers();//Stack.UserLevel_Type);
                 }
 
-
+                lstUsers = lstUsers.OrderBy(d => d.Id).ToList();
             }
+            //MessageBox.Show(lstUsers.Count.ToString());
 
             switch (comboBox1.SelectedIndex)
             {
@@ -195,7 +203,7 @@ namespace OrdersProgress
                 Program.dbOperations.DeleteAllUsersAsync();
 
 
-            dgvData.DataSource = GetData();
+            dgvData.DataSource = await GetData();
 
             pictureBox1.Visible = true;
             Application.DoEvents();
@@ -226,7 +234,7 @@ namespace OrdersProgress
                 lstUsers.Remove(user);
 
                 //MessageBox.Show(lstUsers.Count.ToString());
-                dgvData.DataSource = GetData();
+                dgvData.DataSource = await GetData();
             }
 
             pictureBox1.Visible = true;
@@ -351,7 +359,7 @@ namespace OrdersProgress
             {
                 if(Stack.Use_Web)
                 {
-                    var res = await HttpClientExtensions.PutAsJsonAsync<Models.User>(Stack.API_Uri_start
+                    var res = await HttpClientExtensions.PutAsJsonAsync<Models.User>(Stack.API_Uri_start_read
                         + "/Users/"+user.Id, user, Stack.token);
                     if(res.IsSuccessStatusCode)
                     {
@@ -566,12 +574,12 @@ namespace OrdersProgress
 
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            dgvData.DataSource = GetData();
+            //dgvData.DataSource = await GetData();
         }
 
-        private void BtnShowAll_Click(object sender, EventArgs e)
+        private async void BtnShowAll_Click(object sender, EventArgs e)
         {
-            dgvData.DataSource = GetData();
+            dgvData.DataSource = await GetData();
         }
 
         private void TsmiLoginsHistory_Click(object sender, EventArgs e)
@@ -586,22 +594,25 @@ namespace OrdersProgress
             timer1.Enabled = false;
         }
 
-
-
-
-
-
-        public async Task<List<Models.User>> WhichUsers(int ul_type)
+        public async Task<bool> WhichUsers()//int ul_type)
         {
-            List<Models.User> lstUsers = new List<Models.User>();
+            List<Models.User> lstUsers1 = new List<Models.User>();
 
-            if(Stack.Use_Web)
-                lstUsers = await HttpClientExtensions.GetT<List<Models.User>>
+            if (Stack.Use_Web)
+            {
+                //MessageBox.Show("b10"+"\n"+Stack.token,Stack.Company_Id.ToString());
+                lstUsers1 = await HttpClientExtensions.GetT<List<Models.User>>
                     (Stack.API_Uri_start_read + "/Users?all=no&company_id=" + Stack.Company_Id, Stack.token);
-            else  lstUsers = Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0);
+                //MessageBox.Show("b20");
+            }
+            else lstUsers1 = Program.dbOperations.GetAllUsersAsync(Stack.Company_Id, 0);
+
+            lstUsers = lstUsers1.Where(d => d.User_Id_Creator == Stack.UserId).ToList();
+            //MessageBox.Show(lstUsers.Count.ToString());
 
             if (lstUsers.Any() && (Stack.UserLevel_Type > 1))
             {
+                //MessageBox.Show("b30");
                 List<Models.User_Level> lstUL_Type_notSeen = new List<Models.User_Level>();
                 if (Stack.Use_Web)
                     lstUL_Type_notSeen = (await HttpClientExtensions.GetT<List<Models.User_Level>>
@@ -614,9 +625,11 @@ namespace OrdersProgress
                     .Where(d => (d.Type > 0) && (d.Type <= Stack.UserLevel_Type)).Select(d => d.Id).ToList();
                 List<long> lstUsersUL_Type_Seen_Id = Program.dbOperations.GetAllUser_ULsAsync
                     (Stack.Company_Id).Where(d => !lstUL_Type_notSeen_Id.Contains(d.UL_Id)).Select(d => d.User_Id).ToList();
-                lstUsers = lstUsers.Where(d => lstUsersUL_Type_Seen_Id.Contains(d.Id)).ToList();
+                lstUsers.AddRange(lstUsers1.Where(d => d.User_Id_Creator != Stack.UserId)
+                    .Where(d => lstUsersUL_Type_Seen_Id.Contains(d.Id)).ToList());
             }
-            return lstUsers;
+            //return lstUsers1;
+            return true;
         }
 
 

@@ -71,13 +71,15 @@ namespace OrdersProgress
             //        Program.dbOperations.DeleteCustomerAsync(customer);
             //}
 
-            foreach (Models.User user in Program.dbOperations.GetAllUsersAsync(0)) //, 0))
+            foreach (Models.User user in Program.dbOperations.GetAllUsersAsync(1)) //, 0))
             {
-                if (user.User_Id_Creator == 0)
-                {
-                    user.User_Id_Creator = 1;
-                    Program.dbOperations.UpdateUserAsync(user);
-                }
+                //if (user.User_Id_Creator == 0)
+                //{
+                //    user.User_Id_Creator = 1;
+                //    Program.dbOperations.UpdateUserAsync(user);
+                //}
+
+                //if (user.Id > 18) Program.dbOperations.DeleteUserAsync(user);
             }
 
             #endregion

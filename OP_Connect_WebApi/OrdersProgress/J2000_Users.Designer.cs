@@ -49,7 +49,6 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.chkCanEdit = new System.Windows.Forms.CheckBox();
             this.chkShowUpdateMessage = new System.Windows.Forms.CheckBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.btnImportDataFromExcel = new System.Windows.Forms.Button();
             this.btnReturn = new System.Windows.Forms.Button();
             this.btnDeleteAll = new System.Windows.Forms.Button();
@@ -63,6 +62,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -95,6 +95,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.btnShowAll);
             this.groupBox1.Controls.Add(this.btnSearch);
+            this.groupBox1.Controls.Add(this.comboBox1);
             this.groupBox1.Controls.Add(this.txtST_Name);
             this.groupBox1.Controls.Add(this.txtST_Address);
             this.groupBox1.Controls.Add(this.txtST_Phone);
@@ -107,9 +108,9 @@
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(594, 99);
+            this.groupBox1.Location = new System.Drawing.Point(594, 61);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(264, 186);
+            this.groupBox1.Size = new System.Drawing.Size(264, 224);
             this.groupBox1.TabIndex = 20;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "جستجو";
@@ -117,7 +118,7 @@
             // btnShowAll
             // 
             this.btnShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnShowAll.Location = new System.Drawing.Point(176, 154);
+            this.btnShowAll.Location = new System.Drawing.Point(176, 192);
             this.btnShowAll.Name = "btnShowAll";
             this.btnShowAll.Size = new System.Drawing.Size(79, 26);
             this.btnShowAll.TabIndex = 56;
@@ -128,7 +129,7 @@
             // btnSearch
             // 
             this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSearch.Location = new System.Drawing.Point(6, 154);
+            this.btnSearch.Location = new System.Drawing.Point(6, 192);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(79, 26);
             this.btnSearch.TabIndex = 50;
@@ -140,7 +141,7 @@
             // 
             this.txtST_Name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtST_Name.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtST_Name.Location = new System.Drawing.Point(8, 28);
+            this.txtST_Name.Location = new System.Drawing.Point(8, 62);
             this.txtST_Name.Name = "txtST_Name";
             this.txtST_Name.Size = new System.Drawing.Size(109, 22);
             this.txtST_Name.TabIndex = 45;
@@ -150,7 +151,7 @@
             // 
             this.txtST_Address.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtST_Address.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtST_Address.Location = new System.Drawing.Point(8, 123);
+            this.txtST_Address.Location = new System.Drawing.Point(8, 157);
             this.txtST_Address.Name = "txtST_Address";
             this.txtST_Address.Size = new System.Drawing.Size(109, 22);
             this.txtST_Address.TabIndex = 34;
@@ -160,7 +161,7 @@
             // 
             this.txtST_Phone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtST_Phone.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtST_Phone.Location = new System.Drawing.Point(8, 90);
+            this.txtST_Phone.Location = new System.Drawing.Point(8, 124);
             this.txtST_Phone.Name = "txtST_Phone";
             this.txtST_Phone.Size = new System.Drawing.Size(109, 22);
             this.txtST_Phone.TabIndex = 34;
@@ -170,7 +171,7 @@
             // 
             this.txtST_Mobile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtST_Mobile.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtST_Mobile.Location = new System.Drawing.Point(8, 58);
+            this.txtST_Mobile.Location = new System.Drawing.Point(8, 92);
             this.txtST_Mobile.Name = "txtST_Mobile";
             this.txtST_Mobile.Size = new System.Drawing.Size(109, 22);
             this.txtST_Mobile.TabIndex = 34;
@@ -186,7 +187,7 @@
             "شامل",
             "شروع شود با",
             "برابر باشد با"});
-            this.cmbST_Name.Location = new System.Drawing.Point(123, 26);
+            this.cmbST_Name.Location = new System.Drawing.Point(123, 60);
             this.cmbST_Name.Name = "cmbST_Name";
             this.cmbST_Name.Size = new System.Drawing.Size(91, 23);
             this.cmbST_Name.TabIndex = 40;
@@ -201,7 +202,7 @@
             "شامل",
             "شروع شود با",
             "برابر باشد با"});
-            this.cmbST_Address.Location = new System.Drawing.Point(123, 121);
+            this.cmbST_Address.Location = new System.Drawing.Point(123, 155);
             this.cmbST_Address.Name = "cmbST_Address";
             this.cmbST_Address.Size = new System.Drawing.Size(91, 23);
             this.cmbST_Address.TabIndex = 30;
@@ -216,7 +217,7 @@
             "شامل",
             "شروع شود با",
             "برابر باشد با"});
-            this.cmbST_Phone.Location = new System.Drawing.Point(123, 88);
+            this.cmbST_Phone.Location = new System.Drawing.Point(123, 122);
             this.cmbST_Phone.Name = "cmbST_Phone";
             this.cmbST_Phone.Size = new System.Drawing.Size(91, 23);
             this.cmbST_Phone.TabIndex = 30;
@@ -231,7 +232,7 @@
             "شامل",
             "شروع شود با",
             "برابر باشد با"});
-            this.cmbST_Mobile.Location = new System.Drawing.Point(123, 56);
+            this.cmbST_Mobile.Location = new System.Drawing.Point(123, 90);
             this.cmbST_Mobile.Name = "cmbST_Mobile";
             this.cmbST_Mobile.Size = new System.Drawing.Size(91, 23);
             this.cmbST_Mobile.TabIndex = 30;
@@ -241,7 +242,7 @@
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(214, 29);
+            this.label5.Location = new System.Drawing.Point(214, 63);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(23, 15);
             this.label5.TabIndex = 29;
@@ -252,7 +253,7 @@
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(214, 124);
+            this.label6.Location = new System.Drawing.Point(214, 158);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(37, 15);
             this.label6.TabIndex = 29;
@@ -263,7 +264,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(214, 91);
+            this.label1.Location = new System.Drawing.Point(214, 125);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(50, 15);
             this.label1.TabIndex = 29;
@@ -274,7 +275,7 @@
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(214, 59);
+            this.label3.Location = new System.Drawing.Point(214, 93);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(37, 15);
             this.label3.TabIndex = 29;
@@ -285,10 +286,9 @@
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.Controls.Add(this.chkCanEdit);
             this.panel2.Controls.Add(this.chkShowUpdateMessage);
-            this.panel2.Controls.Add(this.comboBox1);
             this.panel2.Location = new System.Drawing.Point(594, 4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(266, 89);
+            this.panel2.Size = new System.Drawing.Size(266, 51);
             this.panel2.TabIndex = 1;
             this.panel2.Visible = false;
             // 
@@ -319,23 +319,6 @@
             this.chkShowUpdateMessage.TabIndex = 10;
             this.chkShowUpdateMessage.Text = "نمایش پیغام اخطار قبل از ثبت تغییرات";
             this.chkShowUpdateMessage.UseVisualStyleBackColor = true;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "نمایش موارد غیرفعال",
-            "نمایش همه موارد",
-            "نمایش موارد فعال"});
-            this.comboBox1.Location = new System.Drawing.Point(8, 57);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(253, 25);
-            this.comboBox1.TabIndex = 15;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
             // 
             // btnImportDataFromExcel
             // 
@@ -410,12 +393,12 @@
             this.tsmiDelete});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(155, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(158, 92);
             // 
             // tsmiSetUserLevel
             // 
             this.tsmiSetUserLevel.Name = "tsmiSetUserLevel";
-            this.tsmiSetUserLevel.Size = new System.Drawing.Size(154, 22);
+            this.tsmiSetUserLevel.Size = new System.Drawing.Size(157, 22);
             this.tsmiSetUserLevel.Text = "تعیین سطح کاربر";
             this.tsmiSetUserLevel.Visible = false;
             this.tsmiSetUserLevel.Click += new System.EventHandler(this.TsmiSetUserLevel_Click);
@@ -423,7 +406,7 @@
             // tsmiChangePassword
             // 
             this.tsmiChangePassword.Name = "tsmiChangePassword";
-            this.tsmiChangePassword.Size = new System.Drawing.Size(154, 22);
+            this.tsmiChangePassword.Size = new System.Drawing.Size(157, 22);
             this.tsmiChangePassword.Text = "تغییر رمز ورود";
             this.tsmiChangePassword.Visible = false;
             this.tsmiChangePassword.Click += new System.EventHandler(this.TsmiChangePassword_Click_1);
@@ -431,7 +414,7 @@
             // tsmiLoginsHistory
             // 
             this.tsmiLoginsHistory.Name = "tsmiLoginsHistory";
-            this.tsmiLoginsHistory.Size = new System.Drawing.Size(154, 22);
+            this.tsmiLoginsHistory.Size = new System.Drawing.Size(157, 22);
             this.tsmiLoginsHistory.Text = "تاریخچه ورود";
             this.tsmiLoginsHistory.Visible = false;
             this.tsmiLoginsHistory.Click += new System.EventHandler(this.TsmiLoginsHistory_Click);
@@ -439,7 +422,7 @@
             // tsmiDelete
             // 
             this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(154, 22);
+            this.tsmiDelete.Size = new System.Drawing.Size(157, 22);
             this.tsmiDelete.Text = "حذف";
             this.tsmiDelete.Visible = false;
             this.tsmiDelete.Click += new System.EventHandler(this.TsmiDelete_Click);
@@ -474,6 +457,23 @@
             this.pictureBox3.TabIndex = 92;
             this.pictureBox3.TabStop = false;
             this.pictureBox3.Visible = false;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "نمایش موارد غیرفعال",
+            "نمایش همه موارد",
+            "نمایش موارد فعال"});
+            this.comboBox1.Location = new System.Drawing.Point(8, 29);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(249, 25);
+            this.comboBox1.TabIndex = 15;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
             // 
             // J2000_Users
             // 
@@ -516,7 +516,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.CheckBox chkCanEdit;
         private System.Windows.Forms.CheckBox chkShowUpdateMessage;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button btnImportDataFromExcel;
         private System.Windows.Forms.Button btnReturn;
         private System.Windows.Forms.Button btnDeleteAll;
@@ -536,5 +535,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiSetUserLevel;
         private System.Windows.Forms.ToolStripMenuItem tsmiLoginsHistory;
         private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
