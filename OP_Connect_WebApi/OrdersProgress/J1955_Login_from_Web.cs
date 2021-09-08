@@ -40,9 +40,9 @@ namespace OrdersProgress
 
             int login_type = radUseName.Checked ? 1 : 2;
             Models.User user = null;
-            //try
+            try
             {  user = await GetUser_by_Name_or_Mobile(login_type, txtNM.Text, txtPassword.Text); }
-            //catch { }
+            catch { }
 
             if (user == null)
             {
@@ -95,13 +95,17 @@ namespace OrdersProgress
 
             string response = await HttpClientExtensions.GetToken(Stack.API_Uri_start + "/Token"
                 , login_type, name_mobile, password);
-
+            //MessageBox.Show(response);
             if (!string.IsNullOrEmpty(response))
             {
                 Stack.token = response;
                 //MessageBox.Show(Stack.token);
-                user = await HttpClientExtensions.GetT<Models.User>(Stack.API_Uri_start_read
-                    + "/Users/0?user_name=" + name_mobile + "&login_type="+login_type,Stack.token);
+                try
+                {
+                    user = await HttpClientExtensions.GetT<Models.User>(Stack.API_Uri_start_read
+                        + "/Users/0?name_mobile=" + name_mobile + "&login_type=" + login_type, Stack.token);
+                }
+                catch { }
                 //MessageBox.Show(user.Real_Name);
             }
 

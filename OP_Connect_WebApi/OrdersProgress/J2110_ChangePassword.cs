@@ -71,10 +71,11 @@ namespace OrdersProgress
             Models.User user = null;
             if (Stack.Use_Web)
                 user = await HttpClientExtensions.GetT<Models.User>
-                    (Stack.API_Uri_start_read + "/Users/" + user_id, Stack.token);
+                    (Stack.API_Uri_start_read + "/Users/" + user_id+ "?user_name=a&login_type=0&remove_password=0", Stack.token);
             else
                 user = Program.dbOperations.GetUserAsync(user_id);
 
+           
             #region خطایابی
             if (user == null)
             {
@@ -116,17 +117,23 @@ namespace OrdersProgress
                 MessageBox.Show("رمز جدید با تکرار آن یکسان نمی باشد", "خطا");
                 return;
             }
+
+            if(textBox1.Text.Equals(textBox2.Text))
+            {
+                MessageBox.Show("رمز جدید نباید رمز فعلی یکسان باشد", "خطا");
+                return;
+            }
             #endregion
 
             user.Password = cryptographyProcessor.GenerateHash(textBox2.Text, Stack.Standard_Salt);
 
-            if(Stack.Use_Web)
+            if (Stack.Use_Web)
             {
-                var res = await HttpClientExtensions.PutAsJsonAsync<Models.User>(Stack.API_Uri_start
+                var res = await HttpClientExtensions.PutAsJsonAsync<Models.User>(Stack.API_Uri_start_read
                     + "/Users/" + user.Id, user, Stack.token);
                 if (!res.IsSuccessStatusCode)
                 {
-                    MessageBox.Show("خطا در تغییر رمز","",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    MessageBox.Show("خطا در تغییر رمز", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     panel1.Enabled = true;
                     return;
                 }

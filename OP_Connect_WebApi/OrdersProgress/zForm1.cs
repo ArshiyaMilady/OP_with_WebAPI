@@ -22,8 +22,8 @@ namespace OrdersProgress
             //MessageBox.Show(Stack.UserLevel_Type.ToString());
             //dgvData.DataSource = Program.dbOperations.GetAllCompaniesAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id);
-            //dgvData.DataSource = Program.dbOperations.GetAllUsersAsync(0);// Stack.Company_Id);
-            dgvData.DataSource = Program.dbOperations.GetAllUser_ULsAsync(0);// Stack.Company_Id);
+            dgvData.DataSource = Program.dbOperations.GetAllUsersAsync(0);// Stack.Company_Id);
+            //dgvData.DataSource = Program.dbOperations.GetAllUser_ULsAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUser_LevelsAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllOrder_Item_PropertiesAsync();
@@ -71,10 +71,13 @@ namespace OrdersProgress
             //        Program.dbOperations.DeleteCustomerAsync(customer);
             //}
 
-            foreach (Models.User_UL user_UL in Program.dbOperations.GetAllUser_ULsAsync(0)) //, 0))
+            foreach (Models.User user in Program.dbOperations.GetAllUsersAsync(0)) //, 0))
             {
-                if(user_UL.Company_Id == 0)
-                    Program.dbOperations.DeleteUser_ULAsync(user_UL);
+                if (user.User_Id_Creator == 0)
+                {
+                    user.User_Id_Creator = 1;
+                    Program.dbOperations.UpdateUserAsync(user);
+                }
             }
 
             #endregion

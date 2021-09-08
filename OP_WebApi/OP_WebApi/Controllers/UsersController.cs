@@ -32,7 +32,7 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/Users/5
-        // GET: api/Users/0?user_name=xxxx&login_type=y&remove_password=0
+        // GET: api/Users/0?name_mobile=xxxx&login_type=y&remove_password=0
         // login_type = 1 => name   /   login_type = 2 => mobile
         [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<User>> GetUser(long id,string name_mobile=null,int login_type=0,int remove_password=1)
@@ -99,7 +99,8 @@ namespace OP_WebApi.Controllers
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            //return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return await _context.User.FirstOrDefaultAsync(d => d.Name.Equals(user.Name));
         }
 
         // DELETE: api/Users/5

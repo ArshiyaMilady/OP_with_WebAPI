@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -72,7 +74,10 @@ namespace OrdersProgress
                         lstAllUUL = Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id);
                     }
 
-                    foreach (Models.User user in lstAllUsers)
+                    if(lstAllUsers.Any(d => d.User_Id_Creator == Stack.UserId))
+                        lstUsers.AddRange(lstAllUsers.Where(d => d.User_Id_Creator == Stack.UserId).ToList());
+
+                    foreach (Models.User user in lstAllUsers.Where(d => d.User_Id_Creator != Stack.UserId).ToList())
                     {
                         List<Models.User_UL> lstUUL = lstAllUUL.Where(d => d.User_Id == user.Id).ToList();
 
@@ -383,7 +388,7 @@ namespace OrdersProgress
             new J2110_ChangePassword(id).ShowDialog();
         }
 
-        private void BtnAddNew_Click(object sender, EventArgs e)
+        private async void BtnAddNew_Click(object sender, EventArgs e)
         {
             if (!chkCanEdit.Checked)
                 chkCanEdit.Checked = true;
@@ -395,33 +400,48 @@ namespace OrdersProgress
             //long index = Program.dbOperations.GetNewIndex_User();
             long ii = 1;
             string name = "شناسه " + ii;
-            while(Program.dbOperations.GetUserAsync(name)!=null)
-                name = "شناسه-"  + (ii++);
+            while (lstUsers.Any(d=>d.Name.Equals(name)))
+                name = "شناسه-" + (ii++);
 
-            Models.User user= new Models.User
+            Models.User user = new Models.User
             {
                 Company_Id = Stack.Company_Id,
                 //Index = index,
                 Name = name,
                 Real_Name = "؟",
-                DateTime_mi=DateTime.Now,
+                DateTime_mi = DateTime.Now,
                 DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
                 Active = true,
-                Password = new CryptographyProcessor().GenerateHash("1111",Stack.Standard_Salt),
+                Password = new CryptographyProcessor().GenerateHash("1111", Stack.Standard_Salt),
+                User_Id_Creator = Stack.UserId,
             };
-            
-            //if (index > 0)
-            {
-                Program.dbOperations.AddUser(user);
-                lstUsers.Add(user);
 
-                dgvData.DataSource = GetData();
-                ShowData();
-                int iNewRow = dgvData.Rows.Count - 1;
-                //dgvData["Id", iNewRow].Value = index;
-                dgvData.CurrentCell = dgvData["Real_Name", iNewRow];
-                dgvData.Focus();
+            if(Stack.Use_Web)
+            {
+                var response = await HttpClientExtensions.PostAsJsonAsync
+                    (Stack.API_Uri_start_read + "/Users", user, Stack.token);
+                //if (response.IsSuccessStatusCode)
+                //    MessageBox.Show(response.StatusCode.ToString());
+                //var responseString = response.Content.ReadAsStringAsync().Result;
+                ////var responseJson = JObject.Parse(responseString);
+                //// توکن در متغیری به نام توکن (به انگیسی) از طرف وب اِی پی آی دریافت می شود
+                ////return (string)responseJson["token"];
+                //Models.User u1 = JsonConvert.DeserializeObject<Models.User>(responseString);
+                //user.Id = u1.Id;
             }
+            else
+                user.Id = Program.dbOperations.AddUser(user);
+
+
+            //MessageBox.Show(user.Id.ToString());
+            lstUsers.Add(user);
+
+            dgvData.DataSource = await GetData();
+            ShowData();
+            int iNewRow = dgvData.Rows.Count - 1;
+            //dgvData["Id", iNewRow].Value = index;
+            dgvData.CurrentCell = dgvData["Real_Name", iNewRow];
+            dgvData.Focus();
 
             Application.DoEvents();
             if (!b2) chkShowUpdateMessage.Checked = true;

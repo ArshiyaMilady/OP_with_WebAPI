@@ -60,7 +60,7 @@ namespace OrdersProgress
             Stack.bx = false;
             if (Stack.Use_Web)
             {
-                if(!Stack_Methods.CheckForInternetConnection())
+                if (!Stack_Methods.CheckForInternetConnection() && !Stack.API_Uri_start.Contains("localhost"))
                 {
                     MessageBox.Show("عدم امکان اتصال به اینترنت", "خطا");
                     System.Environment.Exit(1);

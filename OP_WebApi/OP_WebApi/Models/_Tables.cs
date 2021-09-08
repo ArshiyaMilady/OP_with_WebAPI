@@ -70,6 +70,7 @@ namespace OP_WebApi.Models
         public bool IsDefault { get; set; }    // آیا این کاربر پیش فرض است؟
         //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
+        public long User_Id_Creator { get; set; }   // شناسۀ کسی که این کاربر را ایجاد کرده است
 
         // از این تاریخ به بعد کاربر غیر فعال می شود
         //public DateTime End_DateTime_mi { get; set; }   // زمان پایان فعالیت به میلادی
