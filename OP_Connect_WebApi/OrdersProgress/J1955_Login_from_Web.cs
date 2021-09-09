@@ -150,7 +150,7 @@ namespace OrdersProgress
             Stack.User_RealName = user.Real_Name;
             Stack.UserId = user.Id;
             Stack.Company_Id = user.Company_Id;
-            //MessageBox.Show(Stack.UserId.ToString(),"1");
+            //MessageBox.Show(Stack.token);
             //List<Models.User_UL> lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
             //    (Stack.API_Uri_start_read + "/User_UL?all=no&company_id="+Stack.Company_Id+"&user_id=" + user.Id, Stack.token);
             //if ((lstUUL!=null) && lstUUL.Any())
@@ -159,6 +159,7 @@ namespace OrdersProgress
                     (Stack.API_Uri_start_read + "/User_Levels/0?user_id=" + Stack.UserId, Stack.token);
                 Stack.UserLevel_Id = user_level.Id;
                 Stack.UserLevel_Type = user_level.Type;
+                //MessageBox.Show(Stack.UserLevel_Type.ToString(), "1");
                 // نام و سطح دسترسی کاربر
                 Stack.sx = user.Real_Name + " / " + user_level.Description;
             }

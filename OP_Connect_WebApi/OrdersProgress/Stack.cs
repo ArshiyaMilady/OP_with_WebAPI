@@ -23,8 +23,8 @@ namespace OrdersProgress
 
         public static string API_Uri_start = "http://www.opwa.somee.com/api";
         public static string API_Uri_start_read = "http://www.opwa.somee.com/api";
-        //public static string API_Uri_start = "http://localhost:6238/api";   // for POST
-        //public static string API_Uri_start_read = "https://localhost:44380/api";    // for GET, PUT
+        //public static string API_Uri_start = "http://localhost:6238/api";   // for POST without token
+        //public static string API_Uri_start_read = "https://localhost:44380/api";    // for GET, PUT, POST with token
 
         public static string token;
 
@@ -251,7 +251,7 @@ namespace OrdersProgress
             //return Nullable<T>();
         }
 
-        // نیاز معرفی مورد نیاز به حذف دارد
+        // نیاز به معرفی مورد دارد
         public static async Task<HttpResponseMessage> DeleteAsJsonAsync<T>
             (string requestUri, T data, string BeererAuthorizedToken = null)
         {
@@ -268,7 +268,7 @@ namespace OrdersProgress
             else return null;
         }
 
-        // نیاز معرفی مورد نیاز به حذف دارد و انحصارا بر اساس آدرس عمل می کند
+        // نیاز به معرفی مورد ندارد و انحصارا بر اساس آدرس عمل می کند
         public static async Task<HttpResponseMessage> DeleteAsJsonAsync2
             (string requestUri, string BeererAuthorizedToken = null)
         {

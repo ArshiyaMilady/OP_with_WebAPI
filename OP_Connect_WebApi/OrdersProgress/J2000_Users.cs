@@ -32,11 +32,10 @@ namespace OrdersProgress
             panel2.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk1000");
             tsmiSetUserLevel.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk1000");
             tsmiChangePassword.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk1000");
-            btnDeleteAll.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk1000");
             tsmiSetUserLevel.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk1000");
             tsmiLoginsHistory.Visible = Stack.UserLevel_Type != 0;
 
-            btnDeleteAll.Visible = (Stack.UserLevel_Type == 1);
+            btnDeleteAll.Visible = (Stack.UserLevel_Type == 1);// || Stack.lstUser_ULF_UniquePhrase.Contains("jk1000");
             btnAddNew.Visible = (Stack.UserLevel_Type == 1) || (Stack.UserLevel_Type == 2);
 
             dgvData.DataSource = await GetData();
@@ -63,7 +62,7 @@ namespace OrdersProgress
                     {
                         //MessageBox.Show("a10");
                         lstUL_See_ULs = await HttpClientExtensions.GetT<List<Models.UL_See_UL>>
-                            (Stack.API_Uri_start_read + "/UL_See_UL?company_id=" + Stack.Company_Id
+                            (Stack.API_Uri_start_read + "/UL_See_UL?all=no&company_id=" + Stack.Company_Id
                             + "&main_ul_id=" + Stack.UserLevel_Id, Stack.token);
                         ////MessageBox.Show("a20");
                         lstAllUsers = await HttpClientExtensions.GetT<List<Models.User>>
@@ -428,20 +427,21 @@ namespace OrdersProgress
             {
                 var response = await HttpClientExtensions.PostAsJsonAsync
                     (Stack.API_Uri_start_read + "/Users", user, Stack.token);
-                //if (response.IsSuccessStatusCode)
-                //    MessageBox.Show(response.StatusCode.ToString());
-                //var responseString = response.Content.ReadAsStringAsync().Result;
-                ////var responseJson = JObject.Parse(responseString);
-                //// توکن در متغیری به نام توکن (به انگیسی) از طرف وب اِی پی آی دریافت می شود
-                ////return (string)responseJson["token"];
-                //Models.User u1 = JsonConvert.DeserializeObject<Models.User>(responseString);
-                //user.Id = u1.Id;
+                if (!response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("اشکال در ثبت اطلاعات","خطا");
+                    return;
+                }
+                else
+                {
+                    var responseString = response.Content.ReadAsStringAsync().Result;
+                    Models.User u1 = JsonConvert.DeserializeObject<Models.User>(responseString);
+                    user.Id = u1.Id;
+                }
             }
             else
                 user.Id = Program.dbOperations.AddUser(user);
 
-
-            //MessageBox.Show(user.Id.ToString());
             lstUsers.Add(user);
 
             dgvData.DataSource = await GetData();
@@ -457,48 +457,52 @@ namespace OrdersProgress
 
         private void BtnSearch_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtST_Name.Text)
-                && string.IsNullOrWhiteSpace(txtST_Mobile.Text)
-                 && string.IsNullOrWhiteSpace(txtST_Phone.Text)
-                  && string.IsNullOrWhiteSpace(txtST_Address.Text))
-            {
-                //ShowData(false);
-                return;
-            }
+            //if (string.IsNullOrWhiteSpace(txtST_Name.Text)
+            //    && string.IsNullOrWhiteSpace(txtST_Mobile.Text)
+            //     && string.IsNullOrWhiteSpace(txtST_Phone.Text)
+            //      && string.IsNullOrWhiteSpace(txtST_Address.Text))
+            //{
+            //    //ShowData(false);
+            //    return;
+            //}
 
             panel1.Enabled = false;
             //dgvData.Visible = false;
             Application.DoEvents();
 
             //ShowData(false);
-            List<Models.User> lstUsers = (List<Models.User>)dgvData.DataSource;
-            //MessageBox.Show(lstItems.Count.ToString());
+            List<Models.User> lstUsers1 = (List<Models.User>)dgvData.DataSource;
 
-            //if (!string.IsNullOrWhiteSpace(txtST_Name.Text)
-            //   || !string.IsNullOrWhiteSpace(txtST_SmallCode.Text))
+            foreach (Control c in groupBox1.Controls)
             {
-                foreach (Control c in groupBox1.Controls)
+                //MessageBox.Show(c.Text);
+                if (c.Name.Length > 4)
                 {
-                    //MessageBox.Show(c.Text);
-                    if (c.Name.Length > 4)
-                    {
-                        if (c.Name.Substring(0, 5).Equals("txtST"))
-                            if (!string.IsNullOrWhiteSpace(c.Text))
-                            {
-                                lstUsers = SearchThis(lstUsers, c.Name);
-                                if ((lstUsers == null) || !lstUsers.Any()) break;
-                            }
-                    }
+                    if (c.Name.Substring(0, 5).Equals("txtST"))
+                        if (!string.IsNullOrWhiteSpace(c.Text))
+                        {
+                            lstUsers1 = SearchThis(lstUsers1, c.Name);
+                            if ((lstUsers1 == null) || !lstUsers1.Any()) break;
+                        }
                 }
             }
 
-            dgvData.DataSource = lstUsers;
+            switch (comboBox1.SelectedIndex)
+            {
+                case 0:  // کاربران غیرفعال
+                    lstUsers1 = lstUsers1.Where(d => !d.Active).ToList();
+                    break;
+                //case 1:  // همه کاربران
+                //    dgvData.DataSource = lstUsers1;
+                //    break;
+                case 2:  // کاربران فعال
+                    lstUsers1 = lstUsers1.Where(d => d.Active).ToList();
+                    break;
+            }
 
-            //System.Threading.Thread.Sleep(500);
+            dgvData.DataSource = lstUsers1;
             Application.DoEvents();
             panel1.Enabled = true;
-            //dgvData.Visible = true;
-
         }
 
         // جستجوی موردی
@@ -579,6 +583,7 @@ namespace OrdersProgress
 
         private async void BtnShowAll_Click(object sender, EventArgs e)
         {
+            comboBox1.SelectedIndex = 1;    // همه موارد
             dgvData.DataSource = await GetData();
         }
 

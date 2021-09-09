@@ -305,7 +305,7 @@ namespace OrdersProgress
 
         public void SetOrderLevels()
         {
-            List<Models.Order_Level> lstOL = Program.dbOperations.GetAllOrder_LevelsAsync(Stack.Company_Id,0);
+            List<Models.Order_Level> lstOL = Program.dbOperations.GetAllOrder_LevelsAsync(Stack.Company_Id,0).ToList();
             //if (!lstOL.Any()) return;   // اگر جدول خالی بود، اطلاعات زیر را اضافه کن
 
             int sequence = 0;
@@ -318,9 +318,11 @@ namespace OrdersProgress
                 {
                     Company_Id = Stack.Company_Id,
                     Sequence = sequence,
+                    RemovingLevel = true,
                     Description = "حذف سفارش", // "به طور کامل حذف شده است",
                     Enabled = true,
                     Type = 0,
+                    Description2 = "حذف شده است"
                 });
             }
 
@@ -331,10 +333,12 @@ namespace OrdersProgress
                 Program.dbOperations.AddOrder_Level(new Models.Order_Level
                 {
                     Company_Id = Stack.Company_Id,
+                    CancelingLevel = true,
                     Sequence = sequence,
                     Description = "لغو سفارش", // "سفارش کنسل شده است",
                     Enabled = true,
                     Type = 0,
+                    Description2 = "لغو شده است",
                 });
             }
 
@@ -347,9 +351,12 @@ namespace OrdersProgress
                 {
                     Company_Id = Stack.Company_Id,
                     Sequence = sequence,
+                    ReturningLevel = true,
                     Description = "برگشت سفارش",
                     Enabled = true,
                     Type = 0,
+                    Description2 = "برگشت شده است",
+                    MessageText = "برگشت",
                 });
             }
 
@@ -361,9 +368,13 @@ namespace OrdersProgress
                 {
                     Company_Id = Stack.Company_Id,
                     Sequence = sequence,
-                    Description = "در حال سفارش دهی",
+                    FirstLevel = true,
+                    OrderCanChange = true,
+                    Description = "تأیید اطلاعات سفارش",
                     Enabled = true,
                     Type = 0,
+                    Description2 = "در انتظار تأیید نهایی سفارش",
+                    MessageText = "تأیید نهایی کالاها",
                 });
             }
 
@@ -375,9 +386,12 @@ namespace OrdersProgress
                 {
                     Company_Id = Stack.Company_Id,
                     Sequence = sequence,
+                    OrderCanChange = true,
                     Description = "تأیید نهایی کالاها",
                     Enabled = true,
                     Type = 0,
+                    Description2 = "در انتظار ارسال به شرکت",
+                    MessageText = "ارسال سفارش به شرکت",
                 });
             }
 
@@ -389,9 +403,11 @@ namespace OrdersProgress
                 {
                     Company_Id = Stack.Company_Id,
                     Sequence = sequence,
-                    Description = "ارسال شده به شرکت",
+                    Description = "ارسال سفارش به شرکت",
                     Enabled = true,
                     Type = 0,
+                    Description2 = "در انتظار تأیید توسط واحد فروش",
+                    MessageText = "تأیید سفارش و ارجاع به واحد فروش",
                 });
             }
 
@@ -403,9 +419,156 @@ namespace OrdersProgress
                 {
                     Company_Id = Stack.Company_Id,
                     Sequence = sequence,
-                    Description = "تأیید شده توسط واحد فروش",
+                    Description = "تأیید سفارش توسط واحد فروش",
                     Enabled = true,
                     Type = 0,
+                    Description2 = "در انتظار تأیید توسط مهندسی فروش",
+                    MessageText = "تأیید سفارش و ارجاع به مهندسی فروش",
+                });
+            }
+
+            // تأیید شده توسط واحد
+            sequence = 800;
+            if (!lstOL.Any(d => d.Sequence == sequence))
+            {
+                Program.dbOperations.AddOrder_Level(new Models.Order_Level
+                {
+                    Company_Id = Stack.Company_Id,
+                    Sequence = sequence,
+                    Description = "تأیید سفارش توسط مهندس فروش",
+                    Enabled = true,
+                    Type = 0,
+                    Description2 = "در انتظار تأیید توسط واحد مالی",
+                    MessageText = "تأیید سفارش و ارجاع به واحد مالی",
+                });
+            }
+
+            // تأیید شده توسط واحد
+            sequence = 900;
+            if (!lstOL.Any(d => d.Sequence == sequence))
+            {
+                Program.dbOperations.AddOrder_Level(new Models.Order_Level
+                {
+                    Company_Id = Stack.Company_Id,
+                    Sequence = sequence,
+                    Description = "تأیید سفارش توسط واحد مالی",
+                    Enabled = true,
+                    Type = 0,
+                    Description2 = "در انتظار تولید",
+                    MessageText = "تأیید سفارش و ارجاع به برنامه ریزی",
+                });
+            }
+
+            // تأیید شده توسط واحد
+            sequence = 1000;
+            if (!lstOL.Any(d => d.Sequence == sequence))
+            {
+                Program.dbOperations.AddOrder_Level(new Models.Order_Level
+                {
+                    Company_Id = Stack.Company_Id,
+                    Sequence = sequence,
+                    Description = "تأیید سفارش توسط برنامه ریزی و دفتر فنی",
+                    Enabled = true,
+                    Type = 0,
+                    Description2 = "در حال تولید",
+                    MessageText = "تأیید سفارش و ارجاع جهت تولید",
+                });
+            }
+
+            // تأیید شده توسط واحد
+            sequence = 700;
+            if (!lstOL.Any(d => d.Sequence == sequence))
+            {
+                Program.dbOperations.AddOrder_Level(new Models.Order_Level
+                {
+                    Company_Id = Stack.Company_Id,
+                    Sequence = sequence,
+                    Description = "تأیید سفارش توسط واحد فروش",
+                    Enabled = true,
+                    Type = 0,
+                    Description2 = "",
+                    MessageText = "",
+                });
+            }
+
+            // تأیید شده توسط واحد
+            sequence = 1200;
+            if (!lstOL.Any(d => d.Sequence == sequence))
+            {
+                Program.dbOperations.AddOrder_Level(new Models.Order_Level
+                {
+                    Company_Id = Stack.Company_Id,
+                    Sequence = sequence,
+                    Description = "تکمیل تولید",
+                    Enabled = true,
+                    Type = 0,
+                    Description2 = "در حال ارسال سفارش به انبار",
+                    MessageText = "ارسال سفارش به انبار",
+                });
+            }
+
+            // تأیید شده توسط واحد
+            sequence = 1300;
+            if (!lstOL.Any(d => d.Sequence == sequence))
+            {
+                Program.dbOperations.AddOrder_Level(new Models.Order_Level
+                {
+                    Company_Id = Stack.Company_Id,
+                    Sequence = sequence,
+                    Description = "ورود سفارش به انبار",
+                    Enabled = true,
+                    Type = 0,
+                    Description2 = "در حال ارسال سفارش از انبار",
+                    MessageText = "اعلام خروج سفارش از انبار",
+                });
+            }
+
+            // تأیید شده توسط واحد
+            sequence = 1400;
+            if (!lstOL.Any(d => d.Sequence == sequence))
+            {
+                Program.dbOperations.AddOrder_Level(new Models.Order_Level
+                {
+                    Company_Id = Stack.Company_Id,
+                    Sequence = sequence,
+                    Description = "ارسال سفارش از انبار",
+                    Enabled = true,
+                    Type = 0,
+                    Description2 = "در حال انجام نصب",
+                    MessageText = "تکمیل نصب",
+                });
+            }
+
+            // تأیید شده توسط واحد
+            sequence = 1500;
+            if (!lstOL.Any(d => d.Sequence == sequence))
+            {
+                Program.dbOperations.AddOrder_Level(new Models.Order_Level
+                {
+                    Company_Id = Stack.Company_Id,
+                    Sequence = sequence,
+                    Description = "تکمیل نصب",
+                    Enabled = true,
+                    Type = 0,
+                    Description2 = "در حال تحویل سفارش به مشتری",
+                    MessageText = "تحویل قطعی",
+                });
+            }
+
+            // تأیید شده توسط واحد
+            sequence = 1600;
+            if (!lstOL.Any(d => d.Sequence == sequence))
+            {
+                Program.dbOperations.AddOrder_Level(new Models.Order_Level
+                {
+                    Company_Id = Stack.Company_Id,
+                    Sequence = sequence,
+                    LastLevel = true,
+                    Description = "تحویل قطعی",
+                    Enabled = true,
+                    Type = 0,
+                    Description2 = "تحویل قطعی شده است",
+                    //MessageText = "",
                 });
             }
 
@@ -591,8 +754,6 @@ namespace OrdersProgress
             }
         }
 
-
-
         private void TsmiUsers_Show_Change_Click(object sender, EventArgs e)
         {
             new J2000_Users().ShowDialog();
@@ -777,7 +938,7 @@ namespace OrdersProgress
         private void Initial_TabControl_Settings()
         {
             #region تب ابزارهای جانبی
-            if (!Stack.lstUser_ULF_UniquePhrase.Contains("jk0000"))
+            if (!Stack.lstUser_ULF_UniquePhrase.Contains("jk0000") && (Stack.UserLevel_Type!=1))
                 tabControl1.TabPages.Remove(tpInternalFeatures);
 
             grpUsers.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk0900");
@@ -785,42 +946,42 @@ namespace OrdersProgress
                 || Stack.lstUser_ULF_UniquePhrase.Contains("jk1000")
                 || Stack.lstUser_ULF_UniquePhrase.Contains("jk1020");
             //if (!Stack.lstUser_ULF_UniquePhrase.Contains("jk1000")) btnUsers_Show_Change.ShortcutKeys = Keys.None;
-            btnUsersLevels.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jk2000");
-            btnUserLevelsFeatures.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("dj1000");
+            btnUsersLevels.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk2000");
+            btnUserLevelsFeatures.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("dj1000");
 
-            grpOrdersFeatures.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jl3000");
-            btnOrdersLevels.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jl3100");
-            btnOrders_and_Details.Visible = Stack.UserLevel_Type == 1;
-            btnLoginsHistory.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk4000");
+            grpOrdersFeatures.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jl3000");
+            btnOrdersLevels.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jl3100");
+            btnOrders_and_Details.Visible = (Stack.UserLevel_Type == 1) || Stack.UserLevel_Type == 1;
+            btnLoginsHistory.Visible = (Stack.UserLevel_Type == 1) || (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk4000");
 
-            grpSettings.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jk6000");
-            btnSettings_Warehouse.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jk6100");
+            grpSettings.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk6000");
+            btnSettings_Warehouse.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jk6100");
             #endregion
 
             #region تب سفارشها
-            if (!Stack.lstUser_ULF_UniquePhrase.Contains("jm0000"))
+            if (!Stack.lstUser_ULF_UniquePhrase.Contains("jm0000") && (Stack.UserLevel_Type != 1))
                 tabControl1.TabPages.Remove(tpOrders);
 
-            btnNewOrder.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jm1000");
-            btnShowOrders.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jm2000");
-            btnCustomers.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jm3000");
-            btnOrdersPriority.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jm4000");
+            btnNewOrder.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jm1000");
+            btnShowOrders.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jm2000");
+            btnCustomers.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jm3000");
+            btnOrdersPriority.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jm4000");
             #endregion
 
             #region تب انبار
-            if (!Stack.lstUser_ULF_UniquePhrase.Contains("jq0000"))
+            if (!Stack.lstUser_ULF_UniquePhrase.Contains("jq0000") && (Stack.UserLevel_Type != 1))
                 tabControl1.TabPages.Remove(tpWarehouse);
 
-            grpWarehouse.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jq1000");
-            grpProducts.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jq2000");
-            btnWarehouseItems.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jq3000");
-            btnWarehouses.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jq4000");
-            btnWarehouse_RequestItems.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jq5000");
+            grpWarehouse.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jq1000");
+            grpProducts.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jq2000");
+            btnWarehouseItems.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jq3000");
+            btnWarehouses.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jq4000");
+            btnWarehouse_RequestItems.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jq5000");
 
-            grpProducts.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn0000");
-            btnProperties.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn1000");
-            btnItems.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn2000");
-            btnCategories.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn3000");
+            grpProducts.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn0000");
+            btnProperties.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn1000");
+            btnItems.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn2000");
+            btnCategories.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn3000");
             #endregion
 
             Application.DoEvents();

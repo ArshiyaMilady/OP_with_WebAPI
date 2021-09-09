@@ -34,6 +34,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnShowAll = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.txtST_Name = new System.Windows.Forms.TextBox();
             this.txtST_Address = new System.Windows.Forms.TextBox();
             this.txtST_Phone = new System.Windows.Forms.TextBox();
@@ -62,7 +63,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -134,8 +135,26 @@
             this.btnSearch.Size = new System.Drawing.Size(79, 26);
             this.btnSearch.TabIndex = 50;
             this.btnSearch.Text = "جستجو";
+            this.toolTip1.SetToolTip(this.btnSearch, "جستجو بر اساس جدولی مشاهده می نمایید، انجام می شود");
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.BtnSearch_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "نمایش موارد غیرفعال",
+            "نمایش همه موارد",
+            "نمایش موارد فعال"});
+            this.comboBox1.Location = new System.Drawing.Point(8, 29);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(249, 25);
+            this.comboBox1.TabIndex = 15;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
             // 
             // txtST_Name
             // 
@@ -393,12 +412,12 @@
             this.tsmiDelete});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(158, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(155, 92);
             // 
             // tsmiSetUserLevel
             // 
             this.tsmiSetUserLevel.Name = "tsmiSetUserLevel";
-            this.tsmiSetUserLevel.Size = new System.Drawing.Size(157, 22);
+            this.tsmiSetUserLevel.Size = new System.Drawing.Size(154, 22);
             this.tsmiSetUserLevel.Text = "تعیین سطح کاربر";
             this.tsmiSetUserLevel.Visible = false;
             this.tsmiSetUserLevel.Click += new System.EventHandler(this.TsmiSetUserLevel_Click);
@@ -406,7 +425,7 @@
             // tsmiChangePassword
             // 
             this.tsmiChangePassword.Name = "tsmiChangePassword";
-            this.tsmiChangePassword.Size = new System.Drawing.Size(157, 22);
+            this.tsmiChangePassword.Size = new System.Drawing.Size(154, 22);
             this.tsmiChangePassword.Text = "تغییر رمز ورود";
             this.tsmiChangePassword.Visible = false;
             this.tsmiChangePassword.Click += new System.EventHandler(this.TsmiChangePassword_Click_1);
@@ -414,7 +433,7 @@
             // tsmiLoginsHistory
             // 
             this.tsmiLoginsHistory.Name = "tsmiLoginsHistory";
-            this.tsmiLoginsHistory.Size = new System.Drawing.Size(157, 22);
+            this.tsmiLoginsHistory.Size = new System.Drawing.Size(154, 22);
             this.tsmiLoginsHistory.Text = "تاریخچه ورود";
             this.tsmiLoginsHistory.Visible = false;
             this.tsmiLoginsHistory.Click += new System.EventHandler(this.TsmiLoginsHistory_Click);
@@ -422,7 +441,7 @@
             // tsmiDelete
             // 
             this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(157, 22);
+            this.tsmiDelete.Size = new System.Drawing.Size(154, 22);
             this.tsmiDelete.Text = "حذف";
             this.tsmiDelete.Visible = false;
             this.tsmiDelete.Click += new System.EventHandler(this.TsmiDelete_Click);
@@ -457,23 +476,6 @@
             this.pictureBox3.TabIndex = 92;
             this.pictureBox3.TabStop = false;
             this.pictureBox3.Visible = false;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "نمایش موارد غیرفعال",
-            "نمایش همه موارد",
-            "نمایش موارد فعال"});
-            this.comboBox1.Location = new System.Drawing.Point(8, 29);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(249, 25);
-            this.comboBox1.TabIndex = 15;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
             // 
             // J2000_Users
             // 
@@ -536,5 +538,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiLoginsHistory;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

@@ -21,8 +21,8 @@ namespace OrdersProgress
         {
             //MessageBox.Show(Stack.UserLevel_Type.ToString());
             //dgvData.DataSource = Program.dbOperations.GetAllCompaniesAsync(0);// Stack.Company_Id);
-            //dgvData.DataSource = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id);
-            dgvData.DataSource = Program.dbOperations.GetAllUsersAsync(0);// Stack.Company_Id);
+            dgvData.DataSource = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id);
+            //dgvData.DataSource = Program.dbOperations.GetAllUsersAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUser_ULsAsync(0);// Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id);
             //dgvData.DataSource = Program.dbOperations.GetAllUser_LevelsAsync(0);// Stack.Company_Id);
@@ -55,8 +55,25 @@ namespace OrdersProgress
             //dgvData.DataSource = new ThisProject().AllSubRelations("KK_002");
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private async void Button1_Click(object sender, EventArgs e)
         {
+            #region UL_Feature :  SQLite => SQL Server
+            //foreach (Models.UL_Feature ulf in Program.dbOperations.GetAllUL_Features(1)) //, 0))
+            //{
+            //    Models.UL_Feature uf = new Models.UL_Feature
+            //    {
+            //        Company_Id = ulf.Company_Id,
+            //        Description=ulf.Description,
+            //        Unique_Phrase=ulf.Unique_Phrase,
+            //        Enabled=ulf.Enabled,
+            //    };
+            //    var res = await HttpClientExtensions.PostAsJsonAsync< Models.UL_Feature>
+            //        (Stack.API_Uri_start_read+ "/UL_Feature",uf,Stack.token);
+            //    //MessageBox.Show(ulf.Id.ToString());
+            //    //res.EnsureSuccessStatusCode();
+            //}
+            #endregion
+
             #region حذف تمام اطلاعات
             //foreach (Models.Order_Level order_Level in Program.dbOperations.GetAllOrder_LevelsAsync(0,0))
             //{
@@ -70,17 +87,7 @@ namespace OrdersProgress
             //    if(customer.Id<8)
             //        Program.dbOperations.DeleteCustomerAsync(customer);
             //}
-
-            foreach (Models.User user in Program.dbOperations.GetAllUsersAsync(1)) //, 0))
-            {
-                //if (user.User_Id_Creator == 0)
-                //{
-                //    user.User_Id_Creator = 1;
-                //    Program.dbOperations.UpdateUserAsync(user);
-                //}
-
-                //if (user.Id > 18) Program.dbOperations.DeleteUserAsync(user);
-            }
+            //MessageBox.Show(Program.dbOperations.GetAllUL_Features(1).Count.ToString());
 
             #endregion
 

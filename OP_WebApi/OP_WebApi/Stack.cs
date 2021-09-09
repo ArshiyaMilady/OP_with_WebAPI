@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
@@ -12,10 +14,11 @@ namespace OP_WebApi
 {
     public static class Stack
     {
+        public static string Standard_Salt = "d;lkjWeoj'l;ksDfok';lsdkovjmwEfl;kwikvxc.m,/Zviejkjds;flKjoremwa;lm";
         public static string ConstantKey = "d;lkjWeoj'l;ksDfok';lsdkovjmwEfl;kwikvxc.m,/Zviejkjds;flKjoremwa;lm";
         public static string HashKey = "S@m@nt@7615546"; // 7615546 xor 4814
 
-        public static long Company_Id = -1;
+        public static long Company_Id = 1;
 
 
     }
@@ -133,6 +136,97 @@ namespace OP_WebApi
         }
     }
 
+    static class Stack_Methods
+    {
+        public static DateTime DateTime_Miladi(DateTime dateTime)
+        {
+            return dateTime;
+
+            //DateTime d = dateTime;
+            //// 484,375ms
+            //d = new DateTime((d.Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond);
+            //// 1296,875ms
+            //d = d.AddMilliseconds(-d.Millisecond);
+            //return d;
+
+            //return dateTime.AddMilliseconds(-dateTime.Millisecond);
+
+            //DateTime dateTime = date_time;
+            //return new DateTime(
+            //    dateTime.Ticks - (dateTime.Ticks % TimeSpan.TicksPerSecond),
+            //    dateTime.Kind
+            //    );
+        }
+
+        public static string Miladi_to_Shamsi_YYYYMMDD(DateTime dtMiladi, string Between = "/")
+        {
+            var pc = new System.Globalization.PersianCalendar();
+            int iMonth = pc.GetMonth(dtMiladi);
+            string sMonth = (iMonth < 10) ? ("0" + iMonth) : iMonth.ToString();
+            int iDay = pc.GetDayOfMonth(dtMiladi);
+            string sDay = (iDay < 10) ? ("0" + iDay) : iDay.ToString();
+            return (pc.GetYear(dtMiladi).ToString() + Between + sMonth + Between + sDay);
+        }
+
+        public static string NowTime_HHMMSSFFF(string between = ":", bool HasMillisecond = true)
+        {
+            string sDT = DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss");
+            if (HasMillisecond)
+                sDT = sDT + ":" + DateTime.Now.Millisecond;
+            if (!between.Equals(":")) sDT = sDT.Replace(":", between);
+            return sDT;
+        }
+
+        // با توجه به دو تابع تاریخ و زمان، برای زمان امروز، رشته ای با فرمت زیر را بر میگرداند
+        // YYYY/MM/DD-HH:MM:SS
+        public static string DateTimeNow_Shamsi(string BetweenDate = "/", string BetweenTime = ":", bool HasMillisecond = false)
+        {
+            string sMiladi_to_Shamsi_YYYYMMDD = Miladi_to_Shamsi_YYYYMMDD(DateTime.Now, BetweenDate)
+                + "-" + NowTime_HHMMSSFFF(BetweenTime);
+            if (HasMillisecond) return sMiladi_to_Shamsi_YYYYMMDD;
+            else
+            {
+                // تعداد کاراکتر زمان بدون میلی ثانیه
+                int nTimeLength = 15 + 2 * BetweenDate.Length + 2 * BetweenTime.Length;
+                return sMiladi_to_Shamsi_YYYYMMDD.Substring(0, nTimeLength);
+            }
+        }
+
+        public static bool CheckForInternetConnection(int timeoutMs = 10000)
+        {
+            try
+            {
+                string n = CultureInfo.InstalledUICulture.Name;
+                //MessageBox.Show(n);
+                if (n.Length > 1)
+                {
+                    string url = null;
+                    switch (n.Substring(0, 2))
+                    {
+                        case "fa":
+                            url = "https://www.aparat.com";
+                            break;
+                        case "zh":
+                            url = "http://www.baidu.com";
+                            break;
+                        default:
+                            url = "https://www.google.com";
+                            break;
+                    }
+                    var request = (HttpWebRequest)WebRequest.Create(url);
+                    request.KeepAlive = false;
+                    request.Timeout = timeoutMs;
+                    using (var response = (HttpWebResponse)request.GetResponse())
+                        return true;
+                }
+                else return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
 
 
 

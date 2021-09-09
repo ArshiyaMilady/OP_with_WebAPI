@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,7 +15,7 @@ namespace OrdersProgress
     {
         // دسترسی هایی که کاربر بنا به سطح کاربری خود می تواند داشته باشد
         //List<Models.User_Level> lstUL_Result = new List<Models.User_Level>();
-        List<Models.User_Level> lstUL = new List<Models.User_Level>();
+        List<Models.User_Level> lstULs = new List<Models.User_Level>();
 
         public J2200_Users_Levels()
         {
@@ -23,47 +24,87 @@ namespace OrdersProgress
             Height = 500;
         }
 
-        private void J2200_Users_Levels_Shown(object sender, EventArgs e)
+        private async void J2200_Users_Levels_Shown(object sender, EventArgs e)
         {
             cmbST_Description.SelectedIndex = 0;
             panel2.Visible = (Stack.UserLevel_Type == 1) || (Stack.UserLevel_Type == 2)
                 || Stack.lstUser_ULF_UniquePhrase.Contains("jk2120");
             btnAddNew.Visible = (Stack.UserLevel_Type == 1) || (Stack.UserLevel_Type == 2)
                 || Stack.lstUser_ULF_UniquePhrase.Contains("jk2120");
+            tsmiDeleteAllFeatures.Visible = (Stack.UserLevel_Type == 1) || (Stack.UserLevel_Type == 2);
 
-            dgvData.DataSource = GetData();
+            if (Stack.Use_Web)
+                dgvData.DataSource = await GetData_web();
+            else
+                dgvData.DataSource = GetData();
+
             ShowData();
         }
 
-        private List<Models.User_Level> GetData()
+        private  List<Models.User_Level> GetData()
         {
-            if (Stack.UserLevel_Type == 0)
+            if (!lstULs.Any())
             {
-                MessageBox.Show(Stack.UserLevel_Type.ToString());
-
-                foreach (Models.UL_See_UL ul_see_ul in Program.dbOperations
-                    .GetAllUL_See_ULsAsync(Stack.Company_Id, Stack.UserLevel_Id))
+                if (Stack.UserLevel_Type == 0)
                 {
-                    Models.User_Level ul = Program.dbOperations.GetUser_LevelAsync(ul_see_ul.UL_Id);
-                    lstUL.Add(ul);
+                    List<Models.UL_See_UL> lstULSUL = Program.dbOperations
+                        .GetAllUL_See_ULsAsync(Stack.Company_Id, Stack.UserLevel_Id);
+                    List<Models.User_Level> lstUL = Program.dbOperations
+                        .GetAllUser_LevelsAsync(Stack.Company_Id);
+
+                    foreach (Models.UL_See_UL ul_see_ul in lstULSUL)
+                    {
+                        //Models.User_Level ul = lstUL.First(d => d.Id == ul_see_ul.UL_Id);
+                        lstULs.Add(lstUL.First(d => d.Id == ul_see_ul.UL_Id));
+                    }
+                }
+                else if (Stack.UserLevel_Type == 1)
+                    lstULs = Program.dbOperations.GetAllUser_LevelsAsync(0);// Stack.Company_Id,0).ToList();
+                else if (Stack.UserLevel_Type == 2)
+                    lstULs = Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id, 0)
+                        .Where(d => (d.Type != 1) && (d.Type != 2)).ToList();
+            }
+
+            if (radEnabledLevel.Checked) return lstULs.Where(d => d.Enabled).OrderByDescending(d => d.C_B1).ToList();
+            else if (radDisabledLevel.Checked) return lstULs.Where(d => !d.Enabled).OrderByDescending(d => d.C_B1).ToList();
+            else return lstULs.OrderByDescending(d => d.C_B1).ToList();
+        }
+
+        private async Task<List<Models.User_Level>> GetData_web()
+        {
+            if (!lstULs.Any())
+            {
+                List<Models.User_Level> lstAllUL = await HttpClientExtensions.GetT<List<Models.User_Level>>
+                   (Stack.API_Uri_start_read + "/User_Levels?all=yes", Stack.token);
+
+                if (Stack.UserLevel_Type == 0)
+                {
+                    List<Models.UL_See_UL> lstULSUL = await HttpClientExtensions.GetT<List<Models.UL_See_UL>>
+                        (Stack.API_Uri_start_read + "/UL_See_UL?all=no&company_id=" + Stack.Company_Id
+                        + "&main_ul_id=" + Stack.UserLevel_Id, Stack.token);
+
+                    lstAllUL = lstAllUL.Where(d=>d.Company_Id == Stack.Company_Id).Where(d => d.Enabled).ToList();
+
+                    foreach (Models.UL_See_UL ul_see_ul in lstULSUL)
+                    {
+                        //Models.User_Level ul = lstUL.First(d => d.Id == ul_see_ul.UL_Id);
+                        lstULs.Add(lstAllUL.First(d => d.Id == ul_see_ul.UL_Id));
+                    }
+                }
+                else
+                {
+                    if (Stack.UserLevel_Type == 1)
+                        lstULs = lstAllUL;
+                    else
+                    if (Stack.UserLevel_Type == 2)
+                        lstULs = lstAllUL.Where(d => d.Company_Id == Stack.Company_Id)
+                            .Where(d => (d.Type != 1) && (d.Type != 2)).ToList();
                 }
             }
-            else
-            {
-                if (Stack.UserLevel_Type == 1)
-                    lstUL = Program.dbOperations.GetAllUser_LevelsAsync(0);// Stack.Company_Id,0).ToList();
-                else if (Stack.UserLevel_Type == 2)
-                    lstUL = Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id, 0)
-                        .Where(d => (d.Type != 1)&&(d.Type != 2)).ToList();
-                else 
-                    lstUL = Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id, 0)
-                        .Where(d => d.Type == 0).ToList();
 
-            }
-
-            if (radEnabledLevel.Checked) return lstUL.Where(d => d.Enabled).OrderByDescending(d => d.C_B1).ToList();
-            else if (radDisabledLevel.Checked) return lstUL.Where(d => !d.Enabled).OrderByDescending(d => d.C_B1).ToList();
-            else return lstUL.OrderByDescending(d => d.C_B1).ToList();
+            if (radEnabledLevel.Checked) return lstULs.Where(d => d.Enabled).OrderByDescending(d => d.C_B1).ToList();
+            else if (radDisabledLevel.Checked) return lstULs.Where(d => !d.Enabled).OrderByDescending(d => d.C_B1).ToList();
+            else return lstULs.OrderByDescending(d => d.C_B1).ToList();
         }
 
         private void ShowData()
@@ -121,19 +162,43 @@ namespace OrdersProgress
             #endregion
         }
 
-        private void BtnAddNew_Click(object sender, EventArgs e)
+        private async void BtnAddNew_Click(object sender, EventArgs e)
         {
-            long index = Program.dbOperations.AddUser_Level(new Models.User_Level
+            long id = -1;
+            Models.User_Level user_level = new Models.User_Level
             {
                 Company_Id = Stack.Company_Id,
                 Description = "؟",
                 Unit_Name="؟",
                 Enabled = true,
-            });
+            };
 
-            if (index > 0)
+            if (Stack.Use_Web)
             {
-                dgvData.DataSource = GetData();
+                var response = await HttpClientExtensions.PostAsJsonAsync
+                    (Stack.API_Uri_start_read + "/User_Levels", user_level, Stack.token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("اشکال در ثبت اطلاعات", "خطا");
+                    return;
+                }
+                else
+                {
+                    var responseString = response.Content.ReadAsStringAsync().Result;
+                    Models.User_Level ul1 = JsonConvert.DeserializeObject<Models.User_Level>(responseString);
+                    id = ul1.Id;
+                }
+            }
+            else id = Program.dbOperations.AddUser_Level(user_level);
+
+            if (id > 0)
+            {
+                user_level.Id = id;
+                lstULs.Add(user_level);
+
+                if (Stack.Use_Web) dgvData.DataSource = await GetData_web();
+                else dgvData.DataSource = GetData();
+
                 ShowData();
                 int iNewRow = dgvData.Rows.Count - 1;
                 dgvData.CurrentCell = dgvData["Description", iNewRow];
@@ -165,8 +230,8 @@ namespace OrdersProgress
             if (e.Button == MouseButtons.Right)
             {
                 /////// Do something ///////
-                long ul_id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-                Models.User_Level user_level = Program.dbOperations.GetUser_LevelAsync(ul_id);
+                //long ul_id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+                //Models.User_Level user_level = lstULs.First(d => d.Id == ul_id);// Program.dbOperations.GetUser_LevelAsync(ul_id);
                 tsmiDelete.Visible = (Stack.UserLevel_Type == 1) || (Stack.UserLevel_Type == 2);// || (user_level.Type == 0);
 
                 // انتخاب سلولی که روی آن کلیک راست شده است
@@ -184,16 +249,18 @@ namespace OrdersProgress
             InitailValue = dgvData[e.ColumnIndex, e.RowIndex].Value;//.ToString();
         }
 
-        private void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private async void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
             if (dgvData[e.ColumnIndex, e.RowIndex].Value == InitailValue) return;
 
             bool bSaveChange = true;   // آیا تغییر ذخیره شود؟
+            panel1.Enabled = !Stack.Use_Web;
+            pictureBox3.Visible = Stack.Use_Web;
 
-            long index = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
+            long id = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
 
-            Models.User_Level user_level = Program.dbOperations.GetUser_LevelAsync(index);
+            Models.User_Level user_level = lstULs.First(d => d.Id == id);//  Program.dbOperations.GetUser_LevelAsync(id);
             switch (dgvData.Columns[e.ColumnIndex].Name)
             {
                 case "Enabled":
@@ -224,7 +291,20 @@ namespace OrdersProgress
 
             if (bSaveChange)
             {
-                Program.dbOperations.UpdateUser_LevelAsync(user_level);
+                if (Stack.Use_Web)
+                {
+                    var res = await HttpClientExtensions.PutAsJsonAsync<Models.User_Level>
+                        (Stack.API_Uri_start_read + "/User_Levels/" + user_level.Id, user_level, Stack.token);
+                    if (res.IsSuccessStatusCode)
+                    {
+                        pictureBox3.Visible = false;
+                        panel1.Enabled = true;
+                    }
+                    //MessageBox.Show((await HttpClientExtensions.PutAsJsonAsync<Models.User>(Stack.API_Uri_start
+                    //    + "/Users/"+user.Id, user, Stack.token)).StatusCode.ToString());
+                }
+                else
+                    Program.dbOperations.UpdateUser_LevelAsync(user_level);
             }
             else dgvData[e.ColumnIndex, e.RowIndex].Value = InitailValue;
         }
@@ -238,16 +318,24 @@ namespace OrdersProgress
             if (MessageBox.Show("با انجام این عمل ، تمام روابط سطوح کاربری و جداول دیگر از بین خواهد رفت"
                 + "\n" + "آیا از حذف تمام سطوح اطمینان دارید؟", "اخطار 2"
                 , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
-
-            Program.dbOperations.DeleteAllUser_LevelsAsync();
-            Program.dbOperations.DeleteAllUser_Level_UL_FeaturesAsync();
-            Program.dbOperations.DeleteAllUser_ULsAsync();
-            dgvData.DataSource = GetData();
+            if (Stack.Use_Web)
+            {
+                MessageBox.Show("This feature is not currently supported on the web!");
+            }
+            else
+            {
+                Program.dbOperations.DeleteAllUser_LevelsAsync();
+                Program.dbOperations.DeleteAllUser_Level_UL_FeaturesAsync();
+                Program.dbOperations.DeleteAllUser_ULsAsync();
+                dgvData.DataSource = GetData();
+            }
         }
 
-        private void RadAll_CheckedChanged(object sender, EventArgs e)
+        private async void RadAll_CheckedChanged(object sender, EventArgs e)
         {
-            dgvData.DataSource = GetData();
+            if (Stack.Use_Web) dgvData.DataSource = await GetData_web();
+            else dgvData.DataSource = GetData();
+
         }
 
         private void BtnReturn_Click(object sender, EventArgs e)
@@ -263,7 +351,7 @@ namespace OrdersProgress
             panel1.Enabled = false;
             Application.DoEvents();
 
-            List<Models.User_Level> lstULs = (List<Models.User_Level>)dgvData.DataSource;
+            List<Models.User_Level> lstULs1 = (List<Models.User_Level>)dgvData.DataSource;
             {
                 foreach (Control c in groupBox1.Controls)
                 {
@@ -273,14 +361,14 @@ namespace OrdersProgress
                         if (c.Name.Substring(0, 5).Equals("txtST"))
                             if (!string.IsNullOrWhiteSpace(c.Text))
                             {
-                                lstULs = SearchThis(lstULs, c.Name);
-                                if ((lstULs == null) || !lstULs.Any()) break;
+                                lstULs1 = SearchThis(lstULs1, c.Name);
+                                if ((lstULs1 == null) || !lstULs1.Any()) break;
                             }
                     }
                 }
             }
 
-            dgvData.DataSource = lstULs;
+            dgvData.DataSource = lstULs1;
 
             Application.DoEvents();
             panel1.Enabled = true;
@@ -307,27 +395,36 @@ namespace OrdersProgress
             return null;
         }
 
-        private void TsmiDelete_Click(object sender, EventArgs e)
+        private async void TsmiDelete_Click(object sender, EventArgs e)
         {
-            long ul_index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-            Models.User_Level user_level = Program.dbOperations.GetUser_LevelAsync(ul_index);
+            long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+            Models.User_Level user_level = Program.dbOperations.GetUser_LevelAsync(id);
 
             if (MessageBox.Show("آیا از حذف این سطح اطمینان دارید؟"
                , user_level.Description, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                != DialogResult.Yes) return;
             panel1.Enabled = false;
 
-            // حذف رابطه این سطح کاربری با تمام کاربران دارای این سطح
-            foreach (Models.User_UL user_ul in Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id,0,ul_index).ToList())
+            bool Delete_OK = false;
+            if (Stack.Use_Web)
+            {
+                Delete_OK = await HttpClientExtensions.DeleteAsJsonAsync2(Stack.API_Uri_start
+                     + "/User_Levels/" + id, Stack.token) != null;
+            }
+            else
+            {
+                // حذف رابطه این سطح کاربری با تمام کاربران دارای این سطح
+                foreach (Models.User_UL user_ul in Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, 0, id).ToList())
                     Program.dbOperations.DeleteUser_ULAsync(user_ul);
-            // حذف تمام رابطه های این سطح با امکانات آن
-            foreach (Models.User_Level_UL_Feature ul_ulf in Program.dbOperations
-                .GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id, ul_index,0))
+                // حذف تمام رابطه های این سطح با امکانات آن
+                foreach (Models.User_Level_UL_Feature ul_ulf in Program.dbOperations
+                    .GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id, id, 0))
                     Program.dbOperations.DeleteUser_Level_UL_Feature(ul_ulf);
-            // حذف سطح کاربری
-            Program.dbOperations.DeleteUser_LevelAsync(user_level);
+                // حذف سطح کاربری
+                Delete_OK = Program.dbOperations.DeleteUser_LevelAsync(user_level)>0;
 
-            dgvData.DataSource = GetData();
+                dgvData.DataSource = GetData();
+            }
 
             pictureBox1.Visible = true;
             Application.DoEvents();
@@ -347,16 +444,21 @@ namespace OrdersProgress
             new J2220_User_Level_UL_Feature(user_level_index).ShowDialog();
         }
 
-        private void TsmiDeleteAllFeatures_Click(object sender, EventArgs e)
+        private async void TsmiDeleteAllFeatures_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("آیا از حذف همه امکانات این سطح اطمینان دارید؟"
                 , "اخطار", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                 == DialogResult.No) return;
 
-            long user_level_index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+            long user_level_id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
 
-            Program.dbOperations.DeleteAllUser_Level_UL_Features
-                (Program.dbOperations.GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id, user_level_index));
+            if(Stack.Use_Web)
+            {
+
+            }
+            else
+                Program.dbOperations.DeleteAllUser_Level_UL_Features
+                    (Program.dbOperations.GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id, user_level_id));
             pictureBox1.Visible = true;
             Application.DoEvents();
             timer1.Enabled = true;
@@ -386,9 +488,10 @@ namespace OrdersProgress
             new J2310_UL_Request_Categories(user_level_index).ShowDialog();
         }
 
-        private void BtnShowAll_Click(object sender, EventArgs e)
+        private async void BtnShowAll_Click(object sender, EventArgs e)
         {
-            dgvData.DataSource = GetData();
+            if (Stack.Use_Web) dgvData.DataSource = await GetData_web();
+            else dgvData.DataSource = GetData();
         }
 
 

@@ -74,8 +74,11 @@ namespace OP_WebApi.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlite("DataSource=System.SQLite.DB.db3");
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                //optionsBuilder.UseSqlite("DataSource=System.SQLite.DB.db3");
+                optionsBuilder.UseSqlServer(@"workstation id=OrderPDB.mssql.somee.com;packet size=4096;user id=mehdy_ra_SQLLogin_1;pwd=dxcgx7o16c;data source=OrderPDB.mssql.somee.com;persist security info=False;initial catalog=OrderPDB"); 
+                //optionsBuilder.UseSqlServer(@"Data Source=OrderPDB.mssql.somee.com;Initial Catalog=OrderPDB;User ID=mehdy_ra_SQLLogin_1; Password=dxcgx7o16c;integrated security=True;MultipleActiveResultSets=True;"); // ;User ID=OS_adminuser; Password=Sgp#5857");// ;user id=arshy2_SQLLogin_1;pwd=xj2aamlsj7;");
+                //optionsBuilder.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=OrderPDB;User ID=AdminUser; Password=Admin#Database;integrated security=True;MultipleActiveResultSets=True;"); // ;User ID=OS_adminuser; Password=Sgp#5857");// ;user id=arshy2_SQLLogin_1;pwd=xj2aamlsj7;");
             }
         }
 

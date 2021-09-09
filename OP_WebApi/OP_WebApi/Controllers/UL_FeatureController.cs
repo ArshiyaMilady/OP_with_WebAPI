@@ -22,22 +22,23 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/UL_Feature?company_Id=xxx&EnableType=yyy&ul_Id=zzz
-        [HttpGet, Authorize]
-        public async Task<ActionResult<IEnumerable<UL_Feature>>> GetUL_Feature(long company_Id,int EnableType,long ul_Id=-1)
+        [HttpGet]//, Authorize]
+        public async Task<ActionResult<IEnumerable<UL_Feature>>> GetUL_Feature
+            (string all = "yes", long company_Id = 0, int EnableType = 0, long ul_Id = -1)
         {
-            if(company_Id == 0)
-                return await _context.UL_Feature.ToListAsync();
+            if (all.Equals("yes"))
+            { return await _context.UL_Feature.ToListAsync(); }
             else
             {
-                List<UL_Feature> lstULF = await _context.UL_Feature.Where(d=>d.Company_Id == company_Id).ToListAsync();
+                List<UL_Feature> lstULF = await _context.UL_Feature.Where(d => d.Company_Id == company_Id).ToListAsync();
                 if (EnableType == 1)
                     lstULF = lstULF.Where(d => d.Enabled).ToList();
                 else if (EnableType == -1)
-                    lstULF=lstULF.Where(d => !d.Enabled).ToList();
+                    lstULF = lstULF.Where(d => !d.Enabled).ToList();
 
                 // بنا به سطح کاربر، امکانات را مشخص کرده و بر می گرداند
                 #region دسترسی های کاربر با توجه به سطح کاربری
-                if (ul_Id>0)
+                if (ul_Id > 0)
                 {
                     int ul_type = _context.User_Level.FirstOrDefault(d => d.Id == ul_Id).Type;
                     if (ul_type != 1)

@@ -19,6 +19,8 @@ namespace OP_WebApi.Controllers
         public UsersController(TableContext context)
         {
             _context = context;
+
+
         }
 
         // GET: api/Users
@@ -117,7 +119,7 @@ namespace OP_WebApi.Controllers
                 _context.User.Remove(user);
                 await _context.SaveChangesAsync();
             }
-            // حذف تمام کاربران یک شرکت
+            // حذف تمام کاربران یک شرکت به غیر از ادمین واقعی
             else if ((id==0) && (company_id>0))
             {
                 user = await _context.User.Where(d=>!d.Name.Equals("real_admin")).FirstAsync();

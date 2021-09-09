@@ -513,12 +513,12 @@ namespace OrdersProgress.Models
             return lstULF;
         }
 
-        //public List<UL_Feature> GetAllUL_Features(long company_index)
-        //{
-        //    var res = _db.Table<UL_Feature>().Where(b => b.Company_Id == 0).ToListAsync();
-        //    res.Wait();
-        //    return res.Result;
-        //}
+        public List<UL_Feature> GetAllUL_Features(long company_index)
+        {
+            var res = _db.Table<UL_Feature>().Where(b => b.Company_Id == company_index).ToListAsync();
+            res.Wait();
+            return res.Result;
+        }
 
         public UL_Feature GetUL_FeatureAsync(long id)
         {

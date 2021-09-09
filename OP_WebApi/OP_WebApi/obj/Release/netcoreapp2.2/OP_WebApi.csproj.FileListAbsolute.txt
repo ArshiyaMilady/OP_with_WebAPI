@@ -12,3 +12,17 @@ E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp
 E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.RazorTargetAssemblyInfo.cache
 E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.dll
 E:\BOX\D\OrderProgress\OrdersProgress\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.pdb
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\bin\Release\netcoreapp2.2\OP_WebApi.deps.json
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\bin\Release\netcoreapp2.2\OP_WebApi.runtimeconfig.json
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\bin\Release\netcoreapp2.2\OP_WebApi.runtimeconfig.dev.json
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\bin\Release\netcoreapp2.2\OP_WebApi.dll
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\bin\Release\netcoreapp2.2\OP_WebApi.pdb
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.csprojAssemblyReference.cache
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.csproj.CoreCompileInputs.cache
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.RazorAssemblyInfo.cache
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.RazorAssemblyInfo.cs
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.AssemblyInfoInputs.cache
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.AssemblyInfo.cs
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.RazorTargetAssemblyInfo.cache
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.dll
+D:\Desktop\BOX\Personal\D\OrderProgress\OP_with_WebAPI\OP_WebApi\OP_WebApi\obj\Release\netcoreapp2.2\OP_WebApi.pdb
