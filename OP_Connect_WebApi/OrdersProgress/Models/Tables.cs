@@ -7,11 +7,9 @@ using System.Text;
 
 namespace OrdersProgress.Models
 {
-
-
     public class Company
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
 
         public bool Active { get; set; }    // آیا شرکت اجازه فعالیت دارد؟
@@ -23,11 +21,11 @@ namespace OrdersProgress.Models
         public string Mobile { get; set; }  // شماره همراه رابط
         public string Phone { get; set; }       // تلفن ثابت رابط شرکت
         public string EMail { get; set; }       // ایمیل شرکت
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
 
         // از این تاریخ به بعد کاربر غیر فعال می شود
-        public DateTime End_DateTime_mi { get; set; }   // زمان پایان فعالیت به میلادی
+        public string End_DateTime_mi { get; set; } //public DateTime End_DateTime_mi { get; set; }   // زمان پایان فعالیت به میلادی
         public string End_DateTime_sh { get; set; }   // زمان پایان فعالیت به شمسی
 
         // false : رزرو کالاها از انبار به صورت دستی
@@ -50,7 +48,7 @@ namespace OrdersProgress.Models
 
     public class User
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
@@ -68,11 +66,12 @@ namespace OrdersProgress.Models
         public long UserLevel_Id { get; set; }     // شناسۀ سطح دسترسی کاربر
         public string UserLevel_Description { get; set; }     // شرح سطح دسترسی کاربر
         public bool IsDefault { get; set; }    // آیا این کاربر پیش فرض است؟
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
         public long User_Id_Creator { get; set; }   // شناسۀ کسی که این کاربر را ایجاد کرده است
+
         // از این تاریخ به بعد کاربر غیر فعال می شود
-        public DateTime End_DateTime_mi { get; set; }   // زمان پایان فعالیت به میلادی
+        public string End_DateTime_mi { get; set; } //public DateTime End_DateTime_mi { get; set; }   // زمان پایان فعالیت به میلادی
         public string End_DateTime_sh { get; set; }   // زمان پایان فعالیت به شمسی
         public string User_Domain { get; set; }   // like  :  SGPCO\mehdi.rahimi
         public string Description { get; set; }
@@ -92,14 +91,14 @@ namespace OrdersProgress.Models
     // هر سطح کاربری چه کاربران دیگری را در فرم سطوح کاربران ببیند؟
     public class LoginHistory
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         //public long Index { get; set; }
         public long Company_Id { get; set; }
 
         public long User_Id { get; set; }
         public string User_RealName { get; set; }
-        public DateTime DateTime_mi { get; set; }
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }
         public string Date_sh { get; set; } // تاریخ ورود
         public string Time { get; set; }    // ساعت ورود
     }
@@ -107,7 +106,7 @@ namespace OrdersProgress.Models
     // User Level سطوح کاربری
     public class User_Level
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         public bool C_B1 { get; set; }  // فیلد کمکی
@@ -126,7 +125,7 @@ namespace OrdersProgress.Models
     // هر سطح کاربری چه کاربران دیگری را در فرم سطوح کاربران ببیند؟
     public class UL_See_UL
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         public bool C_B1 { get; set; }  // فیلد کمکی
@@ -138,25 +137,19 @@ namespace OrdersProgress.Models
     // UL = User_Level هر کاربر می تواند دارای یک یا چند سطح کاربری باشد
     public class User_UL
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
-
-        [ForeignKey("User")]
+        //public long Index { get; set; }
         public long User_Id { get; set; }
-        //public User User { get; set; }
-
-        [ForeignKey("User_Level")]
         public long UL_Id { get; set; }
-        //public User_Level User_Level { get; set; }
-
         public string UL_Description { get; set; }
     }
 
     // امکانات کاربری به صورت کامل در این جدول ثبت می شوند
     public class UL_Feature
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         public bool C_B1 { get; set; }  // فیلد کمکی
@@ -169,7 +162,7 @@ namespace OrdersProgress.Models
     // تعریف امکانات هر سطح کاربری = ارتباط هر سطح با امکانات آن
     public class User_Level_UL_Feature
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         public long User_Level_Id { get; set; }  // شناسه سطح کاربری
@@ -182,7 +175,7 @@ namespace OrdersProgress.Models
     // و در صورتیکه این درخواست نیاز به تأیید سرپرست داشته باشد، سطح کاربری سرپرست باید مشخص شود
     public class UL_Request_Category
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         //public long Index { get; set; }
         public long Company_Id { get; set; }
@@ -197,7 +190,7 @@ namespace OrdersProgress.Models
 
     public class User_File
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -226,9 +219,10 @@ namespace OrdersProgress.Models
         // کد  سفارش که به صورت منحصر بفرد تولید می شود
         // User_Id + DateTime  در شروع این کد عبارت  است از
         public string Index { get; set; }  // منحصربفرد
+
         public string Customer_Index { get; set; }   // نام خریدار
         public string Customer_Name { get; set; }   // نام خریدار
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string Date_sh { get; set; }         // تاریخ ثبت به شمسی
         public string Time { get; set; }            // زمان ثبت به شمسی
 
@@ -260,10 +254,11 @@ namespace OrdersProgress.Models
         public bool C_B3 { get; set; }
     }
 
+
     // مراحلی که از ابتدا تا انتها برای یک سفارش تعریف می شود
     public class Order_Level
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         public bool C_B1 { get; set; }  //  کمکی
@@ -293,7 +288,7 @@ namespace OrdersProgress.Models
     // در صورت بازگشت سفارش در هر مرحله، سفارش به کدام مرحله می تواند برود؟
     public class Order_Level_on_Returning
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -306,7 +301,7 @@ namespace OrdersProgress.Models
     // تفاوت با تاریخچه: در صورت یک یا چند برگشت سفارش ، مراحل را می توان از این جدول حذف نمود
     public class Order_OL
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -318,7 +313,7 @@ namespace OrdersProgress.Models
     // پیش نیازهای یک مرحله از سفارش را بر اساس مراحل دیگر تعریف میکند
     public class OL_Prerequisite
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -330,7 +325,7 @@ namespace OrdersProgress.Models
     // چه سطح کاربرانی می توانند چه مراحلی را تأیید نمایید
     public class OL_UL
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -342,7 +337,7 @@ namespace OrdersProgress.Models
     // هر سطح کاربری امکان مشاهده چه مراحلی از سفارش را دارد
     public class UL_See_OL
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -356,7 +351,7 @@ namespace OrdersProgress.Models
     // با توجه به جدول زیر سفارش می تواند وارد مرحله ی جدید شود
     public class Order_History
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -370,7 +365,7 @@ namespace OrdersProgress.Models
         public long OrderLevel_Id { get; set; }   //آخرین مرحله ای که سفارش گذرانده است
         public string OrderLevel_Description { get; set; }  // شرح مرحله ای که سفارش گذرانده است
 
-        public DateTime DateTime_mi { get; set; }   // زمان انجام مرحله به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان انجام مرحله به میلادی
         public string DateTime_sh { get; set; }     // زمان انجام مرحله به شمسی
 
         // اگر نیاز به ذکر توضیحی باشد مانند علت بازگشتی و ... ، این توضیح در فیلد ذخیره می شود
@@ -391,7 +386,7 @@ namespace OrdersProgress.Models
     // ارتباط سفارش با کالاهای آن اولویتهای سفارش ها سفارشها با چه ترتیبی تولید یا با چه ترتیبی از انبار خارج شوند
     public class OrderPriority
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -422,7 +417,7 @@ namespace OrdersProgress.Models
     // تا بتوان کسری آنها را به صورت دقیق مشخص نمود
     public class Order_StockItem
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
@@ -464,7 +459,7 @@ namespace OrdersProgress.Models
 
     public class Order_Item
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -505,7 +500,7 @@ namespace OrdersProgress.Models
     // ارتباط سفارش با کالاها و مشخصات هر کالا
     public class Order_Item_Property
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -547,13 +542,13 @@ namespace OrdersProgress.Models
     // رابطه بین تجمیع سفارشها و سفارشهای درون آنرا نگه می دارد
     public class Collection
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
         //public long Index { get; set; } // شناسه منحصربفرد که باید در شرکت به خود بگیرد
         public bool IsCompleted { get; set; }   // آیا کامل شده است؟
-        public DateTime DateTime_mi { get; set; }   // زمان تجمیع سفارشها
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان تجمیع سفارشها
         public string DateTime_sh { get; set; }   // زمان به شمسی
 
         public long PreviousLevel_Index { get; set; }   // آخرین مرحله ای که سفارش گذرانده است
@@ -578,7 +573,7 @@ namespace OrdersProgress.Models
     // بسیار مفید است
     public class OrdersCollection
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -603,7 +598,7 @@ namespace OrdersProgress.Models
     // شده باشند، در جدول زیر ثبت می شود که از کالای آ ، 7 عدد درخواست شده است
     public class Collection_Item
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -629,7 +624,7 @@ namespace OrdersProgress.Models
     // در یک مجموعه سفارش ، چه فعالیتهایی وجود دارد و از هر فعالیت چند درصد پیشرفت کرده است
     public class Collection_Action
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -674,7 +669,7 @@ namespace OrdersProgress.Models
     // تاریخچۀ پیشرفت فعالیتهای یک مجموعه سفارش 
     public class Collection_Action_History
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -688,7 +683,7 @@ namespace OrdersProgress.Models
         public bool Confirm_LineManager { get; set; }   // تأیید سرپرست تولید
         public bool Confirm_QC { get; set; }    // تأیید کنترل کیفی
 
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
 
         public string C_S1 { get; set; }
@@ -705,7 +700,7 @@ namespace OrdersProgress.Models
 
     public class Order_Attachment
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -718,7 +713,7 @@ namespace OrdersProgress.Models
 
     public class File
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
@@ -726,19 +721,19 @@ namespace OrdersProgress.Models
         public byte[] Content { get; set; }     // محتوای فایل 
         public string OriginalFileName { get; set; }    // نام ابتدایی فایل
         public string Description { get; set; }
-        public DateTime DateTime_mi { get; set; }   // زمان وارد کردن فایل به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان وارد کردن فایل به میلادی
         public string DateTime_sh { get; set; }   // زمان وارد کردن فایل به شمسی
         public bool Enable { get; set; }    // آیا فایل قابل استفاده است
     }
 
     public class Customer
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
         // کد خریدار که به صورت منحصر بفرد تولید می شود
-        // UserId + DateTime  در شروع این کد عبارت  است از
+        // UserIndex + DateTime  در شروع این کد عبارت  است از
         public string Index { get; set; }  // منحصربفرد
         // 101 : شناسه کسی که نام خریدار را ثبت می کند. در ابتدا این شناسه مربوط می شود به کارمند شرکت
         public long User_Id { get; set; }
@@ -765,7 +760,7 @@ namespace OrdersProgress.Models
     // ارتباط خریدار با سفارش هایش
     public class Order_Customer
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -777,7 +772,7 @@ namespace OrdersProgress.Models
     // پیش فاکتور
     public class Proforma
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
@@ -792,7 +787,7 @@ namespace OrdersProgress.Models
         public string Order_Index { get; set; }
         public long Order_Id { get; set; }   // شناسه سفارش که در دیتابیس مرکزی مشخص می شود
         public string Order_ProformaNo { get; set; }   // شماره پیش فاکتور که توسط واحد مالی (در دیتابیس مرکزی) مشخص می شود
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
         //public int Agent_Id { get; set; }   // شناسه نماینده / عاملیت / غیره
         //public string Agent_Name { get; set; }   // نام نماینده / عاملیت / غیره
@@ -845,7 +840,7 @@ namespace OrdersProgress.Models
     // در این جدول هر ردیف از پیش فاکتور یک رکورد است
     public class Proforma_Row
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -886,7 +881,7 @@ namespace OrdersProgress.Models
     // تعریف نمود و در هر سفارش به صورت مختص آن برای کالاهای آن به مشخصه ها مقدار داد
     public class Property
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         public bool C_B1 { get; set; }  // از این فیلد استفاده نشود. برای کارهای مختلف استفاده می گردد
@@ -921,7 +916,7 @@ namespace OrdersProgress.Models
     // دسته هر محصول را مشخص می کند. مانند : درب، چارچوب، یراق،کمد و غیره
     public class Category
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; } // شناسه 
@@ -936,7 +931,7 @@ namespace OrdersProgress.Models
     // کالا : رجوع به فایل اکسل کدها و موجودی انبار
     public class Item
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         public long Category_Id { get; set; }    // شناسه دسته
@@ -1011,7 +1006,7 @@ namespace OrdersProgress.Models
     // تمام فایلهای مرتبط با کالایی را می توان در این جدول مشخص نمود
     public class Item_File
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1025,7 +1020,7 @@ namespace OrdersProgress.Models
     // ارتباط کالا با مشخصه ها
     public class Item_Property
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1042,7 +1037,7 @@ namespace OrdersProgress.Models
     // OPC ارتباط بین کالاها و 
     public class Item_OPC
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1054,7 +1049,7 @@ namespace OrdersProgress.Models
     // ماژول ها : کالایی که ساخته شده از چند کالای دیگر است
     public class Module
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1069,7 +1064,7 @@ namespace OrdersProgress.Models
     // فعالیتها
     public class Action
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
@@ -1095,7 +1090,7 @@ namespace OrdersProgress.Models
     // OPC :  ترکیبی از فعالیتها
     public class OPC
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
@@ -1120,7 +1115,7 @@ namespace OrdersProgress.Models
     // OPC ارتباط بین فعالیتها و 
     public class OPC_Acions
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1138,7 +1133,7 @@ namespace OrdersProgress.Models
     // واحد ها و پیمانکاران
     public class Unit
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
@@ -1163,7 +1158,7 @@ namespace OrdersProgress.Models
     // هر پیمانکار چه فعالیتهایی را می تواند انجام دهد؟
     public class Unit_Acion
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1174,7 +1169,7 @@ namespace OrdersProgress.Models
     //  انبارها : در صورتیکه بیش از چند انبار وجود داشته باشد
     public class Warehouse
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
@@ -1200,7 +1195,7 @@ namespace OrdersProgress.Models
     // درخواستهای کالا از انبار
     public class Warehouse_Request
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1210,7 +1205,7 @@ namespace OrdersProgress.Models
         public string Unit_Name { get; set; }   // توسط سطح کاربری کاربر، واحد آن مشخص می شود
         public long User_Id { get; set; }    // شناسه کاربر درخواست کننده
         public string User_Name { get; set; }
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
         public string Description { get; set; } // توضیحات
         public string Status_Description { get; set; } // آخرین شرحی که برای درخواست داده می شود. مانند علت عدم تأیید یا غیره
@@ -1225,7 +1220,7 @@ namespace OrdersProgress.Models
         //public string Manager_Confirmer_Name { get; set; }    // نام مدیر تأیید کننده
         #endregion
 
-        public bool Request_Canceled{ get; set; }   // درخواست توسط سرپرستی کنسل شده است
+        public bool Request_Canceled { get; set; }   // درخواست توسط سرپرستی کنسل شده است
         public bool Sent_to_Warehouse { get; set; } // مراحل تأیید درخواست کامل شده و درخواست به انبار ارسال گردید
         public bool Request_Ready_to_Get { get; set; }   // درخواست آماده تحویل می باشد
         public bool Request_Completed { get; set; } // درخواست توسط انبار تحویل داده شد
@@ -1234,7 +1229,7 @@ namespace OrdersProgress.Models
     // ردیف های موجود در حواله یا رسید انبار
     public class Warehouse_Request_Row
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public bool C_B1 { get; set; }  // کمکی
         public long Company_Id { get; set; }
@@ -1268,7 +1263,7 @@ namespace OrdersProgress.Models
 
     public class Warehouse_Request_History
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1279,7 +1274,7 @@ namespace OrdersProgress.Models
 
         // اگر نیاز به ذکر توضیحی باشد مانند علت عدم تأیید و ... ، این توضیح در فیلد ذخیره می شود
         public string Description { get; set; }
-        public DateTime DateTime_mi { get; set; }   // زمان انجام به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان انجام به میلادی
         public string Date_sh { get; set; }     // تاریخ انجام به شمسی
         public string Time { get; set; }        // زمان انجام به شمسی
     }
@@ -1287,7 +1282,7 @@ namespace OrdersProgress.Models
     // سند رسید یا حواله انبار
     public class Warehouse_Remittance
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
 
@@ -1296,7 +1291,7 @@ namespace OrdersProgress.Models
         public int Warehouse_Id { get; set; }   // شناسه انبار
         public string User_Id { get; set; }  // شناسه ثبت کننده حواله
         public string User_Name { get; set; }  // نام ثبت کننده حواله
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
 
         // 100 : رسید ورود
@@ -1334,7 +1329,7 @@ namespace OrdersProgress.Models
     // تاریخچه سند - در صورت نیاز به تأیید های مختلف در این جا مراحل ثبت می شوند
     public class Warehouse_Remittance_History
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1343,14 +1338,14 @@ namespace OrdersProgress.Models
         public string User_Name { get; set; }     // نام شخصی که عملی را انجام داده است
         public long User_Level_Id { get; set; }    // شناسۀ شخصی که عملی را انجام داده است
         public string Description { get; set; }
-        public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
+        public string DateTime_mi { get; set; } //public DateTime DateTime_mi { get; set; }   // زمان ثبت به میلادی
         public string DateTime_sh { get; set; }   // زمان ثبت به شمسی
     }
 
     // ردیف های موجود در حواله یا رسید انبار
     public class Warehouse_Remittance_Row
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1385,7 +1380,7 @@ namespace OrdersProgress.Models
     // مراکز هزینه
     public class CostCenter
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
@@ -1398,12 +1393,14 @@ namespace OrdersProgress.Models
     // درخواست خرید
     public class PurchaseRequest
     {
-        [PrimaryKey, AutoIncrement]
+        //[PrimaryKey, AutoIncrement]
         public long Id { get; set; }
         public long Company_Id { get; set; }
         //public long Index { get; set; }
         public string Description { get; set; }
     }
+
+
 
 
 

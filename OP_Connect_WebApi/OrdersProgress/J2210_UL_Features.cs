@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,29 +13,55 @@ namespace OrdersProgress
 {
     public partial class J2210_UL_Features : X210_ExampleForm_Normal
     {
+        List<Models.UL_Feature> lstULFs = new List<Models.UL_Feature>();
+        
         public J2210_UL_Features()
         {
             InitializeComponent();
+
+            //btnDeleteAll.Visible = !Stack.Use_Web;
         }
 
-        private void J2210_UL_Features_Shown(object sender, EventArgs e)
+        private async void J2210_UL_Features_Shown(object sender, EventArgs e)
         {
             cmbST_Unique_Phrase.SelectedIndex = 0;
             cmbST_Description.SelectedIndex = 0;
 
-            dgvData.DataSource = GetData();
+            dgvData.DataSource = await GetData();
             ShowData();
             ColorDgv();
+
+            Application.DoEvents();
+            panel1.Enabled = true;
         }
 
-        private List<Models.UL_Feature> GetData()
+        private async Task<List<Models.UL_Feature>> GetData()
         {
-            int nEnableType = 1;
-            if (radDisabled.Checked) nEnableType = -1;
-            if (radAll.Checked) nEnableType = 0;
+            if (!lstULFs.Any())
+            {
+                if (Stack.Use_Web)
+                    lstULFs = await HttpClientExtensions.GetT<List<Models.UL_Feature>>
+                        (Stack.API_Uri_start_read + "UL_Feature?all=no&company_Id=" + Stack.Company_Id
+                        + "&EnableType=0&ul_Id=" + Stack.UserLevel_Id, Stack.token);
+                else
+                {
+                    lstULFs = Program.dbOperations.GetAllUL_FeaturesAsync(Stack.Company_Id, 0);
+                    if (Stack.UserLevel_Type == 2)
+                        lstULFs = lstULFs.Where(d => !d.Unique_Phrase.Substring(0, 1).Equals("d")).ToList();
+                    else if (Stack.UserLevel_Type != 1) lstULFs = new List<Models.UL_Feature>();
+                }
+            }
 
-            return Program.dbOperations.GetAllUL_FeaturesAsync
-                (Stack.Company_Id, nEnableType).OrderBy(d=>d.Unique_Phrase).ToList();
+            // do not use 'else'
+            if (!lstULFs.Any())
+            {
+                lstULFs = lstULFs.OrderBy(d => d.Unique_Phrase).ToList();
+
+                if (radEnabled.Checked) return lstULFs.Where(d => d.Enabled).ToList();
+                else if (radDisabled.Checked) return lstULFs.Where(d => !d.Enabled).ToList();
+            }
+
+            return lstULFs;
         }
 
         private void ShowData()
@@ -81,7 +108,7 @@ namespace OrdersProgress
                 row.DefaultCellStyle.BackColor = Color.Yellow;
         }
 
-        private void BtnAddNew_Click(object sender, EventArgs e)
+        private async void BtnAddNew_Click(object sender, EventArgs e)
         {
             if (!chkCanEdit.Checked)
                 chkCanEdit.Checked = true;
@@ -92,18 +119,41 @@ namespace OrdersProgress
 
             //long index = Program.dbOperations.GetNewIndex_UL_Feature();
 
-            long index = Program.dbOperations.AddUL_Feature(new Models.UL_Feature
+            long id = -1;
+
+            Models.UL_Feature ulf = new Models.UL_Feature
             {
                 Company_Id = Stack.Company_Id,
                 //Index = index,
                 Unique_Phrase = "x",// + index,
                 Description = "؟",
                 Enabled=true,
-            });
+            };
 
-            if (index > 0)
+            if (Stack.Use_Web)
             {
-                dgvData.DataSource = GetData();
+                var response = await HttpClientExtensions.PostAsJsonAsync
+                    (Stack.API_Uri_start_read + "/UL_Feature", ulf, Stack.token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("اشکال در ثبت اطلاعات", "خطا");
+                    return;
+                }
+                else
+                {
+                    var responseString = response.Content.ReadAsStringAsync().Result;
+                    Models.UL_Feature ulf1 = JsonConvert.DeserializeObject<Models.UL_Feature>(responseString);
+                    id = ulf1.Id;
+                }
+            }
+            else id= Program.dbOperations.AddUL_Feature(ulf);
+
+            if (id > 0)
+            {
+                ulf.Id = id;
+                lstULFs.Add(ulf);
+
+                dgvData.DataSource = await GetData();
                 ColorDgv();
                 ShowData();
                 int iNewRow = dgvData.Rows.Count - 1;
@@ -154,7 +204,7 @@ namespace OrdersProgress
             InitailValue = dgvData[e.ColumnIndex, e.RowIndex].Value;//.ToString();
         }
 
-        private void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private async void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             bool bSaveChange = true;   // آیا تغییر ذخیره شود؟
             bool bEnbaled_Changed = false;
@@ -168,9 +218,12 @@ namespace OrdersProgress
                 return;
             }
 
-            long index = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
+            panel1.Enabled = !Stack.Use_Web;
+            pictureBox3.Visible = Stack.Use_Web;
 
-            Models.UL_Feature ul_feature = Program.dbOperations.GetUL_FeatureAsync(index);
+            long id = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
+
+            Models.UL_Feature ul_feature = lstULFs.Find(d => d.Id == id);// Program.dbOperations.GetUL_FeatureAsync(id);
             switch (dgvData.Columns[e.ColumnIndex].Name)
             {
                 case "Unique_Phrase":
@@ -200,19 +253,46 @@ namespace OrdersProgress
 
             if (bSaveChange)
             {
-                Program.dbOperations.UpdateUL_FeatureAsync(ul_feature);
+                if (Stack.Use_Web)
+                {
+                    var res = await HttpClientExtensions.PutAsJsonAsync
+                        (Stack.API_Uri_start_read + "/UL_Feature/" + ul_feature.Id, ul_feature, Stack.token);
+                    if (res.IsSuccessStatusCode)
+                    {
+                        pictureBox3.Visible = false;
+                        panel1.Enabled = true;
+                    }
+                }
+                else
+                    Program.dbOperations.UpdateUL_FeatureAsync(ul_feature);
 
                 #region اگر فعال بودن امکانی تغییر نماید
                 if (bEnbaled_Changed)
                 {
                     panel1.Enabled = false;
                     Application.DoEvents();
-                    foreach(Models.User_Level_UL_Feature ul_ulf in Program
-                        .dbOperations.GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id,0,0)
-                        .Where(d=>d.UL_Feature_Id == ul_feature.Id).ToList())
+
+                    List<Models.User_Level_UL_Feature> lstULULF = new List<Models.User_Level_UL_Feature>();
+
+                    if (Stack.Use_Web)
+                    {
+                        lstULULF = await HttpClientExtensions.GetT<List<Models.User_Level_UL_Feature>>
+                            (Stack.API_Uri_start_read + "/User_Level_UL_Feature?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+                    }
+                    else
+                        lstULULF = Program.dbOperations.GetAllUser_Level_UL_FeaturesAsync(Stack.Company_Id, 0, 0);
+
+                    lstULULF = lstULULF.Where(d => d.UL_Feature_Id == ul_feature.Id).ToList();
+
+                    foreach (Models.User_Level_UL_Feature ul_ulf in lstULULF)
                     {
                         ul_ulf.UL_Feature_Enabled = ul_feature.Enabled;
-                        Program.dbOperations.UpdateUser_Level_UL_FeatureAsync(ul_ulf);
+
+                        if (Stack.Use_Web)
+                            await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                                + "/User_Level_UL_Feature", ul_feature, Stack.token);
+                        else
+                            Program.dbOperations.UpdateUser_Level_UL_FeatureAsync(ul_ulf);
                     }
                     Application.DoEvents();
                     panel1.Enabled = true;
@@ -227,18 +307,26 @@ namespace OrdersProgress
 
         private void BtnDeleteAll_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("آیا از حذف همه سطوح اطمینان دارید؟"
-                , "اخطار", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                == DialogResult.No) return;
+            if (Stack.Use_Web)
+            {
+                MessageBox.Show("این امکان فعال نمی باشد");
+                return;
+            }
+            else
+            {
+                if (MessageBox.Show("آیا از حذف همه سطوح اطمینان دارید؟"
+                    , "اخطار", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                    == DialogResult.No) return;
 
-            if (MessageBox.Show("با انجام این عمل ، تمام روابط سطوح کاربری و جداول دیگر از بین خواهد رفت"
-                + "\n" + "آیا از حذف تمام سطوح اطمینان دارید؟", "اخطار 2"
-                , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+                if (MessageBox.Show("با انجام این عمل ، تمام روابط سطوح کاربری و جداول دیگر از بین خواهد رفت"
+                    + "\n" + "آیا از حذف تمام سطوح اطمینان دارید؟", "اخطار 2"
+                    , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
 
-            Program.dbOperations.DeleteAllUL_FeaturesAsync();
-            Program.dbOperations.DeleteAllUser_Level_UL_FeaturesAsync();
-            dgvData.DataSource = GetData();
-            ColorDgv();
+                Program.dbOperations.DeleteAllUL_FeaturesAsync();
+                Program.dbOperations.DeleteAllUser_Level_UL_FeaturesAsync();
+                dgvData.DataSource = GetData();
+                ColorDgv();
+            }
         }
 
         private void BtnReturn_Click(object sender, EventArgs e)
@@ -310,17 +398,23 @@ namespace OrdersProgress
             return null;
         }
 
-        private void tsmiDelete_Click(object sender, EventArgs e)
+        private async void tsmiDelete_Click(object sender, EventArgs e)
         {
-            long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-            Models.UL_Feature uL_Feature = Program.dbOperations.GetUL_FeatureAsync(index);
+            long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+            Models.UL_Feature uL_Feature = lstULFs.Find(d => d.Id == id);// Program.dbOperations.GetUL_FeatureAsync(id);
 
             if (MessageBox.Show("آیا از حذف این قابلیت اطمینان دارید؟"
                , uL_Feature.Unique_Phrase, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                == DialogResult.No) return;
 
-            Program.dbOperations.DeleteUL_FeatureAsync(uL_Feature);
-            dgvData.DataSource = GetData();
+            if(Stack.Use_Web)
+                await HttpClientExtensions.DeleteAsJsonAsync2(Stack.API_Uri_start_read
+                    + "/User_Level_UL_Feature/"+ id, Stack.token);
+            else
+                Program.dbOperations.DeleteUL_FeatureAsync(uL_Feature);
+
+            lstULFs.Remove(uL_Feature);
+            dgvData.DataSource = await GetData();
             ColorDgv();
 
             pictureBox1.Visible = true;
@@ -345,9 +439,9 @@ namespace OrdersProgress
             ColorDgv();
         }
 
-        private void BtnShowAll_Click(object sender, EventArgs e)
+        private async void BtnShowAll_Click(object sender, EventArgs e)
         {
-            dgvData.DataSource = GetData();
+            dgvData.DataSource = await GetData();
             ColorDgv();
         }
 

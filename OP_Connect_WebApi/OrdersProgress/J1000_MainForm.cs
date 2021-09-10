@@ -207,7 +207,7 @@ namespace OrdersProgress
                 {
                     Real_Name = "داریا نگاره هوشمند",
                     Active = true,
-                    DateTime_mi = DateTime.Now,
+                    DateTime_mi = DateTime.Now.ToString(),
                     DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
                 }) ;
         }
@@ -243,9 +243,9 @@ namespace OrdersProgress
                     Active = true,
                     //User_Level = Stack.UserLevel_Admin,
                     UserLevel_Description = "ادمین واقعی",
-                    DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now),
+                    DateTime_mi = DateTime.Now.ToString(),
                     DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
-                    End_DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now.AddYears(10)),
+                    End_DateTime_mi = DateTime.Now.AddYears(10).ToString(),
                     End_DateTime_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now.AddYears(10))
                         + Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 5),
 
@@ -595,9 +595,9 @@ namespace OrdersProgress
                     Active = true,
                     //User_Level = Stack.UserLevel_Supervisor1,
                     UserLevel_Description = "ادمین",
-                    DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now),
+                    DateTime_mi = DateTime.Now.ToString(),
                     DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
-                    End_DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now.AddYears(10)),
+                    End_DateTime_mi = DateTime.Now.AddYears(10).ToString(),
                     End_DateTime_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now.AddYears(10))
                         + Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 5),
 
@@ -617,9 +617,9 @@ namespace OrdersProgress
                     Active = true,
                     //User_Level = Stack.UserLevel_Supervisor1,
                     UserLevel_Description = "کاربر ارشد",
-                    DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now),
+                    DateTime_mi = DateTime.Now.ToString(),
                     DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
-                    End_DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now.AddYears(10)),
+                    End_DateTime_mi = DateTime.Now.AddYears(10).ToString(),
                     End_DateTime_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now.AddYears(10))
                         + Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 5),
 
@@ -638,9 +638,9 @@ namespace OrdersProgress
                     Active = true,
                     //User_Level = Stack.UserLevel_Supervisor1,
                     UserLevel_Description = "کاربر اتوماتیک",
-                    DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now),
+                    DateTime_mi = DateTime.Now.ToString(),
                     DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
-                    End_DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now.AddYears(10)),
+                    End_DateTime_mi = DateTime.Now.AddYears(10).ToString(),
                     End_DateTime_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now.AddYears(10))
                         + Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 5),
 
@@ -660,9 +660,9 @@ namespace OrdersProgress
                     Active = true,
                     //User_Level = Stack.UserLevel_Agent,
                     UserLevel_Description = "سرپرست فروش",
-                    DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now),
+                    DateTime_mi = DateTime.Now.ToString(),
                     DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
-                    End_DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now.AddYears(10)),
+                    End_DateTime_mi = DateTime.Now.AddYears(10).ToString(),
                     End_DateTime_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now.AddYears(10))
                         + Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 5),
 
@@ -682,9 +682,9 @@ namespace OrdersProgress
                     Active = true,
                     //User_Level = Stack.UserLevel_Agent,
                     UserLevel_Description = "کارشناس فروش",
-                    DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now),
+                    DateTime_mi = DateTime.Now.ToString(),
                     DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
-                    End_DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now.AddYears(10)),
+                    End_DateTime_mi = DateTime.Now.AddYears(10).ToString(),
                     End_DateTime_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now.AddYears(10))
                         + Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 5),
 
@@ -704,9 +704,9 @@ namespace OrdersProgress
                     Active = true,
                     //User_Level = Stack.UserLevel_Agent,
                     UserLevel_Description = "عاملیت 1",
-                    DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now),
+                    DateTime_mi = DateTime.Now.ToString(),
                     DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
-                    End_DateTime_mi = Stack_Methods.DateTime_Miladi(DateTime.Now.AddYears(10)),
+                    End_DateTime_mi = DateTime.Now.AddYears(10).ToString(),
                     End_DateTime_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now.AddYears(10))
                         + Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 5),
 

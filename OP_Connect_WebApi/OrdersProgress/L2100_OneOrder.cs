@@ -376,7 +376,7 @@ namespace OrdersProgress
                 order.PreviousLevel_Id = 0;
                 order.CurrentLevel_Id = first_level_id; // new ThisProject().Next_OrderLevel_Ides(OrderIndex).First();
                 order.Level_Description = Program.dbOperations.GetOrder_LevelAsync(first_level_id).Description2;
-                order.DateTime_mi = DateTime.Now;
+                order.DateTime_mi = DateTime.Now.ToString();
                 order.Date_sh = sDateTime_sh.Substring(0, 10);
                 order.Time = sDateTime_sh.Substring(11, 5);
                 #endregion

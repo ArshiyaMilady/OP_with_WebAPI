@@ -21,8 +21,8 @@ namespace OP_WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/UL_Feature?company_Id=xxx&EnableType=yyy&ul_Id=zzz
-        [HttpGet]//, Authorize]
+        // GET: api/UL_Feature?all=vvv&company_Id=xxx&EnableType=yyy&ul_Id=zzz
+        [HttpGet, Authorize]
         public async Task<ActionResult<IEnumerable<UL_Feature>>> GetUL_Feature
             (string all = "yes", long company_Id = 0, int EnableType = 0, long ul_Id = -1)
         {
@@ -113,7 +113,8 @@ namespace OP_WebApi.Controllers
             _context.UL_Feature.Add(uL_Feature);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUL_Feature", new { id = uL_Feature.Id }, uL_Feature);
+            return uL_Feature;
+            //return CreatedAtAction("GetUL_Feature", new { id = uL_Feature.Id }, uL_Feature);
         }
 
         // DELETE: api/UL_Feature/5

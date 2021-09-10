@@ -1007,7 +1007,7 @@ namespace OrdersProgress
                 Content = new ThisProject().ConvertImageToByteArray(file),
                 OriginalFileName = Path.GetFileName(file),
                 Description = "تصویر کالای " + item_code,
-                DateTime_mi = DateTime.Now,
+                DateTime_mi = DateTime.Now.ToString(),
                 DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
                 Enable = true,
             }) ;

@@ -76,6 +76,7 @@
             this.btnDeleteAll.TabIndex = 94;
             this.btnDeleteAll.Text = "حذف تمام رابطه ها";
             this.btnDeleteAll.UseVisualStyleBackColor = true;
+            this.btnDeleteAll.Visible = false;
             this.btnDeleteAll.Click += new System.EventHandler(this.BtnDeleteAll_Click);
             // 
             // btnReturn
@@ -112,14 +113,14 @@
             this.dgvData.Size = new System.Drawing.Size(530, 262);
             this.dgvData.TabIndex = 93;
             // 
-            // J2202_UL_See_ULs
+            // J2202_UL_See_UL_Orders
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnReturn;
             this.ClientSize = new System.Drawing.Size(554, 333);
             this.Controls.Add(this.panel1);
-            this.Name = "J2202_UL_See_ULs";
+            this.Name = "J2202_UL_See_UL_Orders";
             this.Text = "J2202_UL_See_ULs";
             this.Shown += new System.EventHandler(this.J2202_UL_See_UL_Orders_Shown);
             this.panel1.ResumeLayout(false);

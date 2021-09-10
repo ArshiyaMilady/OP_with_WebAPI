@@ -12,20 +12,21 @@ namespace OrdersProgress
 {
     public partial class J2204_User_UL : X210_ExampleForm_Normal
     {
-        long user_index;
+        long user_id;
         List<Models.User_Level> lstUL = new List<Models.User_Level>();
 
         public J2204_User_UL(long _user_index)
         {
             InitializeComponent();
 
-            user_index = _user_index;
-            Text = Text + " - " + Program.dbOperations.GetUserAsync(user_index).Real_Name;
+            user_id = _user_index;
+            Text = Text + " - " + Program.dbOperations.GetUserAsync(user_id).Real_Name;
         }
 
-        private void J2204_User_UL_Shown(object sender, EventArgs e)
+        private async void J2204_User_UL_Shown(object sender, EventArgs e)
         {
-            dgvData.DataSource = GetData();
+            if(Stack.Use_Web) dgvData.DataSource = await GetData_web();
+            else dgvData.DataSource = GetData();
             ShowData();
         }
 
@@ -57,9 +58,52 @@ namespace OrdersProgress
             }
             #endregion
 
-            foreach (Models.User_UL user_ul in Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user_index))
+            foreach (Models.User_UL user_ul in Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user_id))
             {
                 if(lstUL.Any(d=>d.Id == user_ul.UL_Id))
+                    lstUL.First(d => d.Id == user_ul.UL_Id).C_B1 = true;
+            }
+
+            return lstUL.OrderByDescending(d => d.C_B1).ToList();
+        }
+
+        private async Task<List<Models.User_Level>> GetData_web()
+        {
+            List<Models.UL_See_UL> lstULSUL = await HttpClientExtensions.GetT<List<Models.UL_See_UL>>
+               (Stack.API_Uri_start_read + "/UL_See_UL?all=no&company_id=" + Stack.Company_Id, Stack.token);
+
+            if (!lstUL.Any())
+            {
+                List<Models.User_Level> lstUL1 = await HttpClientExtensions.GetT<List<Models.User_Level>>
+                    (Stack.API_Uri_start_read + "/User_Levels?all=no&company_id=" + Stack.Company_Id, Stack.token);
+                lstUL1 = lstUL1.Where(d => d.Enabled).ToList();
+
+                #region این کاربر با توجه به سطح کاربری کاربر وارد شده ، چه سطح کاربری را می تواند داشته باشد
+                if (Stack.UserLevel_Type == 0)
+                {
+                    foreach (Models.UL_See_UL ul_see_ul in lstULSUL.Where(d => d.MainUL_Id == Stack.UserLevel_Id).ToList())
+                    {
+                        Models.User_Level ul = lstUL1.First(d => d.Id == ul_see_ul.UL_Id);
+                        lstUL.Add(ul);
+                    }
+                }
+                else
+                {
+                    if (Stack.UserLevel_Type == 1)
+                        lstUL = lstUL1;
+                    else
+                        lstUL = lstUL1.Where(d => d.Type == 0).ToList();
+                }
+                #endregion
+            }
+
+            List<Models.User_UL> lstThisUser_UL = await HttpClientExtensions.GetT<List<Models.User_UL>>
+              (Stack.API_Uri_start_read + "/User_UL?all=no&company_id=" + Stack.Company_Id
+              + "&user_id=" + user_id, Stack.token);
+
+            foreach (Models.User_UL user_ul in lstThisUser_UL)
+            {
+                if (lstUL.Any(d => d.Id == user_ul.UL_Id))
                     lstUL.First(d => d.Id == user_ul.UL_Id).C_B1 = true;
             }
 
@@ -97,18 +141,24 @@ namespace OrdersProgress
             Close();
         }
 
-        private void BtnSave_Click(object sender, EventArgs e)
+        private async void BtnSave_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("آیا از ثبت تغییرات اطمینان دارید؟"
                 , "", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
 
-            List<Models.User_Level> lstUL = (List<Models.User_Level>)dgvData.DataSource;
+            if (Stack.Use_Web) await SaveData_web();
+            else Save_Data();
+            MessageBox.Show("تغییرات با موفقیت ثبت گردید.");
+            Close();
+        }
 
+        private void Save_Data()
+        {
             #region حذف شود : قبلا بوده است، اما در جدول انتخاب نشده است 
-            if (Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user_index).Any())
+            if (Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user_id).Any())
             {
                 foreach (Models.User_UL user_ul
-                    in Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user_index))
+                    in Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user_id))
                 {
                     if (!lstUL.Where(d => d.C_B1).Any(d => d.Id == user_ul.UL_Id))
                     {
@@ -120,27 +170,70 @@ namespace OrdersProgress
 
             #region اضافه شود 
             foreach (Models.User_Level ul in lstUL.Where(d => d.C_B1).ToList())
+            {
+                if (!Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user_id)
+                    .Any(d => d.UL_Id == ul.Id))
                 {
-                    if (!Program.dbOperations.GetAllUser_ULsAsync(Stack.Company_Id, user_index)
-                        .Any(d => d.UL_Id == ul.Id))
+                    Program.dbOperations.AddUser_UL(new Models.User_UL
                     {
-                        Program.dbOperations.AddUser_UL(new Models.User_UL
-                        {
-                            Company_Id = Stack.Company_Id,
-                            User_Id = user_index,
-                            UL_Id = ul.Id,
-                            UL_Description = ul.Description,
-                        });
+                        Company_Id = Stack.Company_Id,
+                        User_Id = user_id,
+                        UL_Id = ul.Id,
+                        UL_Description = ul.Description,
+                    });
+                }
+            }
+            #endregion
+
+        }
+
+        private async Task<bool> SaveData_web()
+        {
+            List<Models.User_UL> lstThisUser_UL = await HttpClientExtensions.GetT<List<Models.User_UL>>
+            (Stack.API_Uri_start_read + "/User_UL?all=no&company_id=" + Stack.Company_Id
+            + "&user_id=" + user_id, Stack.token);
+
+            #region حذف شود : قبلا بوده است، اما در جدول انتخاب نشده است 
+            if (lstThisUser_UL.Any())
+            {
+                foreach (Models.User_UL user_ul in lstThisUser_UL)
+                {
+                    if (!lstUL.Where(d => d.C_B1).Any(d => d.Id == user_ul.UL_Id))
+                    {
+                        await HttpClientExtensions.DeleteAsJsonAsync2
+                            (Stack.API_Uri_start + "/User_UL/" + user_ul.Id, Stack.token);
                     }
                 }
-                #endregion
+            }
+            #endregion
 
-            MessageBox.Show("تغییرات با موفقیت ثبت گردید.");
-            Close();
+            #region اضافه شود 
+            foreach (Models.User_Level ul in lstUL.Where(d => d.C_B1).ToList())
+            {
+                if (!lstThisUser_UL.Any(d => d.UL_Id == ul.Id))
+                {
+                    Models.User_UL uul = new Models.User_UL
+                    {
+                        Company_Id = Stack.Company_Id,
+                        User_Id = user_id,
+                        UL_Id = ul.Id,
+                        UL_Description = ul.Description,
+                    };
+                    await HttpClientExtensions.PostAsJsonAsync(Stack.API_Uri_start_read
+                      + "/User_UL", uul, Stack.token);
+                }
+            }
+            #endregion
+
+            return true;
         }
+
 
         private void BtnDeleteAll_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("این امکان فعال نمی باشد");
+            return;
+
             if (MessageBox.Show("آیا از حذف تمام روابط سطوح کاربری اطمینان دارید؟"
                 , "", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
 

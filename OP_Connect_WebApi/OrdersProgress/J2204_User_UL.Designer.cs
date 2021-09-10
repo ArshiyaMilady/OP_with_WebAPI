@@ -75,6 +75,7 @@
             this.btnDeleteAll.TabIndex = 94;
             this.btnDeleteAll.Text = "حذف تمام رابطه ها";
             this.btnDeleteAll.UseVisualStyleBackColor = true;
+            this.btnDeleteAll.Visible = false;
             this.btnDeleteAll.Click += new System.EventHandler(this.BtnDeleteAll_Click);
             // 
             // btnReturn

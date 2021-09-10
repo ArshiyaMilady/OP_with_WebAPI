@@ -67,7 +67,7 @@ namespace OrdersProgress
                             Company_Id = user.Company_Id,
                             User_Id = user.Id,
                             User_RealName = user.Real_Name,
-                            DateTime_mi = DateTime.Now,
+                            DateTime_mi = DateTime.Now.ToString(),
                             Date_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now),
                             Time = Stack_Methods.NowTime_HHMMSSFFF(":", false),
                         };
@@ -151,6 +151,7 @@ namespace OrdersProgress
             Stack.UserId = user.Id;
             Stack.Company_Id = user.Company_Id;
             //MessageBox.Show(Stack.token);
+            //MessageBox.Show(Stack.UserId.ToString());
             //List<Models.User_UL> lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
             //    (Stack.API_Uri_start_read + "/User_UL?all=no&company_id="+Stack.Company_Id+"&user_id=" + user.Id, Stack.token);
             //if ((lstUUL!=null) && lstUUL.Any())

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OP_WebApi.Models;
 
 namespace OP_WebApi.Migrations
 {
     [DbContext(typeof(TableContext))]
-    partial class TableContextModelSnapshot : ModelSnapshot
+    [Migration("20210910063732_op14000618A7")]
+    partial class op14000618A7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,8 +116,6 @@ namespace OP_WebApi.Migrations
                     b.Property<long>("Company_Id");
 
                     b.Property<long>("CurrentLevel_Index");
-
-                    b.Property<string>("DateTime_mi");
 
                     b.Property<string>("DateTime_sh");
 
@@ -231,8 +231,6 @@ namespace OP_WebApi.Migrations
 
                     b.Property<long>("CurrentContractor_Id");
 
-                    b.Property<string>("DateTime_mi");
-
                     b.Property<string>("DateTime_sh");
 
                     b.Property<string>("Description");
@@ -315,15 +313,11 @@ namespace OP_WebApi.Migrations
 
                     b.Property<string>("C_S3");
 
-                    b.Property<string>("DateTime_mi");
-
                     b.Property<string>("DateTime_sh");
 
                     b.Property<string>("Domain");
 
                     b.Property<string>("EMail");
-
-                    b.Property<string>("End_DateTime_mi");
 
                     b.Property<string>("End_DateTime_sh");
 
@@ -419,8 +413,6 @@ namespace OP_WebApi.Migrations
                     b.Property<long>("Company_Id");
 
                     b.Property<byte[]>("Content");
-
-                    b.Property<string>("DateTime_mi");
 
                     b.Property<string>("DateTime_sh");
 
@@ -593,8 +585,6 @@ namespace OP_WebApi.Migrations
 
                     b.Property<long>("Company_Id");
 
-                    b.Property<string>("DateTime_mi");
-
                     b.Property<string>("Date_sh");
 
                     b.Property<string>("Time");
@@ -761,8 +751,6 @@ namespace OP_WebApi.Migrations
 
                     b.Property<string>("Customer_Name");
 
-                    b.Property<string>("DateTime_mi");
-
                     b.Property<string>("Date_sh");
 
                     b.Property<string>("Index");
@@ -904,8 +892,6 @@ namespace OP_WebApi.Migrations
                     b.Property<string>("C_S3");
 
                     b.Property<long>("Company_Id");
-
-                    b.Property<string>("DateTime_mi");
 
                     b.Property<string>("DateTime_sh");
 
@@ -1241,8 +1227,6 @@ namespace OP_WebApi.Migrations
 
                     b.Property<string>("Customer_Name");
 
-                    b.Property<string>("DateTime_mi");
-
                     b.Property<string>("DateTime_sh");
 
                     b.Property<double>("Discount1");
@@ -1567,15 +1551,11 @@ namespace OP_WebApi.Migrations
 
                     b.Property<long>("Company_Id");
 
-                    b.Property<string>("DateTime_mi");
-
                     b.Property<string>("DateTime_sh");
 
                     b.Property<string>("Description");
 
                     b.Property<string>("EMail");
-
-                    b.Property<string>("End_DateTime_mi");
 
                     b.Property<string>("End_DateTime_sh");
 
@@ -1767,8 +1747,6 @@ namespace OP_WebApi.Migrations
 
                     b.Property<string>("Customer_Name");
 
-                    b.Property<string>("DateTime_mi");
-
                     b.Property<string>("DateTime_sh");
 
                     b.Property<string>("Description");
@@ -1799,8 +1777,6 @@ namespace OP_WebApi.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("Company_Id");
-
-                    b.Property<string>("DateTime_mi");
 
                     b.Property<string>("DateTime_sh");
 
@@ -1880,8 +1856,6 @@ namespace OP_WebApi.Migrations
 
                     b.Property<long>("Company_Id");
 
-                    b.Property<string>("DateTime_mi");
-
                     b.Property<string>("DateTime_sh");
 
                     b.Property<string>("Description");
@@ -1922,8 +1896,6 @@ namespace OP_WebApi.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("Company_Id");
-
-                    b.Property<string>("DateTime_mi");
 
                     b.Property<string>("Date_sh");
 

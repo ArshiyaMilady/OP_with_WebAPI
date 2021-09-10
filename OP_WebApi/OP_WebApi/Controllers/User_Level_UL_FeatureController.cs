@@ -21,11 +21,23 @@ namespace OP_WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/User_Level_UL_Feature
+        // GET: api/User_Level_UL_Feature?all=vvv&company_Id=xxx&EnableType=yyy&ul_Id=zzz
         [HttpGet, Authorize]
-        public async Task<ActionResult<IEnumerable<User_Level_UL_Feature>>> GetLevel_UL_Feature()
+        public async Task<ActionResult<IEnumerable<User_Level_UL_Feature>>> GetLevel_UL_Feature
+            (string all = "yes", long company_Id = 0, int EnableType = 0, long ul_Id = -1)
         {
-            return await _context.User_Level_UL_Feature.ToListAsync();
+            if(all.Equals("yes"))
+                return await _context.User_Level_UL_Feature.ToListAsync();
+            else
+            {
+                List<User_Level_UL_Feature> lstULULF = await _context.User_Level_UL_Feature.Where(d => d.Company_Id == company_Id).ToListAsync();
+                if (EnableType == 1) lstULULF = lstULULF.Where(d => d.UL_Feature_Enabled).ToList();
+                else if (EnableType == -1) lstULULF = lstULULF.Where(d => !d.UL_Feature_Enabled).ToList();
+
+                if (ul_Id > 0) lstULULF = lstULULF.Where(d => d.User_Level_Id == ul_Id).ToList();
+
+                return lstULULF;
+            }
         }
 
         // GET: api/User_Level_UL_Feature/5

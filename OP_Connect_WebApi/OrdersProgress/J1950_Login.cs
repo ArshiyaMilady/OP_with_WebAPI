@@ -130,7 +130,7 @@ namespace OrdersProgress
                             Company_Id = user.Company_Id,
                             User_Id = user.Id,
                             User_RealName = user.Real_Name,
-                            DateTime_mi = DateTime.Now,
+                            DateTime_mi = DateTime.Now.ToString(),
                             Date_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now),
                             Time = Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 8),
                         });

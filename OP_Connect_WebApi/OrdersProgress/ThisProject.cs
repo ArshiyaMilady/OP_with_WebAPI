@@ -30,7 +30,7 @@ namespace OrdersProgress
                 Order_Index = order.Index,
                 OrderLevel_Id = order.CurrentLevel_Id,
                 OrderLevel_Description = ol_description,
-                DateTime_mi = DateTime.Now,
+                DateTime_mi = DateTime.Now.ToString(),
                 DateTime_sh = Stack_Methods.DateTimeNow_Shamsi().Substring(0, 19),
             }); ;
         }
@@ -257,7 +257,7 @@ namespace OrdersProgress
                     User_Id = Stack.UserId,// wr.User_Id,
                     User_Level_Id = Stack.UserLevel_Id, // wr.UserLevel_Id,
                     User_Name = Stack.UserName, //  wr.User_Name,
-                    DateTime_mi = DateTime.Now,
+                    DateTime_mi = DateTime.Now.ToString(),
                     Date_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now),
                     Time = Stack_Methods.NowTime_HHMMSSFFF(":",false),
                     Description = description,

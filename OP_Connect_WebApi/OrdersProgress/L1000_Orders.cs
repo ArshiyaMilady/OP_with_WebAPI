@@ -655,7 +655,7 @@ namespace OrdersProgress
                                     User_Id = user_index,
                                     Customer_Index = customer.Index,
                                     Customer_Name = customer.Name,
-                                    DateTime_mi = DateTime.Now,
+                                    DateTime_mi = DateTime.Now.ToString(),
                                     Date_sh = Stack_Methods.Miladi_to_Shamsi_YYYYMMDD(DateTime.Now),
                                     Time = Stack_Methods.NowTime_HHMMSSFFF().Substring(0, 8),
                                     PreviousLevel_Id = 12,

@@ -22,7 +22,7 @@ namespace OP_WebApi.Controllers
         }
 
         // GET: api/User_UL
-        // GET: api/User_UL?all=vvv&company_id=&user_id=xxx
+        // GET: api/User_UL?all=vvv&company_id=vvv&user_id=xxx
         [HttpGet, Authorize]
         // نوع داده شناسه را رشته قرار دادم که با تابع بعدی اشت
         public async Task<ActionResult<IEnumerable<User_UL>>> GetUser_UL

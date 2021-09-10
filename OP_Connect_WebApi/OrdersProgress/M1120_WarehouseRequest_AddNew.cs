@@ -94,7 +94,7 @@ namespace OrdersProgress
                 Unit_Name = Program.dbOperations.GetUser_LevelAsync(Stack.UserLevel_Id).Unit_Name,
                 User_Id = Stack.UserId,
                 User_Name = Stack.UserName,
-                DateTime_mi = DateTime.Now,
+                DateTime_mi = DateTime.Now.ToString(),
                 DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
                 Need_Supervisor_Confirmation = bNeed_Supervisor_Confirmation,
 
