@@ -383,7 +383,6 @@ namespace OrdersProgress
             InitailValue = null;
         }
 
-
         private void BtnReturn_Click(object sender, EventArgs e)
         {
             Close();

@@ -40,9 +40,9 @@ namespace OrdersProgress
 
             int login_type = radUseName.Checked ? 1 : 2;
             Models.User user = null;
-            try
+            //try
             {  user = await GetUser_by_Name_or_Mobile(login_type, txtNM.Text, txtPassword.Text); }
-            catch { }
+            //catch { }
 
             if (user == null)
             {
@@ -157,7 +157,7 @@ namespace OrdersProgress
             Stack.UserId = user.Id;
             Stack.Company_Id = user.Company_Id;
             //MessageBox.Show(Stack.token);
-            //MessageBox.Show(Stack.UserId.ToString());
+            //MessageBox.Show(Stack.UserId.ToString(),"user id");
             //List<Models.User_UL> lstUUL = await HttpClientExtensions.GetT<List<Models.User_UL>>
             //    (Stack.API_Uri_start_read + "/User_UL?all=no&company_id="+Stack.Company_Id+"&user_id=" + user.Id, Stack.token);
             //if ((lstUUL!=null) && lstUUL.Any())

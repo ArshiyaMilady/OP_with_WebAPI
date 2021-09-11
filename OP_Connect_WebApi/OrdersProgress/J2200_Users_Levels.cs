@@ -426,6 +426,11 @@ namespace OrdersProgress
                 dgvData.DataSource = GetData();
             }
 
+            if(!Delete_OK)
+            {
+                MessageBox.Show("اشکال در ثبت اطلاعات", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             pictureBox1.Visible = true;
             Application.DoEvents();
             timer1.Enabled = true;

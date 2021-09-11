@@ -28,9 +28,20 @@ namespace OrdersProgress
 
         private async void J2310_UL_Request_Categories_Shown(object sender, EventArgs e)
         {
-            Text = "    " + Program.dbOperations.GetUser_LevelAsync(ul_id).Description;
-            //dgvCats.DataSource = GetData();
-            GetData();
+            if (Stack.Use_Web)
+            {
+                Models.User_Level ul = await HttpClientExtensions.GetT<Models.User_Level>
+                    (Stack.API_Uri_start_read + "/User_Levels/" + ul_id);
+                if (ul != null) Text = "   " + ul.Description;
+
+                await GetData_web();
+            }
+            else
+            {
+                Text = "    " + Program.dbOperations.GetUser_LevelAsync(ul_id).Description;
+                //dgvCats.DataSource = GetData();
+                GetData();
+            }
             ShowData();
         }
 
@@ -53,7 +64,7 @@ namespace OrdersProgress
             }
         }
 
-        private async void GetData_web()
+        private async Task<bool> GetData_web()
         {
             lstCats = await HttpClientExtensions.GetT<List<Models.Category>>
                 (Stack.API_Uri_start_read + "/Categories?all=no&company_Id=" + Stack.Company_Id, Stack.token);
@@ -76,6 +87,8 @@ namespace OrdersProgress
             {
                 PutData_in_dgvUL_RC(ulrc);
             }
+
+            return true;
         }
 
 

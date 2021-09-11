@@ -12,29 +12,40 @@ namespace OrdersProgress
 {
     public partial class K1100_Categories : X210_ExampleForm_Normal
     {
+        List<Models.Category> categories = new List<Models.Category>();
+
         public K1100_Categories()
         {
             InitializeComponent();
 
-            panel2.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn3110");
-            btnAddNew.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn3120");
-            tsmiDelete.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn3130");
+            panel2.Visible = (Stack.UserLevel_Type==1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn3110");
+            btnAddNew.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn3120");
+            tsmiDelete.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn3130");
         }
 
-        private void K1100_Categories_Shown(object sender, EventArgs e)
+        private async void K1100_Categories_Shown(object sender, EventArgs e)
         {
             cmbST_Name.SelectedIndex = 0;
 
-            dgvData.DataSource = GetData();
+            dgvData.DataSource = await GetData();
             ShowData();
 
             Application.DoEvents();
             panel1.Enabled = true;
         }
 
-        private List<Models.Category> GetData()
+        private async Task<List<Models.Category>> GetData(bool bForceReset = false)
         {
-            return Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id);
+            if (!categories.Any() || bForceReset)
+            {
+                if (Stack.Use_Web)
+                    categories= await HttpClientExtensions.GetT<List<Models.Category>>
+                        (Stack.API_Uri_start_read + "/Categories?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+                else
+                    categories= Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id);
+            }
+
+            return categories;
         }
 
         private void ShowData()
@@ -119,9 +130,9 @@ namespace OrdersProgress
             return null;
         }
 
-        private void BtnShowAll_Click(object sender, EventArgs e)
+        private async void BtnShowAll_Click(object sender, EventArgs e)
         {
-            dgvData.DataSource = GetData();
+            dgvData.DataSource = await GetData();
         }
 
         private void ChkCanEdit_CheckedChanged(object sender, EventArgs e)
@@ -139,16 +150,19 @@ namespace OrdersProgress
             InitailValue = dgvData[e.ColumnIndex, e.RowIndex].Value;//.ToString();
         }
 
-        private void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private async void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
             if (dgvData[e.ColumnIndex, e.RowIndex].Value == InitailValue) return;
 
             bool bSaveChange = true;   // آیا تغییر ذخیره شود؟
+            pictureBox3.Visible = Stack.Use_Web;
+            panel1.Enabled = !Stack.Use_Web;
 
-            int index = Convert.ToInt32(dgvData["Id", e.RowIndex].Value);
+            int id = Convert.ToInt32(dgvData["Id", e.RowIndex].Value);
 
-            Models.Category cat = Program.dbOperations.GetCategoryAsync(index);
+            Models.Category cat =  categories.First(d=>d.Id == id);
+
             switch (dgvData.Columns[e.ColumnIndex].Name)
             {
                 case "Name":
@@ -156,8 +170,7 @@ namespace OrdersProgress
                     if (string.IsNullOrWhiteSpace(cat.Name))
                         return;
                     #region اگر دسته دیگری با این نام تعریف شده باشد
-                    else if (Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id)
-                        .Where(d => d.Id != index).Any(j => j.Name.ToLower().Equals(cat.Name.ToLower())))
+                    else if (categories.Where(d => d.Id != id).Any(j => j.Name.ToLower().Equals(cat.Name.ToLower())))
                     {
                         bSaveChange = false;
                         MessageBox.Show("نام دسته تکراری بوده و قبلا استفاده شده است", "خطا");
@@ -184,7 +197,24 @@ namespace OrdersProgress
 
 
             if (bSaveChange)
-                Program.dbOperations.UpdateCategoryAsync(cat);
+            {
+                if (Stack.Use_Web)
+                {
+                    var res = await HttpClientExtensions.PutAsJsonAsync
+                        (Stack.API_Uri_start_read + "/Categories/"+id, cat, Stack.token);
+                    if (res.IsSuccessStatusCode)
+                    {
+                        pictureBox3.Visible = false;
+                        panel1.Enabled = true;
+                    }
+
+                }
+                else Program.dbOperations.UpdateCategoryAsync(cat);
+
+                dgvData.DataSource = await GetData(true);
+                //categories.Remove(categories.First(d => d.Id == cat.Id));
+                //categories.Add(cat);
+            }
             else dgvData[e.ColumnIndex, e.RowIndex].Value = InitailValue;
         }
 
@@ -211,41 +241,77 @@ namespace OrdersProgress
             }
         }
 
-        private void TsmiDelete_Click(object sender, EventArgs e)
+        private async void TsmiDelete_Click(object sender, EventArgs e)
         {
-            int index = Convert.ToInt32(dgvData.CurrentRow.Cells["Id"].Value);
-            if(Program.dbOperations.GetAllItemsAsync(Stack.Company_Id,0,100).Any(d=>d.Category_Id==index))
+            int id = Convert.ToInt32(dgvData.CurrentRow.Cells["Id"].Value);
+            //dgvData.CurrentCell = null;
+            //MessageBox.Show(id.ToString());
+            if(Program.dbOperations.GetAllItemsAsync(Stack.Company_Id,0,100).Any(d=>d.Category_Id==id))
             {
                 MessageBox.Show("کالا(ها)یی در این دسته تعریف شده اند. امکان حذف این دسته وجود ندارد","خطا");
                 return;
             }
 
-            Models.Category cat = Program.dbOperations.GetCategoryAsync(index);
+            Models.Category cat = categories.First(d=>d.Id == id);
+
             if (MessageBox.Show("آیا از حذف دسته اطمینان دارید؟", cat.Name,
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
             if (MessageBox.Show("با انجام این عمل ، تمام کالاهایی که در این دسته تعریف شده اند، بلاتکلیف خواهند شد.آیا از حذف دسته اطمینان دارید؟"
                 , cat.Name, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
 
-            Program.dbOperations.DeleteCategoryAsync(cat);
-            dgvData.DataSource = GetData();
+            if (Stack.Use_Web)
+            {
+                await HttpClientExtensions.DeleteAsJsonAsync2(Stack.API_Uri_start_read
+                     + "/Categories/" + id, Stack.token);
+            }
+            else
+                Program.dbOperations.DeleteCategoryAsync(cat);
+
+            //categories.Remove(cat);
+            dgvData.DataSource = await GetData(true);
         }
 
-        private void BtnAddNew_Click(object sender, EventArgs e)
+        private async void BtnAddNew_Click(object sender, EventArgs e)
         {
             //long index = Program.dbOperations.GetNewIndex_Category();
-
-            long index = Program.dbOperations.AddCategory(new Models.Category
+            Models.Category category = new Models.Category
             {
                 Company_Id = Stack.Company_Id,
                 Name = "دسته x",// + index,
                 //Description = "؟",
                 //Active = true,
-            });
+            };
 
-            if (index > 0)
+            bool Add_OK = false;
+            if (Stack.Use_Web)
+            {
+                var response = await HttpClientExtensions.PostAsJsonAsync
+                                  (Stack.API_Uri_start_read + "/Categories", category, Stack.token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("اشکال در ثبت اطلاعات", "خطا");
+                    return;
+                }
+                else
+                {
+                    var responseString = response.Content.ReadAsStringAsync().Result;
+                    Models.Category cat1 = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Category>(responseString);
+                    categories.Add(cat1);
+                    Add_OK = true;
+                }
+            }
+            else
+            {
+                int id = Program.dbOperations.AddCategory(category);
+                category.Id = id;
+                categories.Add(category);
+                Add_OK = true;
+            }
+
+            if (Add_OK)
             {
                 chkCanEdit.Checked = true;
-                dgvData.DataSource = GetData();
+                dgvData.DataSource = await GetData(true);
                 Application.DoEvents();
                 //ShowData();
                 int iNewRow = dgvData.Rows.Count - 1;

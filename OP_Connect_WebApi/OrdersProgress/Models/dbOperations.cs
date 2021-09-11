@@ -2208,7 +2208,7 @@ namespace OrdersProgress.Models
             return category.Id;
         }
 
-        public long AddCategory(Category category)
+        public int AddCategory(Category category)
         {
             _db.InsertAsync(category).Wait();
             return category.Id;
