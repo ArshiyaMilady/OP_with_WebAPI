@@ -45,16 +45,18 @@ namespace OrdersProgress
             //SetUsers();
             //SetOrderLevels();   // در صورتیکه مراحل سفارش در دیتابیس تعریف نشده باشد، آنها را تعریف میکند
             //SetWareHouses();
-           
-            
-            //new zForm1().ShowDialog();
 
-            //if (File.Exists(Path.Combine(Application.StartupPath, "System.SQLite.DB.db3")))
-            //{
-            //    // ایجاد فایل دیتابیس کاذب
-            //    File.Copy(Path.Combine(Application.StartupPath, "System.SQLite.DB.db3"),
-            //        Path.Combine(Application.StartupPath, "Database.db"), true);
-            //}
+
+            //new zForm1().ShowDialog();
+            if (!Stack.Use_Web)
+            {
+                if (File.Exists(Path.Combine(Application.StartupPath, "System.SQLite.DB.db3")))
+                {
+                    // ایجاد فایل دیتابیس کاذب
+                    File.Copy(Path.Combine(Application.StartupPath, "System.SQLite.DB.db3"),
+                        Path.Combine(Application.StartupPath, "Database.db"), true);
+                }
+            }
 
             #region Login
             Stack.bx = false;

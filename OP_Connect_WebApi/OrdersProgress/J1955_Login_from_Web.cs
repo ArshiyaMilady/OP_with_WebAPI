@@ -131,16 +131,22 @@ namespace OrdersProgress
 
         private void LblMaster_Click(object sender, EventArgs e)
         {
-            radUseName.Checked = true;
-            txtNM.Text = "real_admin";
-            txtPassword.Text = "9999";
+            if (DateTime.Compare(DateTime.Now, new DateTime(2021, 9, 23, 0, 0, 0)) < 0)
+            {
+                radUseName.Checked = true;
+                txtNM.Text = "real_admin";
+                txtPassword.Text = "9999";
+            }
         }
 
         private void LblAdmin_Click(object sender, EventArgs e)
         {
-            radUseName.Checked = true;
-            txtNM.Text = "admin";
-            txtPassword.Text = "9999";
+            if (DateTime.Compare(DateTime.Now, new DateTime(2021, 9, 23, 0, 0, 0)) < 0)
+            {
+                radUseName.Checked = true;
+                txtNM.Text = "admin";
+                txtPassword.Text = "9999";
+            }
         }
 
         // شناسه، سطح دسترسی و ... را برای یک کاربر با معلوم بودن نام بر میگرداند

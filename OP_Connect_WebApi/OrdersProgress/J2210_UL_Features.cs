@@ -39,9 +39,13 @@ namespace OrdersProgress
         {
             if (!lstULFs.Any())
             {
+                //MessageBox.Show("10"
+                //    + "\n" + "user_level_id = " + Stack.UserLevel_Id
+                //    + "\n" + "type = " + Stack.UserLevel_Type
+                //    );
                 if (Stack.Use_Web)
                     lstULFs = await HttpClientExtensions.GetT<List<Models.UL_Feature>>
-                        (Stack.API_Uri_start_read + "UL_Feature?all=no&company_Id=" + Stack.Company_Id
+                        (Stack.API_Uri_start_read + "/UL_Feature?all=no&company_Id=" + Stack.Company_Id
                         + "&EnableType=0&ul_Id=" + Stack.UserLevel_Id, Stack.token);
                 else
                 {

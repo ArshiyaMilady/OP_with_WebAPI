@@ -133,6 +133,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "J2240_UL_Confirm_OLs";
             this.Text = "J2240_UL_Confirm_OLs";
+            this.Load += new System.EventHandler(this.J2240_UL_Confirm_OLs_Load);
             this.Shown += new System.EventHandler(this.J2240_UL_Confirm_OLs_Shown);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).EndInit();

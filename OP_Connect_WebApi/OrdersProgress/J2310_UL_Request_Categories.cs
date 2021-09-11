@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,20 +14,21 @@ namespace OrdersProgress
 {
     public partial class J2310_UL_Request_Categories : X210_ExampleForm_Normal
     {
-        long ul_index;
+        long ul_id;
         List<Models.Category> lstCats = new List<Models.Category>();
         List<Models.User_Level> lstULs = new List<Models.User_Level>();
         List<Models.UL_Request_Category> lstUL_CRs = new List<Models.UL_Request_Category>();
 
-        public J2310_UL_Request_Categories(long _ul_index)
+        public J2310_UL_Request_Categories(long _ul_id)
         {
             InitializeComponent();
-            ul_index = _ul_index;
-            Text = "    " + Program.dbOperations.GetUser_LevelAsync(ul_index).Description;
+            ul_id = _ul_id;
+            Text = "";
         }
 
-        private void J2310_UL_Request_Categories_Shown(object sender, EventArgs e)
+        private async void J2310_UL_Request_Categories_Shown(object sender, EventArgs e)
         {
+            Text = "    " + Program.dbOperations.GetUser_LevelAsync(ul_id).Description;
             //dgvCats.DataSource = GetData();
             GetData();
             ShowData();
@@ -34,28 +36,57 @@ namespace OrdersProgress
 
         private void GetData()
         {
-            dgvCats.DataSource = Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id);
+            lstCats = Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id);
+            lstULs= Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id)
+                .Where(d => d.Id != ul_id).ToList();
+            lstUL_CRs = Program.dbOperations.GetAllUL_Request_CategoriesAsync(Stack.Company_Id, ul_id);
+
+            dgvCats.DataSource = lstCats;
             if(dgvCats.Rows.Count > 0) dgvCats.CurrentCell = dgvCats["Name", 0];
 
-            dgvULs.DataSource = Program.dbOperations.GetAllUser_LevelsAsync(Stack.Company_Id)
-                .Where(d=>d.Id!=ul_index).ToList();
+            dgvULs.DataSource = lstULs;
             if (dgvULs.Rows.Count > 0) dgvULs.CurrentCell = dgvULs["Description", 0];
 
-            foreach (Models.UL_Request_Category ulrc in Program.dbOperations
-                .GetAllUL_Request_CategoriesAsync(Stack.Company_Id, ul_index))
+            foreach (Models.UL_Request_Category ulrc in lstUL_CRs)
             {
                 PutData_in_dgvUL_RC(ulrc);
             }
         }
+
+        private async void GetData_web()
+        {
+            lstCats = await HttpClientExtensions.GetT<List<Models.Category>>
+                (Stack.API_Uri_start_read + "/Categories?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+            lstULs= await HttpClientExtensions.GetT<List<Models.User_Level>>
+                (Stack.API_Uri_start_read + "/User_Levels?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+            lstULs = lstULs.Where(d => d.Id != ul_id).ToList();
+
+            lstUL_CRs = await HttpClientExtensions.GetT<List<Models.UL_Request_Category>>
+                (Stack.API_Uri_start_read + "/UL_Request_Category?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+            lstUL_CRs = lstUL_CRs.Where(d => d.User_Level_Id == ul_id).ToList();
+            //Program.dbOperations.GetAllUL_Request_CategoriesAsync(Stack.Company_Id, ul_id);
+
+            dgvCats.DataSource = lstCats;
+            if(dgvCats.Rows.Count > 0) dgvCats.CurrentCell = dgvCats["Name", 0];
+
+            dgvULs.DataSource = lstULs;
+            if (dgvULs.Rows.Count > 0) dgvULs.CurrentCell = dgvULs["Description", 0];
+
+            foreach (Models.UL_Request_Category ulrc in lstUL_CRs)
+            {
+                PutData_in_dgvUL_RC(ulrc);
+            }
+        }
+
 
         private void PutData_in_dgvUL_RC(Models.UL_Request_Category ul_rc)
         {
             int iRow = dgvUL_RC.Rows.Add();
             DataGridViewRow row = dgvUL_RC.Rows[iRow];
             row.Tag = ul_rc;
-            row.Cells["colCategory_Name"].Value = Program.dbOperations.GetCategoryAsync(ul_rc.Category_Id).Name;
+            row.Cells["colCategory_Name"].Value =lstCats.First(d=>d.Id==ul_rc.Category_Id).Name;
             if(ul_rc.Supervisor_UL_Id>0)
-                row.Cells["colSupervisor_UL_Description"].Value = Program.dbOperations.GetUser_LevelAsync(ul_rc.Supervisor_UL_Id).Description;
+                row.Cells["colSupervisor_UL_Description"].Value = lstULs.First(d=>d.Id==ul_rc.Supervisor_UL_Id).Description;
         }
 
         private void ShowData()
@@ -113,7 +144,7 @@ namespace OrdersProgress
             Close();
         }
 
-        private void BtnSave_Click(object sender, EventArgs e)
+        private async void BtnSave_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("آیا از ثبت تغییرات اطمینان دارید؟"
                 , "", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
@@ -121,15 +152,22 @@ namespace OrdersProgress
             panel1.Enabled = false;
             Application.DoEvents();
 
-            List<Models.Category> lstCats1 = (List<Models.Category>)dgvCats.DataSource;
+            if (Stack.Use_Web) await SaveData_web();
+            else SaveData();
 
+            MessageBox.Show("تغییرات با موفقیت ثبت گردید.");
+            Close();
+        }
+
+        private void SaveData()
+        {
             #region حذف شود : قبلا بوده است، اما در جدول انتخاب نشده است 
-            if (Program.dbOperations.GetAllUL_Request_CategoriesAsync(Stack.Company_Id, ul_index).Any())
+            if (Program.dbOperations.GetAllUL_Request_CategoriesAsync(Stack.Company_Id, ul_id).Any())
             {
                 foreach (Models.UL_Request_Category ul_request_category
-                    in Program.dbOperations.GetAllUL_Request_CategoriesAsync(Stack.Company_Id, ul_index))
+                    in Program.dbOperations.GetAllUL_Request_CategoriesAsync(Stack.Company_Id, ul_id))
                 {
-                    if (!lstCats1.Where(d => d.C_B1).Any(d => d.Id == ul_request_category.User_Level_Id))
+                    if (!lstCats.Where(d => d.C_B1).Any(d => d.Id == ul_request_category.User_Level_Id))
                     {
                         Program.dbOperations.DeleteUL_Request_CategoryAsync(ul_request_category);
                     }
@@ -138,9 +176,9 @@ namespace OrdersProgress
             #endregion
 
             #region موارد جدید اضافه شود 
-            foreach (Models.Category cat in lstCats1.Where(d => d.C_B1).ToList())
+            foreach (Models.Category cat in lstCats.Where(d => d.C_B1).ToList())
             {
-                if (!Program.dbOperations.GetAllUL_Request_CategoriesAsync(Stack.Company_Id, ul_index)
+                if (!Program.dbOperations.GetAllUL_Request_CategoriesAsync(Stack.Company_Id, ul_id)
                     .Any(d => d.Category_Id == cat.Id))
                 {
                     // تأیید مدیریت ، ابتدا نیاز به تأیید سرپرست دارد
@@ -148,21 +186,62 @@ namespace OrdersProgress
                     Program.dbOperations.AddUL_Request_Category(new Models.UL_Request_Category
                     {
                         Company_Id = Stack.Company_Id,
-                        User_Level_Id = ul_index,
+                        User_Level_Id = ul_id,
                         Category_Id = cat.Id,
                         //Need_Supervisor_Confirmation = cat.Need_Supervisor_Confirmation,
                         //Need_Manager_Confirmation = cat.Need_Manager_Confirmation,
-                    }) ;
+                    });
                 }
             }
             #endregion
 
-            MessageBox.Show("تغییرات با موفقیت ثبت گردید.");
-            Close();
+
+        }
+
+        private async Task<bool> SaveData_web()
+        {
+            #region حذف شود : قبلا بوده است، اما در جدول انتخاب نشده است 
+            if (lstUL_CRs.Any())
+            {
+                foreach (Models.UL_Request_Category ul_request_category in lstUL_CRs)
+                {
+                    if (!lstCats.Where(d => d.C_B1).Any(d => d.Id == ul_request_category.User_Level_Id))
+                    {
+                        await HttpClientExtensions.DeleteAsJsonAsync2
+                           (Stack.API_Uri_start + "/UL_Request_Category/" + ul_request_category.Id, Stack.token);
+                    }
+                }
+            }
+            #endregion
+
+            #region موارد جدید اضافه شود 
+            foreach (Models.Category cat in lstCats.Where(d => d.C_B1).ToList())
+            {
+                if (!lstUL_CRs.Any(d => d.Category_Id == cat.Id))
+                {
+                    // تأیید مدیریت ، ابتدا نیاز به تأیید سرپرست دارد
+                    if (cat.Need_Manager_Confirmation) cat.Need_Supervisor_Confirmation = true;
+                    Models.UL_Request_Category ulrc = new Models.UL_Request_Category
+                    {
+                        Company_Id = Stack.Company_Id,
+                        User_Level_Id = ul_id,
+                        Category_Id = cat.Id,
+                        //Need_Supervisor_Confirmation = cat.Need_Supervisor_Confirmation,
+                        //Need_Manager_Confirmation = cat.Need_Manager_Confirmation,
+                    };
+                    await HttpClientExtensions.PostAsJsonAsync(Stack.API_Uri_start_read
+                      + "/UL_Request_Category", ulrc, Stack.token);
+                }
+            }
+            #endregion
+
+            return true;
         }
 
         private void BtnDeleteAll_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("این امکان فعال نمی باشد");
+            return;
 
         }
 
@@ -182,34 +261,55 @@ namespace OrdersProgress
             //dgvULs.Enabled = !checkBox1.Checked;
         }
 
-        private void BtnAddNew_Click(object sender, EventArgs e)
+        private async void BtnAddNew_Click(object sender, EventArgs e)
         {
             //try
             {
                 long cat_index = Convert.ToInt64(dgvCats.CurrentRow.Cells["Id"].Value);
                 long supervisor_ul_index = checkBox1.Checked ? 0 : Convert.ToInt64(dgvULs.CurrentRow.Cells["Id"].Value);
-                if (Program.dbOperations.GetAllUL_Request_CategoriesAsync
-                   (Stack.Company_Id, ul_index).Any(d => (d.Category_Id==cat_index)
+                if (lstUL_CRs.Any(d => (d.Category_Id==cat_index)
                    && (d.Supervisor_UL_Id == supervisor_ul_index)))
                 {
                     MessageBox.Show("این مورد قبلا ثبت شده است","خطا");
                     return;
                 }
 
-                long ul_cr_index = Program.dbOperations.AddUL_Request_Category(
-                    new Models.UL_Request_Category {
-                        Company_Id = Stack.Company_Id,
-                        User_Level_Id = ul_index,
-                        Category_Id = cat_index,
-                        Supervisor_UL_Id = supervisor_ul_index,
-                    });
+                //long ul_cr_id = 0;
 
-                PutData_in_dgvUL_RC(Program.dbOperations.GetUL_Request_CategoryAsync(ul_cr_index));
+                Models.UL_Request_Category ulrc = new Models.UL_Request_Category
+                {
+                    Company_Id = Stack.Company_Id,
+                    User_Level_Id = ul_id,
+                    Category_Id = cat_index,
+                    Supervisor_UL_Id = supervisor_ul_index,
+                };
+
+                if (Stack.Use_Web)
+                {
+                    var response = await HttpClientExtensions.PostAsJsonAsync
+                        (Stack.API_Uri_start_read + "/UL_Request_Category", ulrc, Stack.token);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("اشکال در ثبت اطلاعات", "خطا");
+                        return;
+                    }
+                    else
+                    {
+                        var responseString = response.Content.ReadAsStringAsync().Result;
+                        Models.UL_Request_Category ulrc1 = JsonConvert.DeserializeObject<Models.UL_Request_Category>(responseString);
+                        PutData_in_dgvUL_RC(ulrc1);
+                    }
+                }
+                else
+                {
+                    long ul_cr_id = Program.dbOperations.AddUL_Request_Category(ulrc);
+                    PutData_in_dgvUL_RC(Program.dbOperations.GetUL_Request_CategoryAsync(ul_cr_id));
+                }
             }
             //catch { }
         }
 
-        private void DgvUL_RC_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private async void DgvUL_RC_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
 
@@ -220,7 +320,12 @@ namespace OrdersProgress
 
                 DataGridViewRow row = dgvUL_RC.Rows[e.RowIndex];
                 Models.UL_Request_Category ulrc = (Models.UL_Request_Category)row.Tag;
-                Program.dbOperations.DeleteUL_Request_CategoryAsync(ulrc);
+
+                if (Stack.Use_Web)
+                    await HttpClientExtensions.DeleteAsJsonAsync2(Stack.API_Uri_start_read
+                        + "/UL_Request_Category/" + ulrc.Id, Stack.token);
+                else Program.dbOperations.DeleteUL_Request_CategoryAsync(ulrc);
+
                 dgvUL_RC.CurrentCell = null;
                 dgvUL_RC.Rows.Remove(row);
             }

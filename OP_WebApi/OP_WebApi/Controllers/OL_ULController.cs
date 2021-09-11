@@ -21,11 +21,20 @@ namespace OP_WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/OL_UL
+        // GET: api/OL_UL?all=vvv&company_Id=xxx&ol_Id=q&ul_Id=z
         [HttpGet, Authorize]
-        public async Task<ActionResult<IEnumerable<OL_UL>>> GetOL_UL()
+        public async Task<ActionResult<IEnumerable<OL_UL>>> GetOL_UL
+            (string all = "yes", long company_Id = 0, long ol_Id = -1, long ul_Id = -1)
         {
-            return await _context.OL_UL.ToListAsync();
+            if(all.Equals("yes"))
+                return await _context.OL_UL.ToListAsync();
+            else
+            {
+                List<OL_UL> lstOLUL = await _context.OL_UL.Where(d=>d.Company_Id == company_Id).ToListAsync();
+                if (ol_Id > 0) lstOLUL = lstOLUL.Where(d => d.OL_Id == ol_Id).ToList();
+                if (ul_Id > 0) lstOLUL = lstOLUL.Where(d => d.UL_Id == ul_Id).ToList();
+                return lstOLUL;
+            }
         }
 
         // GET: api/OL_UL/5
