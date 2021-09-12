@@ -12,36 +12,45 @@ namespace OrdersProgress
 {
     public partial class K1200_Properties : X210_ExampleForm_Normal
     {
+        List<Models.Property> lstProperties = new List<Models.Property>();
+
         public K1200_Properties()
         {
             InitializeComponent();
         }
 
-        private void K1200_Properties_Shown(object sender, EventArgs e)
+        private async void K1200_Properties_Shown(object sender, EventArgs e)
         {
-            btnDeleteAll.Visible = Stack.UserLevel_Type==1;
-            panel2.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn1110");
-            btnAddNew.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn1120");
+            //btnDeleteAll.Visible = Stack.UserLevel_Type==1;
+            panel2.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn1110");
+            btnAddNew.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn1120");
 
             cmbST_Name.SelectedIndex = 0;
             cmbST_Description.SelectedIndex = 0;
             comboBox1.SelectedIndex = 0;
 
-            GetData();
+            dgvData.DataSource = await GetData();
             ShowData();
         }
 
-        private void GetData()
+        private async Task<List<Models.Property>> GetData(bool bForceReset = false)
         {
-            int enableType = 0;
-            switch (comboBox1.SelectedIndex)
+            if (!lstProperties.Any() || bForceReset)
             {
-                case 0: enableType = 1; break;
-                case 1: enableType = -1; break;
-                case 2: enableType = 0; break;
+                if (Stack.Use_Web)
+                    lstProperties = await HttpClientExtensions.GetT<List<Models.Property>>
+                        (Stack.API_Uri_start_read + "/Properties?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+                else
+                    lstProperties = Program.dbOperations.GetAllPropertiesAsync(Stack.Company_Id, 0);
             }
 
-            dgvData.DataSource = Program.dbOperations.GetAllPropertiesAsync(Stack.Company_Id, enableType);
+            switch (comboBox1.SelectedIndex)
+            {
+                case 0: return lstProperties.Where(d => d.Enable).ToList();
+                case 2: return lstProperties.Where(d => !d.Enable).ToList();
+            }
+
+            return lstProperties;
         }
 
         private void ShowData(bool ChangeHeaderTexts = true)
@@ -77,32 +86,60 @@ namespace OrdersProgress
             #endregion
         }
 
-        private void btnAddNew_Click(object sender, EventArgs e)
+        private async void btnAddNew_Click(object sender, EventArgs e)
         {
             //long index = Program.dbOperations.GetNewIndex_Property();
-
-            if (Program.dbOperations.AddPropertyAsync(new Models.Property
+            Models.Property property = new Models.Property
             {
                 Company_Id = Stack.Company_Id,
                 //Index = index,
                 Enable = true,
                 Name = "نام x",// + (index%100000),
-            }) >0)
-                dgvData.DataSource = Program.dbOperations.GetAllPropertiesAsync(Stack.Company_Id);
+            };
+
+            if (Stack.Use_Web)
+            {
+                var response = await HttpClientExtensions.PostAsJsonAsync
+                    (Stack.API_Uri_start_read + "/Properties", property, Stack.token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("اشکال در ثبت اطلاعات", "خطا");
+                    return;
+                }
+                else
+                {
+                    var responseString = response.Content.ReadAsStringAsync().Result;
+                    property = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Property>(responseString);
+                }
+            }
+            else
+                property.Id = Program.dbOperations.AddPropertyAsync(property);
+
+            lstProperties.Add(property);
+            dgvData.DataSource = await GetData();// true);// Program.dbOperations.GetAllPropertiesAsync(Stack.Company_Id);
+            dgvData.CurrentCell = dgvData["Name", dgvData.Rows.Count - 1];
         }
 
         private void btnDeleteAll_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("آیا از حذف تمام مشخصات اطمینان دارید؟", "اخطار 1"
+            if (Stack.Use_Web)
+            {
+                MessageBox.Show("این امکان فعال نمی باشد");
+                return;
+            }
+            else
+            {
+                if (MessageBox.Show("آیا از حذف تمام مشخصات اطمینان دارید؟", "اخطار 1"
                 , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
 
-            if (MessageBox.Show("با انجام این عمل ، تمام روابط مشخصه ها و کالاها از بین خواهد رفت"
-                +"\n" +"آیا از حذف تمام مشخصات اطمینان دارید؟", "اخطار 2"
-                , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+                if (MessageBox.Show("با انجام این عمل ، تمام روابط مشخصه ها و کالاها از بین خواهد رفت"
+                    + "\n" + "آیا از حذف تمام مشخصات اطمینان دارید؟", "اخطار 2"
+                    , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
 
-            Program.dbOperations.DeleteAllPropertiesAsync();
-            Program.dbOperations.DeleteAllItem_PropertiesAsync();
-            dgvData.DataSource = Program.dbOperations.GetAllPropertiesAsync(Stack.Company_Id);
+                Program.dbOperations.DeleteAllPropertiesAsync();
+                Program.dbOperations.DeleteAllItem_PropertiesAsync();
+                dgvData.DataSource = Program.dbOperations.GetAllPropertiesAsync(Stack.Company_Id);
+            }
         }
 
         object InitailValue = null;
@@ -113,7 +150,7 @@ namespace OrdersProgress
             InitailValue = dgvData[e.ColumnIndex, e.RowIndex].Value;//.ToString();
         }
 
-        private void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private async void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
             object value = dgvData[e.ColumnIndex, e.RowIndex].Value;
@@ -121,15 +158,15 @@ namespace OrdersProgress
 
             bool bEnableChanged = false;
             bool bSaveChange = true;   // آیا تغییر ذخیره شود؟
-            long index = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
+            long id = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
 
-            Models.Property property = Program.dbOperations.GetPropertyAsync(index);
+            Models.Property property = lstProperties.First(d => d.Id == id);// Program.dbOperations.GetPropertyAsync(index);
             switch (dgvData.Columns[e.ColumnIndex].Name)
             {
                 case "Name":
                     property.Name = Convert.ToString(dgvData["Name", e.RowIndex].Value);
                     if (string.IsNullOrWhiteSpace(property.Name)) return;
-                    else if (Program.dbOperations.GetAllPropertiesAsync(Stack.Company_Id).Where(d => d.Id != index)
+                    else if (lstProperties.Where(d => d.Id != id)
                         .Any(j => j.Name.ToLower().Equals(property.Name.ToLower())))
                     {
                         MessageBox.Show("نام مشخصه قبلا استفاده شده است", "خطا");
@@ -141,7 +178,7 @@ namespace OrdersProgress
                     break;
                 case "Enable":
                     property.Enable = Convert.ToBoolean(dgvData["Enable", e.RowIndex].Value);
-                    bEnableChanged = !property.Enable && Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, index).Any();
+                    bEnableChanged = !property.Enable && Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, id).Any();
                     break;
 
             }
@@ -163,18 +200,32 @@ namespace OrdersProgress
 
                 if (bSaveChange)
                 {
-                    Program.dbOperations.UpdatePropertyAsync(property);
+                    if(Stack.Use_Web)
+                    {
+                        var res = await HttpClientExtensions.PutAsJsonAsync
+                            (Stack.API_Uri_start_read + "/Properties/" + id, property, Stack.token);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            pictureBox3.Visible = false;
+                            panel1.Enabled = true;
+                        }
+                    }
+                    else
+                        Program.dbOperations.UpdatePropertyAsync(property);
 
                     #region اگر مشخصه غیرفعال شود تمام ارتباطات آن با کالاهای دیگر حذف می گردد
                     if (bEnableChanged)
                     {
+                        List<Models.Item_Property> lstItem_Properties = ??? new List<Models.Item_Property>();
+
+
                         panel1.Enabled = false;
                         progressBar1.Value = 0;
                         progressBar1.Visible = true;
-                        progressBar1.Maximum = Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, index).Count;
+                        progressBar1.Maximum = Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, id).Count;
                         Application.DoEvents();
 
-                        foreach (Models.Item_Property ip in Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, index))
+                        foreach (Models.Item_Property ip in Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, id))
                         {
                             Program.dbOperations.DeleteItem_PropertyAsync(ip);
                             progressBar1.Value++;

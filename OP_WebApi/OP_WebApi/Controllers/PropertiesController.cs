@@ -21,11 +21,15 @@ namespace OP_WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/Properties
+        // GET: api/Properties?all=vvv&company_Id=xxx
         [HttpGet, Authorize]
-        public async Task<ActionResult<IEnumerable<Property>>> GetProperty()
+        public async Task<ActionResult<IEnumerable<Property>>> GetProperty
+            (string all = "yes", long company_Id = 0)
         {
-            return await _context.Property.ToListAsync();
+            if(all.Equals("yes"))
+                return await _context.Property.ToListAsync();
+            else
+                return await _context.Property.Where(d=>d.Company_Id == company_Id).ToListAsync();
         }
 
         // GET: api/Properties/5
@@ -79,7 +83,8 @@ namespace OP_WebApi.Controllers
             _context.Property.Add(@property);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProperty", new { id = @property.Id }, @property);
+            //return CreatedAtAction("GetProperty", new { id = @property.Id }, @property);
+            return @property;
         }
 
         // DELETE: api/Properties/5

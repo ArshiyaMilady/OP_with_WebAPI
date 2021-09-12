@@ -212,6 +212,7 @@ namespace OrdersProgress
                 else Program.dbOperations.UpdateCategoryAsync(cat);
 
                 dgvData.DataSource = await GetData(true);
+                dgvData.CurrentCell = dgvData["Name", e.RowIndex];
                 //categories.Remove(categories.First(d => d.Id == cat.Id));
                 //categories.Add(cat);
             }

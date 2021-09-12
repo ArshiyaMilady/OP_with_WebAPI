@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(K1200_Properties));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAddToAllItems = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,11 +54,13 @@
             this.btnAddNew = new System.Windows.Forms.Button();
             this.dgvData = new System.Windows.Forms.DataGridView();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
             // contextMenuStrip1
@@ -68,12 +71,12 @@
             this.tsmiDeleteFromAllItems});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(244, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(233, 70);
             // 
             // tsmiDelete
             // 
             this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(243, 22);
+            this.tsmiDelete.Size = new System.Drawing.Size(232, 22);
             this.tsmiDelete.Text = "حذف";
             this.tsmiDelete.Visible = false;
             this.tsmiDelete.Click += new System.EventHandler(this.TsmiDelete_Click);
@@ -81,14 +84,14 @@
             // tsmiAddToAllItems
             // 
             this.tsmiAddToAllItems.Name = "tsmiAddToAllItems";
-            this.tsmiAddToAllItems.Size = new System.Drawing.Size(243, 22);
+            this.tsmiAddToAllItems.Size = new System.Drawing.Size(232, 22);
             this.tsmiAddToAllItems.Text = "اضافه کردن مشخصه به تمام کالاها";
             this.tsmiAddToAllItems.Click += new System.EventHandler(this.TsmiAddToAllItems_Click);
             // 
             // tsmiDeleteFromAllItems
             // 
             this.tsmiDeleteFromAllItems.Name = "tsmiDeleteFromAllItems";
-            this.tsmiDeleteFromAllItems.Size = new System.Drawing.Size(243, 22);
+            this.tsmiDeleteFromAllItems.Size = new System.Drawing.Size(232, 22);
             this.tsmiDeleteFromAllItems.Text = "حذف مشخصه به تمام کالاها";
             this.tsmiDeleteFromAllItems.Click += new System.EventHandler(this.TsmiDeleteFromAllItems_Click);
             // 
@@ -350,12 +353,26 @@
             this.progressBar1.TabIndex = 78;
             this.progressBar1.Visible = false;
             // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+            this.pictureBox3.Location = new System.Drawing.Point(431, 273);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(46, 44);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox3.TabIndex = 94;
+            this.pictureBox3.TabStop = false;
+            this.pictureBox3.Visible = false;
+            // 
             // K1200_Properties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnReturn;
             this.ClientSize = new System.Drawing.Size(868, 317);
+            this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.panel1);
             this.Name = "K1200_Properties";
@@ -370,6 +387,7 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -400,5 +418,6 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.ToolStripMenuItem tsmiDeleteFromAllItems;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.PictureBox pictureBox3;
     }
 }
