@@ -200,7 +200,11 @@ namespace OrdersProgress
 
                 if (bSaveChange)
                 {
-                    if(Stack.Use_Web)
+                    panel1.Enabled = false;
+                    pictureBox3.Visible = true;
+                    Application.DoEvents();
+
+                    if (Stack.Use_Web)
                     {
                         var res = await HttpClientExtensions.PutAsJsonAsync
                             (Stack.API_Uri_start_read + "/Properties/" + id, property, Stack.token);
@@ -216,27 +220,39 @@ namespace OrdersProgress
                     #region اگر مشخصه غیرفعال شود تمام ارتباطات آن با کالاهای دیگر حذف می گردد
                     if (bEnableChanged)
                     {
-                        List<Models.Item_Property> lstItem_Properties = ??? new List<Models.Item_Property>();
 
+                        List<Models.Item_Property> lstItem_Properties = new List<Models.Item_Property>();
+                        if (Stack.Use_Web) lstItem_Properties = await HttpClientExtensions.GetT<List<Models.Item_Property>>
+                             (Stack.API_Uri_start_read + "/Item_Property?all=no&company_Id=" + Stack.Company_Id
+                             + "&Item_Id=0&Property_Id=" + id, Stack.token);
+                        else lstItem_Properties = Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, 0, id);
 
-                        panel1.Enabled = false;
-                        progressBar1.Value = 0;
-                        progressBar1.Visible = true;
-                        progressBar1.Maximum = Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, id).Count;
-                        Application.DoEvents();
-
-                        foreach (Models.Item_Property ip in Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, id))
+                        if (lstItem_Properties.Any())
                         {
-                            Program.dbOperations.DeleteItem_PropertyAsync(ip);
-                            progressBar1.Value++;
+                            progressBar1.Value = 0;
+                            progressBar1.Visible = true;
+                            progressBar1.Maximum = lstItem_Properties.Count;
                             Application.DoEvents();
-                        }
 
-                        Application.DoEvents();
-                        panel1.Enabled = true;
-                        progressBar1.Visible = false;
+                            foreach (Models.Item_Property ip in lstItem_Properties)
+                            {
+                                if (Stack.Use_Web) await HttpClientExtensions.DeleteAsJsonAsync2
+                                    (Stack.API_Uri_start_read + "/Item_Property/" + id, Stack.token);
+                                else Program.dbOperations.DeleteItem_PropertyAsync(ip);
+
+                                progressBar1.Value++;
+                                Application.DoEvents();
+                            }
+                            progressBar1.Visible = false;
+                        }
                     }
                     #endregion
+                    dgvData.DataSource = await GetData(true);
+                    dgvData.CurrentCell = dgvData["Name", e.RowIndex];
+
+                    Application.DoEvents();
+                    panel1.Enabled = true;
+                    pictureBox3.Visible = false;
                 }
             }
 
@@ -279,27 +295,26 @@ namespace OrdersProgress
             chkShowUpdateMessage.Enabled = chkCanEdit.Checked;
         }
 
-        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private async void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GetData();
+           dgvData.DataSource = await GetData();
         }
 
         private void BtnSearch_Click(object sender, EventArgs e)
         {
             //List<Models.Property> lstPr = Program.dbOperations.GetAllPropertiesAsync(Stack.Company_Id,1);
 
-            if (string.IsNullOrWhiteSpace(txtST_Name.Text)
-                && string.IsNullOrWhiteSpace(txtST_Description.Text))
-            {
-                GetData();
-                return;
-            }
+            //if (string.IsNullOrWhiteSpace(txtST_Name.Text)
+            //    && string.IsNullOrWhiteSpace(txtST_Description.Text))
+            //{
+            //    GetData();
+            //    return;
+            //}
 
 
             panel1.Enabled = false;
             dgvData.Visible = false;
             Application.DoEvents();
-            GetData();
 
             List<Models.Property> lstPr = (List<Models.Property>)dgvData.DataSource;
             //MessageBox.Show(lstItems.Count.ToString());
@@ -363,10 +378,10 @@ namespace OrdersProgress
 
 
         // مشخصه انتخابی را به تمام کالاها (در صورتیکه آن کالا ، مشخصه را نداشت) اضافه میکند
-        private void TsmiAddToAllItems_Click(object sender, EventArgs e)
+        private async void TsmiAddToAllItems_Click(object sender, EventArgs e)
         {
-            long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-            Models.Property pr = Program.dbOperations.GetPropertyAsync(index);
+            long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+            Models.Property pr = lstProperties.First(d=>d.Id==id);
 
             if(!pr.Enable)
             {
@@ -376,75 +391,112 @@ namespace OrdersProgress
 
             progressBar1.Value = 0;
             panel1.Enabled=false;
+            pictureBox3.Visible = true;
             progressBar1.Visible = true;
             Application.DoEvents();
 
-            List<Models.Item> lstItems = Program.dbOperations.GetAllItemsAsync(Stack.Company_Id, 0);
+            List<Models.Item> lstItems = new List<Models.Item>();
+            if (Stack.Use_Web) lstItems = await HttpClientExtensions.GetT<List<Models.Item>>
+                     (Stack.API_Uri_start_read + "/Items?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+            else lstItems = Program.dbOperations.GetAllItemsAsync(Stack.Company_Id, 0);
+
+            List<Models.Item_Property> lstItem_Properties = new List<Models.Item_Property>();
+            if (Stack.Use_Web) lstItem_Properties = await HttpClientExtensions.GetT<List<Models.Item_Property>>
+                 (Stack.API_Uri_start_read + "/Item_Property?all=no&company_Id=" + Stack.Company_Id
+                 + "&Item_Id=0&Property_Id=" + id, Stack.token);
+            else lstItem_Properties = Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, 0, id);
+
             progressBar1.Maximum = lstItems.Count;
             foreach(Models.Item item in lstItems)
             //foreach(string sCode_Small in lstItems.Select(d=>d.Code_Small))
             {
                 // اگر کالا با مشخصه در ارتباط نبود
-                if(!Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, item.Code_Small)
-                    .Any(d=>d.Property_Index == index))
+                if(!lstItem_Properties.Where(d=>d.Item_Id == item.Id).Any())
                 {
-                    Program.dbOperations.AddItem_PropertyAsync(new Models.Item_Property
+                    Models.Item_Property ip = new Models.Item_Property
                     {
+                        Item_Id = item.Id,
                         Item_Code_Small = item.Code_Small,
                         //Item_Enable = item.Enable,
-                        Property_Index=index,
+                        Property_Index = id,
                         //Property_Enable = pr.Enable,
-                    });
+                    };
+                    if (Stack.Use_Web)
+                        await HttpClientExtensions.PostAsJsonAsync
+                            (Stack.API_Uri_start_read + "/Item_Property", ip, Stack.token);
+                    else Program.dbOperations.AddItem_PropertyAsync(ip);
                 }
                 progressBar1.Value++;
                 Application.DoEvents();
             }
 
+            dgvData.DataSource = await GetData(true);
+            
             Application.DoEvents();
             panel1.Enabled = true;
+            pictureBox3.Visible = false;
             progressBar1.Visible = false;
         }
 
         // مشخصه انتخابی را از تمام کالاها (در صورتیکه آن کالا ، مشخصه را داشت) حذف میکند
-        private void TsmiDeleteFromAllItems_Click(object sender, EventArgs e)
+        private async void TsmiDeleteFromAllItems_Click(object sender, EventArgs e)
         {
+            if (MessageBox.Show("آیا از حذف این مشخصه از کلیه کالاها اطمینان دارید؟", ""
+                , MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+
             progressBar1.Value = 0;
+            pictureBox3.Visible = true;
             panel1.Enabled = false;
             progressBar1.Visible = true;
             Application.DoEvents();
 
-            long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-            List<Models.Item> lstItems = Program.dbOperations.GetAllItemsAsync(Stack.Company_Id, 0);
-            progressBar1.Maximum = lstItems.Count;
-            foreach (string sCode_Small in lstItems.Select(d => d.Code_Small))
+            long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+
+            List<Models.Item_Property> lstItem_Properties = new List<Models.Item_Property>();
+            if (Stack.Use_Web) lstItem_Properties = await HttpClientExtensions.GetT<List<Models.Item_Property>>
+                 (Stack.API_Uri_start_read + "/Item_Property?all=no&company_Id=" + Stack.Company_Id
+                 + "&Item_Id=0&Property_Id=" + id, Stack.token);
+            else lstItem_Properties = Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, 0, id);
+
+            foreach (Models.Item_Property ip in lstItem_Properties)
             {
-                // اگر کالا با مشخصه در ارتباط نبود
-                if (Program.dbOperations.GetAllItem_PropertiesAsync(Stack.Company_Id, sCode_Small)
-                    .Any(d => d.Property_Index == index))
-                {
-                    Program.dbOperations.DeleteItem_PropertyAsync
-                        (Program.dbOperations.GetItem_PropertyAsync(Stack.Company_Id, sCode_Small,index));
-                }
+                if (Stack.Use_Web)
+                    await HttpClientExtensions.DeleteAsJsonAsync2
+                        (Stack.API_Uri_start_read + "/Item_Property/" + id, Stack.token);
+                else Program.dbOperations.DeleteItem_PropertyAsync(ip);
+
                 progressBar1.Value++;
                 Application.DoEvents();
             }
 
             Application.DoEvents();
             panel1.Enabled = true;
+            pictureBox3.Visible = false;
             progressBar1.Visible = false;
         }
 
-        private void TsmiDelete_Click(object sender, EventArgs e)
+        private async void BtnShowAll_Click(object sender, EventArgs e)
+        {
+            dgvData.DataSource = await GetData();
+        }
+
+        private async void TsmiDelete_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("آیا از حذف این مورد اطمینان دارید؟", "", MessageBoxButtons.YesNo)
                 == DialogResult.No) return;
 
             try
             {
-                long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-                Models.Property property = Program.dbOperations.GetPropertyAsync(index);
-                Program.dbOperations.DeletePropertyAsync(property);
-                dgvData.DataSource = Program.dbOperations.GetAllPropertiesAsync(Stack.Company_Id);
+                long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+                Models.Property property = lstProperties.First(d=>d.Id == id);
+
+                if (Stack.Use_Web)
+                    await HttpClientExtensions.DeleteAsJsonAsync2(Stack.API_Uri_start_read
+                        + "/Properties/" + id, Stack.token);
+                else Program.dbOperations.DeletePropertyAsync(property);
+
+                lstProperties.Remove(property);
+                dgvData.DataSource = await GetData();
             }
             catch { MessageBox.Show("خطا در اجرای عملیات"); }
         }

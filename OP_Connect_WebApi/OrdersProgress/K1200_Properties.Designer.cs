@@ -55,6 +55,7 @@
             this.dgvData = new System.Windows.Forms.DataGridView();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.btnShowAll = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -71,12 +72,12 @@
             this.tsmiDeleteFromAllItems});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(233, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(244, 70);
             // 
             // tsmiDelete
             // 
             this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(232, 22);
+            this.tsmiDelete.Size = new System.Drawing.Size(243, 22);
             this.tsmiDelete.Text = "حذف";
             this.tsmiDelete.Visible = false;
             this.tsmiDelete.Click += new System.EventHandler(this.TsmiDelete_Click);
@@ -84,14 +85,14 @@
             // tsmiAddToAllItems
             // 
             this.tsmiAddToAllItems.Name = "tsmiAddToAllItems";
-            this.tsmiAddToAllItems.Size = new System.Drawing.Size(232, 22);
+            this.tsmiAddToAllItems.Size = new System.Drawing.Size(243, 22);
             this.tsmiAddToAllItems.Text = "اضافه کردن مشخصه به تمام کالاها";
             this.tsmiAddToAllItems.Click += new System.EventHandler(this.TsmiAddToAllItems_Click);
             // 
             // tsmiDeleteFromAllItems
             // 
             this.tsmiDeleteFromAllItems.Name = "tsmiDeleteFromAllItems";
-            this.tsmiDeleteFromAllItems.Size = new System.Drawing.Size(232, 22);
+            this.tsmiDeleteFromAllItems.Size = new System.Drawing.Size(243, 22);
             this.tsmiDeleteFromAllItems.Text = "حذف مشخصه به تمام کالاها";
             this.tsmiDeleteFromAllItems.Click += new System.EventHandler(this.TsmiDeleteFromAllItems_Click);
             // 
@@ -116,6 +117,7 @@
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.btnShowAll);
             this.groupBox1.Controls.Add(this.btnSearch);
             this.groupBox1.Controls.Add(this.txtST_Name);
             this.groupBox1.Controls.Add(this.txtST_Description);
@@ -366,6 +368,17 @@
             this.pictureBox3.TabStop = false;
             this.pictureBox3.Visible = false;
             // 
+            // btnShowAll
+            // 
+            this.btnShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnShowAll.Location = new System.Drawing.Point(151, 101);
+            this.btnShowAll.Name = "btnShowAll";
+            this.btnShowAll.Size = new System.Drawing.Size(79, 26);
+            this.btnShowAll.TabIndex = 57;
+            this.btnShowAll.Text = "نمایش همه";
+            this.btnShowAll.UseVisualStyleBackColor = true;
+            this.btnShowAll.Click += new System.EventHandler(this.BtnShowAll_Click);
+            // 
             // K1200_Properties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
@@ -419,5 +432,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiDeleteFromAllItems;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.Button btnShowAll;
     }
 }

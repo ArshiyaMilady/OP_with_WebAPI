@@ -21,11 +21,13 @@ namespace OP_WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/Items
+        // GET: api/Items?all=vvv&company_Id=xxx
         [HttpGet, Authorize]
-        public async Task<ActionResult<IEnumerable<Item>>> GetItem()
+        public async Task<ActionResult<IEnumerable<Item>>> GetItem(string all = "yes", long company_id = 0)
         {
-            return await _context.Item.ToListAsync();
+            if(all.Equals("yes"))
+                return await _context.Item.ToListAsync();
+            else return await _context.Item.Where(d=>d.Company_Id==company_id).ToListAsync();
         }
 
         // GET: api/Items/5

@@ -21,11 +21,21 @@ namespace OP_WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/Item_Property
+        // GET: api/Item_Property?all=vvv&company_Id=xxx&Item_Id=yyy&Property_Id=zzz
         [HttpGet, Authorize]
-        public async Task<ActionResult<IEnumerable<Item_Property>>> GetItem_Property()
+        public async Task<ActionResult<IEnumerable<Item_Property>>> GetItem_Property
+            (string all = "yes", long company_Id = 0,long Item_Id=0,long Property_Id=0)
+
         {
-            return await _context.Item_Property.ToListAsync();
+            if(all.Equals("yes"))
+                return await _context.Item_Property.ToListAsync();
+            else
+            {
+                List<Item_Property> lstIP = await _context.Item_Property.Where(d=>d.Company_Id==company_Id).ToListAsync();
+                if (Item_Id > 0) lstIP = lstIP.Where(d => d.Item_Id == Item_Id).ToList();
+                if (Property_Id > 0) lstIP = lstIP.Where(d => d.Property_Index == Property_Id).ToList();
+                return lstIP;
+            }
         }
 
         // GET: api/Item_Property/5
