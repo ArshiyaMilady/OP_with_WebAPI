@@ -79,7 +79,8 @@ namespace OP_WebApi.Controllers
             _context.File.Add(file);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetFile", new { id = file.Id }, file);
+            //return CreatedAtAction("GetFile", new { id = file.Id }, file);
+            return file;
         }
 
         // DELETE: api/Files/5

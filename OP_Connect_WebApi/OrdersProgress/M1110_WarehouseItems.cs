@@ -314,7 +314,7 @@ namespace OrdersProgress
             Models.Item_File item_file = Program.dbOperations.GetItem_FileAsync(sc, 1, true);
             if (item_file != null)
                 pictureBox2.Image = new ThisProject().ByteToImage
-                    (Program.dbOperations.GetFileAsync(item_file.File_Index).Content);
+                    (Program.dbOperations.GetFileAsync(item_file.File_Id).Content);
             else pictureBox2.Image = null;
             #endregion
         }

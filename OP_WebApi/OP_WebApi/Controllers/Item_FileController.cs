@@ -21,11 +21,19 @@ namespace OP_WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/Item_File
+        // GET: api/Item_File?all=vvv&company_Id=xxx&ItemSmallCode=yyy
         [HttpGet, Authorize]
-        public async Task<ActionResult<IEnumerable<Item_File>>> GetItem_File()
+        public async Task<ActionResult<IEnumerable<Item_File>>> GetItem_File
+            (string all = "yes", long company_Id = 0, string ItemSmallCode = null)
         {
-            return await _context.Item_File.ToListAsync();
+            if (all.Equals("yes")) return await _context.Item_File.ToListAsync();
+            else
+            {
+                List<Item_File> lstIF = await _context.Item_File.Where(d=>d.Company_Id == company_Id).ToListAsync();
+                if (!string.IsNullOrEmpty(ItemSmallCode))
+                    lstIF = lstIF.Where(d => d.Item_Code_Small.ToLower().Equals(ItemSmallCode.ToLower())).ToList();
+                return lstIF;
+            }
         }
 
         // GET: api/Item_File/5

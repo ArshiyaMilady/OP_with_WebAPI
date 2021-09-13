@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OP_WebApi.Models;
 
 namespace OP_WebApi.Migrations
 {
     [DbContext(typeof(TableContext))]
-    partial class TableContextModelSnapshot : ModelSnapshot
+    [Migration("20210913081203_OP14000622A2")]
+    partial class OP14000622A2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -535,8 +537,6 @@ namespace OP_WebApi.Migrations
                     b.Property<long>("File_Id");
 
                     b.Property<string>("Item_Code_Small");
-
-                    b.Property<long>("Item_Id");
 
                     b.Property<int>("Type");
 

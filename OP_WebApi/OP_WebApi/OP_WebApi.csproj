@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20210913080925_OP14000622A1.cs" />
+    <Compile Remove="Migrations\20210913080925_OP14000622A1.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Devart.Data.SQLite.EFCore" Version="5.12.1437" />
     <PackageReference Include="Devart.Data.SQLite.EFCore.Design" Version="5.12.1437" />
     <PackageReference Include="Microsoft.AspNetCore.App" />

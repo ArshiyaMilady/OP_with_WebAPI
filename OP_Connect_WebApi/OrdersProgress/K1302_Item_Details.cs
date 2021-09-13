@@ -18,13 +18,19 @@ namespace OrdersProgress
         // type = 0  :  view
         // type = 1  :  edit
         // type = 2  :  add
-        public K1302_Item_Details(int _type = 0,Models.Item _item=null)
+        public K1302_Item_Details(int _type = 0, Models.Item _item = null)
         {
             InitializeComponent();
 
             Stack.lx = -1;  // شناسه کالا
             Stack.bx = false;   // آیا تغییری اتفاق افتاده است؟
             type = _type;
+            item = _item;
+
+        }
+
+        private async void K1302_Item_Details_Load(object sender, EventArgs e)
+        {
             #region تنظیمات کنترلها با توجه به نوع استفاده از فرم
             if (type == 2)     // add
             {
@@ -33,16 +39,29 @@ namespace OrdersProgress
             }
             else
             {
-                // اگر از این کالا در حواله ای استفاده شده باشد، نباید امکان تغییر داشته باشد
-                if (Program.dbOperations.GetWarehouse_Remittance_RowAsync
-                    (_item.Code_Small, Stack.Company_Id) != null)
-                        type = 0;
+                if (type == 1)
+                {
+                    if (Stack.Use_Web)
+                    {
+                        List<Models.Warehouse_Remittance_Row> rows = await HttpClientExtensions
+                            .GetT<List<Models.Warehouse_Remittance_Row>>(Stack.API_Uri_start_read 
+                            + "/Warehouse_Remittance_Rows?all=no&company_Id=" + Stack.Company_Id
+                            + "&WarehouseRemittance_Id=0&ItemSmallcode=" + item.Code_Small, Stack.token);
+                        type=3???
+                    }
+                    else
+                    {
+                        // اگر از این کالا در حواله ای استفاده شده باشد، نباید امکان تغییر داشته باشد
+                        if (Program.dbOperations.GetWarehouse_Remittance_RowAsync
+                            (item.Code_Small, Stack.Company_Id) != null)
+                            type = 0;
+                    }
+                }
 
-                item = _item;
                 Text = item.Name_Samll;
             }
 
-            if(type != 0)   // Add or Edit
+            if (type != 0)   // Add or Edit
             {
                 //panel2.Enabled = true;
                 foreach (Control c in panel2.Controls.Cast<Control>()
@@ -59,7 +78,7 @@ namespace OrdersProgress
                 chkBookable.Enabled = true;
                 btnSave.Visible = true;
             }
-            #endregion
+            #endregion        }
         }
 
         private void K1302_Item_Details_Shown(object sender, EventArgs e)
@@ -92,7 +111,7 @@ namespace OrdersProgress
                 chkSalable.Checked = item.Salable;
                 chkBookable.Checked = item.Bookable;
 
-                if(Program.dbOperations.GetWarehouseAsync(item.Warehouse_Id)!=null)
+                if (Program.dbOperations.GetWarehouseAsync(item.Warehouse_Id) != null)
                     cmbWarehouses.Text = Program.dbOperations.GetWarehouseAsync(item.Warehouse_Id).Name;
                 if (Program.dbOperations.GetWarehouseAsync(item.Category_Id) != null)
                     cmbCategories.Text = Program.dbOperations.GetCategoryAsync(item.Category_Id).Name;
@@ -127,20 +146,20 @@ namespace OrdersProgress
             bool bEverythingOK = true;
 
             #region خطایابی
-            if(string.IsNullOrWhiteSpace(textBox1.Text))
+            if (string.IsNullOrWhiteSpace(textBox1.Text))
             {
                 MessageBox.Show("کد کالا نباید خالی باشد", "خطا");
                 bEverythingOK = false;
             }
-            if(string.IsNullOrWhiteSpace(textBox2.Text))
+            if (string.IsNullOrWhiteSpace(textBox2.Text))
             {
                 MessageBox.Show("نام کالا نباید خالی باشد", "خطا");
                 bEverythingOK = false;
             }
 
-            if(type==1)
+            if (type == 1)
             {
-                if (Program.dbOperations.GetAllItemsAsync(Stack.Company_Id).Where(d1=> d1.Id != item.Id)
+                if (Program.dbOperations.GetAllItemsAsync(Stack.Company_Id).Where(d1 => d1.Id != item.Id)
                     .Any(j => j.Code_Small.ToLower().Equals(textBox1.Text.ToLower())))
                 {
                     MessageBox.Show("کد کالا قبلا استفاده شده است", "خطا");
@@ -171,28 +190,28 @@ namespace OrdersProgress
             }
 
             if (string.IsNullOrWhiteSpace(textBox6.Text)) textBox6.Text = "0";
-            else if (!double.TryParse(textBox6.Text,out double d6))
+            else if (!double.TryParse(textBox6.Text, out double d6))
             {
                 MessageBox.Show("وزن کالا باید به صورت عددی قابل قبول وارد شود", "خطا");
                 bEverythingOK = false;
             }
 
             if (string.IsNullOrWhiteSpace(textBox9.Text)) textBox9.Text = "0";
-            else if (!double.TryParse(textBox9.Text,out double d9))
+            else if (!double.TryParse(textBox9.Text, out double d9))
             {
                 MessageBox.Show("نقطه سفارش کالا باید به صورت عددی قابل قبول وارد شود", "خطا");
                 bEverythingOK = false;
             }
 
             if (string.IsNullOrWhiteSpace(textBox10.Text)) textBox10.Text = "0";
-            else if (!double.TryParse(textBox10.Text,out double d10))
+            else if (!double.TryParse(textBox10.Text, out double d10))
             {
                 MessageBox.Show("مقدار سفارش کالا باید به صورت عددی قابل قبول وارد شود", "خطا");
                 bEverythingOK = false;
             }
             #endregion
 
-            if(bEverythingOK)
+            if (bEverythingOK)
                 bEverythingOK = MessageBox.Show("آیا از ثبت تغییرات اطمینان دارید؟", ""
                 , MessageBoxButtons.YesNo) == DialogResult.Yes;
 
@@ -242,5 +261,6 @@ namespace OrdersProgress
             timer1.Enabled = false;
             Close();
         }
+
     }
 }

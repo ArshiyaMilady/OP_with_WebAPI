@@ -1013,7 +1013,8 @@ namespace OrdersProgress.Models
         // Type=1 : تصویر کالا
         public int Type { get; set; }
         public string Item_Code_Small { get; set; }
-        public long File_Index { get; set; }    // شناسه فایل
+        public long Item_Id { get; set; }    // شناسه کالا
+        public long File_Id { get; set; }    // شناسه فایل
         public bool Enable { get; set; }
     }
 

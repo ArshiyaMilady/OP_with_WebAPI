@@ -583,11 +583,16 @@ namespace OrdersProgress
             if (MessageBox.Show(
                 "لطفا در فایل اکسل باز شده، و در شیت " + SheetName + " اطلاعات خود را وارد نموده و سپس آنرا ذخیره نمایید."
                 +"\n"+"دقت نمایید فایل اکسل نباید ببندید"
-                , "", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) return;
+                , "", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) return true;
 
             panel1.Enabled = false;
-            progressBar1.Style = ProgressBarStyle.Marquee;
-            progressBar1.Visible = true;
+            if (Stack.Use_Web)
+                pictureBox3.Visible = true;
+            else
+            {
+                progressBar1.Style = ProgressBarStyle.Marquee;
+                progressBar1.Visible = true;
+            }
             Application.DoEvents();
             //pictureBox1.Visible = true;
 
@@ -743,17 +748,22 @@ namespace OrdersProgress
                                 Models.Module module1 = modules.FirstOrDefault(d => 
                                     d.Module_Code_Small.Equals(module_Small_code)
                                     && d.Item_Code_Small.Equals(item_Small_code));
-                                
+
+                                #region غیرفعال کردن ماژول قبلی
                                 if (module1 != null)
                                 {
                                     //Models.Module module = Program.dbOperations.GetModuleAsync(module_Small_code, item_Small_code);
                                     module1.Enable = false;
-                                    if(Stack.Use_Web)
-                                        await HttpClientExtensions.PutAsJsonAsync(Stack)
-                                    Program.dbOperations.UpdateModuleAsync(module1);
+                                    if (Stack.Use_Web)
+                                        await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read 
+                                            + "/Modules/" + module1.Id, module1, Stack.token);
+                                    else
+                                        Program.dbOperations.UpdateModuleAsync(module1);
                                 }
+                                #endregion
 
-                                Program.dbOperations.AddModuleAsync(new Models.Module
+                                #region اضافه کردن ماژول جدید
+                                Models.Module module2 = new Models.Module
                                 {
                                     Company_Id = Stack.Company_Id,
                                     Module_Code_Small = module_Small_code,
@@ -761,7 +771,14 @@ namespace OrdersProgress
                                     Item_Code_Small = item_Small_code,
                                     Quantity = quantity,
                                     Enable = true,
-                                });
+                                };
+
+                                if (Stack.Use_Web)
+                                    await HttpClientExtensions.PostAsJsonAsync(Stack.API_Uri_start_read
+                                        + "/Modules" , module2, Stack.token);
+                                else
+                                    Program.dbOperations.AddModuleAsync(module2);
+                                #endregion
                             }
                             #endregion
 
@@ -769,6 +786,8 @@ namespace OrdersProgress
                                 progressBar1.Value++;
                             Application.DoEvents();
                         }
+
+
                         #endregion
                     }
 
@@ -795,15 +814,21 @@ namespace OrdersProgress
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
 
-                    dgvData.DataSource = GetData();// Program.dbOperations.GetAllItemsAsync(Stack.Company_Id);
+                    dgvData.DataSource = await GetData();// Program.dbOperations.GetAllItemsAsync(Stack.Company_Id);
                     Application.DoEvents();
                     //panel1.Enabled = true;
                 }
                 catch { }
             }
 
+            Application.DoEvents();
             panel1.Enabled = true;
-            progressBar1.Visible = false;
+            if (Stack.Use_Web)
+                pictureBox3.Visible = false;
+            else
+            {
+                progressBar1.Visible = false;
+            }
             //pictureBox1.Visible = false;
             return true;
         }
@@ -826,21 +851,12 @@ namespace OrdersProgress
 
         private void BtnSearch_Click(object sender, EventArgs e)
         {
-            //if (string.IsNullOrWhiteSpace(txtST_Name.Text)
-            //    && string.IsNullOrWhiteSpace(txtST_SmallCode.Text)
-            //    && string.IsNullOrWhiteSpace(txtST_FullName.Text)
-            //    && string.IsNullOrWhiteSpace(txtST_SmallCode.Text))
-            //{
-            //    //dgvData.DataSource = GetData();
-            //    return;
-            //}
-
             panel1.Enabled = false;
             //dgvData.Visible = false;
             Application.DoEvents();
             //List<Models.Item> lstItems = GetData();
             //dgvData.DataSource = GetData();
-            List<Models.Item> lstItems = (List<Models.Item>)dgvData.DataSource;
+            List<Models.Item> lstItems1 = (List<Models.Item>)dgvData.DataSource;
             //MessageBox.Show(lstItems.Count.ToString());
 
             //if (!string.IsNullOrWhiteSpace(txtST_Name.Text)
@@ -854,14 +870,37 @@ namespace OrdersProgress
                         if (c.Name.Substring(0, 5).Equals("txtST"))
                             if (!string.IsNullOrWhiteSpace(c.Text))
                             {
-                                lstItems = SearchThis(lstItems, c.Name);
-                                if ((lstItems == null) || !lstItems.Any()) break;
+                                lstItems1 = SearchThis(lstItems1, c.Name);
+                                if ((lstItems1 == null) || !lstItems1.Any()) break;
                             }
                     }
                 }
             }
 
-            dgvData.DataSource = lstItems;
+            switch (cmbItemsEnable.SelectedIndex)
+            {
+                case 0: lstItems1 = lstItems1.Where(d => d.Enable).ToList(); break;
+                case 1: lstItems1 = lstItems1.Where(d => !d.Enable).ToList(); break;
+                //case 2: enableType = 0; break;
+            }
+
+            if (radModule.Checked) lstItems1 = lstItems1.Where(d => d.Module).ToList();
+            else if (radNotModule.Checked) lstItems1 = lstItems1.Where(d => !d.Module).ToList();
+            //else return Program.dbOperations.GetAllItemsAsync(Stack.Company_Id, enableType);
+
+            if(cmbWarehouses.SelectedIndex>0)
+            {
+                long wh_id = lstWarehousess.First(d=>d.Name.Equals(cmbWarehouses.Text)).Id;
+                lstItems1 = lstItems1.Where(d => d.Warehouse_Id == wh_id).ToList();
+            }
+
+            if(cmbCategories.SelectedIndex>0)
+            {
+                long cat_id = lstCats.First(d=>d.Name.Equals(cmbCategories.Text)).Id;
+                lstItems1 = lstItems1.Where(d => d.Category_Id == cat_id).ToList();
+            }
+
+            dgvData.DataSource = lstItems1;// GetData();
 
             //System.Threading.Thread.Sleep(500);
             Application.DoEvents();
@@ -926,7 +965,7 @@ namespace OrdersProgress
             return null;
         }
 
-        private void tsmiItemStructure_Click(object sender, EventArgs e)
+        private async void tsmiItemStructure_Click(object sender, EventArgs e)
         {
             bool enable = Convert.ToBoolean(dgvData.CurrentRow.Cells["Enable"].Value);
             if (!enable)
@@ -937,12 +976,14 @@ namespace OrdersProgress
             else
             {
                 Stack.bx = false;   // آیا تغییری انجام شده است؟
-                long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+                long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
                 //Models.Item item = Program.dbOperations.GetItemAsync(index);
-                new K1320_Modules(Program.dbOperations.GetItemAsync(index)).ShowDialog();
+                new K1320_Modules(lstItems.First(d=>d.Id==id)).ShowDialog();
 
                 if (Stack.bx)
-                    dgvData.DataSource = GetData();
+                {
+                    dgvData.DataSource = await GetData(true);
+                }
             }
         }
 
@@ -989,20 +1030,25 @@ namespace OrdersProgress
 
         private void TsmiProperties_Click(object sender, EventArgs e)
         {
-            long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-            new K1330_Item_Properties(Program.dbOperations.GetItemAsync(index)).ShowDialog();
+            long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+            new K1330_Item_Properties(lstItems.First(d => d.Id == id)).ShowDialog();
         }
 
-        private void TsmiItem_Warehouse_Click(object sender, EventArgs e)
+        private async void TsmiItem_Warehouse_Click(object sender, EventArgs e)
         {
-            long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-            Models.Item item = Program.dbOperations.GetItemAsync(index);
+            long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+            Models.Item item = lstItems.First(d => d.Id == id);
             new K1304_Item_ChooseWarehouse(item).ShowDialog();
 
             if (Stack.ix > 0)
             {
                 item.Warehouse_Id = Stack.ix;
-                Program.dbOperations.UpdateItemAsync(item);
+
+                if(Stack.Use_Web)
+                    await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                        + "/Items/" + id, item, Stack.token);
+                else 
+                    Program.dbOperations.UpdateItemAsync(item);
                 //Application.DoEvents();
                 //pictureBox1.Visible = true;
                 //timer1.Enabled = true;
@@ -1030,7 +1076,7 @@ namespace OrdersProgress
             CancelButton = btnReturn;
         }
 
-        private void TsmiAdd_ChangeItemImage_Click(object sender, EventArgs e)
+        private async void TsmiAdd_ChangeItemImage_Click(object sender, EventArgs e)
         {
             MessageBox.Show("حجم فایل نباید بیشتر از 50 کیلو بایت باشد", "توجه نمایید");
 
@@ -1043,8 +1089,10 @@ namespace OrdersProgress
                     return;
                 }
 
-                string item_code= Convert.ToString(dgvData.CurrentRow.Cells["Code_Small"].Value);
-                Add_ChangeImage(item_code,file);
+                //string item_code= Convert.ToString(dgvData.CurrentRow.Cells["Code_Small"].Value);
+                long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+                if (Stack.Use_Web) await Add_ChangeImage_web(lstItems.First(d => d.Id == id), file, true);
+                else Add_ChangeImage(lstItems.First(d=>d.Id == id),file);
                 Application.DoEvents();
 
                 pictureBox2.Image =new Bitmap(file);
@@ -1053,22 +1101,28 @@ namespace OrdersProgress
             }
         }
 
-        private void TsmiDeleteItemImage_Click(object sender, EventArgs e)
+        private async void TsmiDeleteItemImage_Click(object sender, EventArgs e)
         {
+            // در اصل تصویر غیرفعال می شود
             if (MessageBox.Show("آیا از حذف تصویر اطمینان دارید؟", "اخطار"
                 , MessageBoxButtons.YesNo) != DialogResult.Yes) return;
 
             string code_cmall = Convert.ToString(dgvData.CurrentRow.Cells["Code_Small"].Value);
             Models.Item_File item_file = Program.dbOperations.GetItem_FileAsync(code_cmall, 1, true);
             item_file.Enable = false;
-            Program.dbOperations.UpdateItem_FileAsync(item_file);
+
+            if(Stack.Use_Web)
+                await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                    + "/Item_File/" + item_file.Id, item_file, Stack.token);
+            else
+                Program.dbOperations.UpdateItem_FileAsync(item_file);
 
             pictureBox1.Visible = true;
             timer1.Enabled = true;
             pictureBox2.Image = null;
         }
 
-        private void BtnGetImages_Click(object sender, EventArgs e)
+        private async void BtnGetImages_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("آیا مایلید تمام تصاویر از مسیر مشخص شده، به دیتابیس اضافه گردد؟"
                 , "", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
@@ -1080,61 +1134,103 @@ namespace OrdersProgress
                            ImageDirectoryPath, "*.jpg", SearchOption.AllDirectories))
             {
                 string item_code = Path.GetFileNameWithoutExtension(file);
-                Add_ChangeImage(item_code,file);
+                Models.Item item = lstItems.Where(d => d.Enable).FirstOrDefault(d => d.Code_Small.ToLower()
+                      .Equals(item_code.ToLower()));
+                if(item==null)
+                    item = lstItems.Where(d => !d.Enable).FirstOrDefault(d => d.Code_Small.ToLower()
+                      .Equals(item_code.ToLower()));
+
+                if (item != null)
+                {
+                    if (Stack.Use_Web) await Add_ChangeImage_web(item, file);
+                    else  Add_ChangeImage(item, file);
+                }
             }
         }
 
         private void btnDeleteAllImages_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("آیا از حذف تمام تصاویر اطمینان دارید؟", "اخطار 1"
+            if (Stack.Use_Web)
+            {
+                MessageBox.Show("این امکان فعال نمی باشد");
+                return;
+            }
+            else
+            {
+                if (MessageBox.Show("آیا از حذف تمام تصاویر اطمینان دارید؟", "اخطار 1"
                , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
 
-            if (MessageBox.Show("با انجام این عمل ، تمام تصاویر کالاها از بین خواهد رفت"
-                + "\n" + "آیا از حذف آنها اطمینان دارید؟", "اخطار 2"
-                , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+                if (MessageBox.Show("با انجام این عمل ، تمام تصاویر کالاها از بین خواهد رفت"
+                    + "\n" + "آیا از حذف آنها اطمینان دارید؟", "اخطار 2"
+                    , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
 
-            return;
-            // تمام فایلها حذف می شوند. نمیتونم اجازه بدم
-            Program.dbOperations.DeleteAllFilesAsync();
-            Program.dbOperations.DeleteAllItem_FilesAsync();
-            pictureBox2.Image = null;
+                return;
+                // تمام فایلها حذف می شوند. نمیتونم اجازه بدم
+                Program.dbOperations.DeleteAllFilesAsync();
+                Program.dbOperations.DeleteAllItem_FilesAsync();
+                pictureBox2.Image = null;
+            }
         }
 
-        private void DgvData_RowEnter(object sender, DataGridViewCellEventArgs e)
+        private async void DgvData_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
+            long id = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
             string sc = Convert.ToString(dgvData["Code_Small", e.RowIndex].Value);
             #region نمایش تصویر کالا در صورت وجود
-            Models.Item_File item_file = Program.dbOperations.GetItem_FileAsync(sc, 1, true);
+            Models.Item_File item_file = null;
+            if (Stack.Use_Web)
+            {
+                List<Models.Item_File> item_files = await HttpClientExtensions.GetT<List<Models.Item_File>>
+                    (Stack.API_Uri_start_read + "/Item_File?all=no&company_Id=" + Stack.Company_Id + "&ItemSmallCode=" + sc, Stack.token);
+                item_file = item_files.First(d => d.Enable);
+            }
+            else
+                item_file = Program.dbOperations.GetItem_FileAsync(sc, 1, true);
+
             if (item_file != null)
-                pictureBox2.Image = new ThisProject().ByteToImage
-                    (Program.dbOperations.GetFileAsync(item_file.File_Index).Content);
+            {
+                Models.File file = null;
+                if (Stack.Use_Web)
+                    file = await HttpClientExtensions.GetT<Models.File>(Stack.API_Uri_start_read
+                        + "/Files/" + item_file.File_Id, Stack.token);
+                else file = Program.dbOperations.GetFileAsync(item_file.File_Id);
+
+                if(file!=null)
+                    pictureBox2.Image = new ThisProject().ByteToImage(file.Content);
+                else pictureBox2.Image = null;
+            }
             else pictureBox2.Image = null;
             #endregion
         }
 
-        private void TsmiItem_Details_Click(object sender, EventArgs e)
+        private async void TsmiItem_Details_Click(object sender, EventArgs e)
         {
-            long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-            Models.Item item = Program.dbOperations.GetItemAsync(index);
+            long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+            Models.Item item = lstItems.First(d => d.Id == id); // Program.dbOperations.GetItemAsync(id);
 
             int type = Stack.lstUser_ULF_UniquePhrase.Contains("jn2110") ? 1 : 0;
             new K1302_Item_Details(type,item).ShowDialog();
 
             if (Stack.bx)
             {
-                dgvData.Enabled = false;
+                panel1.Enabled = false;
+                pictureBox3.Visible = true;
+                //dgvData.Enabled = false;
                 Application.DoEvents();
-                //dgvData.DataSource = GetData();
+                dgvData.DataSource = await GetData(true);
                 //radNotModule.Checked = true;
                 BtnSearch_Click(null, null);
                 DataGridViewRow row = null;
                 if ((row = dgvData.Rows.Cast<DataGridViewRow>().ToList().FirstOrDefault
-                    (d => d.Cells["Id"].Value.ToString().Equals(index.ToString()))) != null)
+                    (d => d.Cells["Id"].Value.ToString().Equals(id.ToString()))) != null)
                 {
                     dgvData.CurrentCell = row.Cells["Name_Samll"];
                 }
+
                 Application.DoEvents();
-                dgvData.Enabled = true;
+                //dgvData.Enabled = true;
+                panel1.Enabled = true;
+                pictureBox3.Visible = false;
 
             }
 
@@ -1157,22 +1253,23 @@ namespace OrdersProgress
             TsmiItem_Details_Click(null, null);
         }
 
-        private void Add_ChangeImage(string item_code,string file)
+        private void Add_ChangeImage(Models.Item item,string file)
         {
+            
             // اگر کالا قبلا تصویری داشته باشد، ابتدا آنرا غیرفعال می کند
-            if (Program.dbOperations.GetItem_FileAsync(item_code, 1, true) != null)
+            if (Program.dbOperations.GetItem_FileAsync(item.Code_Small, 1, true) != null)
             {
-                Models.Item_File item_file = Program.dbOperations.GetItem_FileAsync(item_code, 1, true);
+                Models.Item_File item_file = Program.dbOperations.GetItem_FileAsync(item.Code_Small, 1, true);
                 item_file.Enable = false;
                 Program.dbOperations.UpdateItem_FileAsync(item_file);
             }
 
-            long file_index = Program.dbOperations.AddFileAsync(new Models.File
+            long file_id = Program.dbOperations.AddFileAsync(new Models.File
             {
                 Company_Id = Stack.Company_Id,
                 Content = new ThisProject().ConvertImageToByteArray(file),
                 OriginalFileName = Path.GetFileName(file),
-                Description = "تصویر کالای " + item_code,
+                Description = "تصویر کالای " + item.Code_Small,
                 DateTime_mi = DateTime.Now.ToString(),
                 DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
                 Enable = true,
@@ -1181,11 +1278,87 @@ namespace OrdersProgress
             Program.dbOperations.AddItem_FileAsync(new Models.Item_File
             {
                 Company_Id = Stack.Company_Id,
-                File_Index = file_index,
-                Item_Code_Small = item_code,
+                File_Id = file_id,
+                Item_Id = item.Id,
+                Item_Code_Small = item.Code_Small,
                 Type = 1,   // مربوط به تصویر یک کالا
                 Enable = true,
             });
+        }
+
+        private async Task<bool> Add_ChangeImage_web(Models.Item item,string file,bool prepare_form=false)
+        {
+            if(prepare_form)
+            {
+                panel1.Enabled = false;
+                pictureBox3.Visible = true;
+                Application.DoEvents();
+            }
+
+            List<Models.Item_File> item_files = await HttpClientExtensions.GetT<List<Models.Item_File>>
+                (Stack.API_Uri_start_read + "/Item_File?all=no&company_Id="+Stack.Company_Id+"&ItemSmallCode="+item.Code_Small, Stack.token);
+
+            // اگر کالا قبلا تصویری داشته باشد، ابتدا آنرا غیرفعال می کند
+            if (item_files.Any(d=>d.Enable))
+            {
+                foreach (Models.Item_File item_file in item_files)
+                {
+                    item_file.Enable = false;
+                    await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                        + "/Item_File/" + item_file.Id, item_file, Stack.token);
+                }
+            }
+
+            Models.File file1 = new Models.File
+            {
+                Company_Id = Stack.Company_Id,
+                Content = new ThisProject().ConvertImageToByteArray(file),
+                OriginalFileName = Path.GetFileName(file),
+                Description = "تصویر کالای " + item.Code_Small,
+                DateTime_mi = DateTime.Now.ToString(),
+                DateTime_sh = Stack_Methods.DateTimeNow_Shamsi(),
+                Enable = true,
+            };
+
+            long file_id = -1;
+            var response = await HttpClientExtensions.PostAsJsonAsync
+                (Stack.API_Uri_start_read + "/Files", file1, Stack.token);
+            if (!response.IsSuccessStatusCode)
+            {
+                MessageBox.Show("اشکال در ثبت اطلاعات", "خطا");
+                return false;
+            }
+            else
+            {
+                var responseString = response.Content.ReadAsStringAsync().Result;
+                Models.File file2 = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.File>(responseString);
+                file_id = file2.Id;
+            }
+
+            if (file_id > 0)
+            {
+                Models.Item_File item_file = new Models.Item_File
+                {
+                    Company_Id = Stack.Company_Id,
+                    File_Id = file_id,
+                    Item_Id = item.Id,
+                    Item_Code_Small = item.Code_Small,
+                    Type = 1,   // مربوط به تصویر یک کالا
+                    Enable = true,
+                };
+
+                await HttpClientExtensions.PostAsJsonAsync
+                    (Stack.API_Uri_start_read + "/Item_File", item_file, Stack.token);
+            }
+
+            if (prepare_form)
+            {
+                Application.DoEvents();
+                panel1.Enabled = true;
+                pictureBox3.Visible = false;
+            }
+
+            return true;
         }
 
 
