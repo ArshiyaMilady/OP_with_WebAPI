@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using EXCEL = Microsoft.Office.Interop.Excel;
 
@@ -15,21 +16,32 @@ namespace OrdersProgress
 {
     public partial class K1300_Items : X210_ExampleForm_Normal
     {
+        List<Models.Item> lstItems = new List<Models.Item>();
+        List<Models.Warehouse> lstWarehousess = new List<Models.Warehouse>();
+        List<Models.Category> lstCats = new List<Models.Category>();
+
         public K1300_Items()
         {
             InitializeComponent();
+
+            pictureBox3.Visible = Stack.Use_Web;
 
             tsmiDelete.Visible = (Stack.UserLevel_Type == 1) || (Stack.UserLevel_Type == 2);
             btnDeleteAllItems.Visible = Stack.UserLevel_Type == 1;
             btnDeleteAllImages.Visible = Stack.UserLevel_Type == 1;
 
             //panel2.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn2110"); // امکان تغییر
-            btnGetImages.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn2110"); // امکان افزودن تصویر
-            btnAddNew.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn2120"); // امکان افزودن
-            btnImportDataFromExcel.Visible = Stack.lstUser_ULF_UniquePhrase.Contains("jn2130"); // امکان  ورود اطلاعات از اکسل
+            btnGetImages.Visible =(Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn2110"); // امکان افزودن تصویر
+            btnAddNew.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn2120"); // امکان افزودن
+            btnImportDataFromExcel.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn2130"); // امکان  ورود اطلاعات از اکسل
         }
 
-        private void K1300_Items_Shown(object sender, EventArgs e)
+        private void K1300_Items_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void K1300_Items_Shown(object sender, EventArgs e)
         {
             //this.WindowState = FormWindowState.Maximized;
             //Application.DoEvents();
@@ -40,50 +52,90 @@ namespace OrdersProgress
             //dgvData.DataSource = Program.dbOperations.GetAllItemsAsync(Stack.Company_Id);
             cmbItemsEnable.SelectedIndex = 0;
 
+            #region تهیه فهرست انبارها در کامبوباکس مربوطه
             cmbWarehouses.Items.Add("تمام انبارها");
-            cmbWarehouses.Items.AddRange(Program.dbOperations.GetAllWarehousesAsync
-                (Stack.Company_Id, true).Select(d => d.Name).ToArray());
+            if (Stack.Use_Web)
+            {
+                try
+                {
+                    lstWarehousess = await HttpClientExtensions.GetT<List<Models.Warehouse>>
+                        (Stack.API_Uri_start_read + "/Warehouses?all=no&company_Id=" + Stack.Company_Id,Stack.token);
+                }
+                catch { }
+            }
+            else
+            {
+                lstWarehousess = Program.dbOperations.GetAllWarehousesAsync(Stack.Company_Id, true);
+            }
+            if(lstWarehousess.Any())
+                cmbWarehouses.Items.AddRange(lstWarehousess.Select(d => d.Name).ToArray());
             cmbWarehouses.SelectedIndex = 0;
+            #endregion
 
-            cmbCategories.Items.Add("تمام دسته ها");
-            if (Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id).Any())
-                cmbCategories.Items.AddRange(Program.dbOperations.GetAllCategoriesAsync
-                    (Stack.Company_Id).Select(d => d.Name).ToArray());
+            #region تهیه فهرست دسته ها در کامبوباکس مربوطه
+            cmbWarehouses.Items.Add("تمام دسته ها");
+            if (Stack.Use_Web)
+            {
+                try
+                {
+                    lstCats = await HttpClientExtensions.GetT<List<Models.Category>>
+                        (Stack.API_Uri_start_read + "/Category?all=no&company_Id=" + Stack.Company_Id,Stack.token);
+                }
+                catch { }
+            }
+            else
+            {
+                lstCats = Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id);
+            }
+            if(lstCats.Any())
+                cmbCategories.Items.AddRange(lstCats.Select(d => d.Name).ToArray());
             cmbCategories.SelectedIndex = 0;
+            #endregion
 
-            dgvData.DataSource = GetData();
+            dgvData.DataSource = await GetData();
             ShowData();
+
+            Application.DoEvents();
+            panel1.Visible = true;
+            progressBar1.Visible = false;
         }
 
-        private List<Models.Item> GetData()
+        private async Task<List<Models.Item>> GetData(bool bForceReset = false)
         {
-            int enableType = 0;
-            switch (cmbItemsEnable.SelectedIndex)
+            if (!lstItems.Any() || bForceReset)
             {
-                case 0: enableType = 1; break;
-                case 1: enableType = -1; break;
-                case 2: enableType = 0; break;
+                if (Stack.Use_Web)
+                    lstItems = await HttpClientExtensions.GetT<List<Models.Item>>
+                        (Stack.API_Uri_start_read + "/Items?all=no&company_Id="+ Stack.Company_Id, Stack.token);
+                else lstItems = Program.dbOperations.GetAllItemsAsync(Stack.Company_Id,0,100);
+
+                lstItems = lstItems.OrderBy(d => d.Code_Small).ToList();
             }
 
-            List<Models.Item> lstResult = Program.dbOperations.GetAllItemsAsync(Stack.Company_Id, enableType);
+            //switch (cmbItemsEnable.SelectedIndex)
+            //{
+            //    case 0: return l
+            //    case 1: enableType = -1; break;
+            //    case 2: enableType = 0; break;
+            //}
 
-            if (radModule.Checked) lstResult = lstResult.Where(d => d.Module).ToList();
-            else if (radNotModule.Checked) lstResult = lstResult.Where(d => !d.Module).ToList();
-            //else return Program.dbOperations.GetAllItemsAsync(Stack.Company_Id, enableType);
+            //if (radModule.Checked) lstItems = lstItems.Where(d => d.Module).ToList();
+            //else if (radNotModule.Checked) lstItems = lstItems.Where(d => !d.Module).ToList();
+            ////else return Program.dbOperations.GetAllItemsAsync(Stack.Company_Id, enableType);
 
-            if(cmbWarehouses.SelectedIndex>0)
-            {
-                long wh_index = Program.dbOperations.GetWarehouseAsync(Stack.Company_Id, cmbWarehouses.Text).Id;
-                lstResult = lstResult.Where(d => d.Warehouse_Id == wh_index).ToList();
-            }
+            //if(cmbWarehouses.SelectedIndex>0)
+            //{
+            //    long wh_index = Program.dbOperations.GetWarehouseAsync(Stack.Company_Id, cmbWarehouses.Text).Id;
+            //    lstItems = lstItems.Where(d => d.Warehouse_Id == wh_index).ToList();
+            //}
 
-            if(cmbCategories.SelectedIndex>0)
-            {
-                long cat_index = Program.dbOperations.GetCategoryAsync(cmbCategories.Text, Stack.Company_Id).Id;
-                lstResult = lstResult.Where(d => d.Category_Id == cat_index).ToList();
-            }
+            //if(cmbCategories.SelectedIndex>0)
+            //{
+            //    long cat_index = Program.dbOperations.GetCategoryAsync(cmbCategories.Text, Stack.Company_Id).Id;
+            //    lstItems = lstItems.Where(d => d.Category_Id == cat_index).ToList();
+            //}
 
-            return lstResult.OrderBy(d=>d.Code_Small).ToList();
+            return lstItems;
         }
 
         private void ShowData()
@@ -150,13 +202,13 @@ namespace OrdersProgress
         }
 
         int iNewRow = -1;
-        private void BtnAddNew_Click(object sender, EventArgs e)
+        private async void BtnAddNew_Click(object sender, EventArgs e)
         {
             new K1302_Item_Details(2).ShowDialog();
 
             if (Stack.bx)
             {
-                //dgvData.DataSource = GetData();
+                dgvData.DataSource = await GetData(true);
                 radNotModule.Checked = true;
                 BtnSearch_Click(null, null);
                 DataGridViewRow row = null;
@@ -170,48 +222,83 @@ namespace OrdersProgress
 
         private void btnDeleteAll_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("آیا از حذف همه کالاها اطمینان دارید؟"
-                , "اخطار", MessageBoxButtons.YesNo,MessageBoxIcon.Warning)
+            if (Stack.Use_Web)
+            {
+                MessageBox.Show("این امکان فعال نمی باشد");
+                return;
+            }
+            else
+            {
+                if (MessageBox.Show("آیا از حذف همه کالاها اطمینان دارید؟"
+                , "اخطار", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                 == DialogResult.No) return;
 
-            if (MessageBox.Show("با انجام این عمل ، تمام روابط کالاها و جداول دیگر از بین خواهد رفت"
-                + "\n" + "آیا از حذف تمام کالا اطمینان دارید؟", "اخطار 2"
-                , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+                if (MessageBox.Show("با انجام این عمل ، تمام روابط کالاها و جداول دیگر از بین خواهد رفت"
+                    + "\n" + "آیا از حذف تمام کالا اطمینان دارید؟", "اخطار 2"
+                    , MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
 
-            Program.dbOperations.DeleteAllModulesAsync();
-            Program.dbOperations.DeleteAllItemsAsync();
-            dgvData.DataSource = Program.dbOperations.GetAllItemsAsync(Stack.Company_Id);
+                Program.dbOperations.DeleteAllModulesAsync();
+                Program.dbOperations.DeleteAllItemsAsync();
+                dgvData.DataSource = Program.dbOperations.GetAllItemsAsync(Stack.Company_Id);
+            }
         }
 
-        private void TsmiDelete_Click(object sender, EventArgs e)
+        private async void TsmiDelete_Click(object sender, EventArgs e)
         {
-            long index = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
-            Models.Item item = Program.dbOperations.GetItem(index);
+            long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
+            Models.Item item = lstItems.First(d => d.Id == id);// Program.dbOperations.GetItem(id);
             if (MessageBox.Show("آیا از حذف این مورد اطمینان دارید؟", item.Code_Small, MessageBoxButtons.YesNo)
                 == DialogResult.No) return;
+
+            if (MessageBox.Show("با انجام این عمل تمام رابطه ها ی این کالا با قسمتهای مختلف از بین خواهد رفت."
+                + "آیا از حذف این مورد اطمینان دارید؟", item.Code_Small, MessageBoxButtons.YesNo)
+                    == DialogResult.No) return;
 
             try
             {
                 //string sCode_Small = Convert.ToString(dgvData.CurrentRow.Cells["Code_Small"].Value);
                 //Models.Item item = Program.dbOperations.GetItemAsync(Stack.Company_Id,sCode_Small);
                 int row_index = dgvData.CurrentRow.Index;
-                if(item.Module)
+
+                #region اگر کالا، یک ماژول یاشد، باید تمام رابطه های آن با زیرساختهایش حذف شود
+                if (item.Module)
                 {
-                    //MessageBox.Show(item.Code_Small,"module = true");
-                    if (Program.dbOperations.GetAllModulesAsync(Stack.Company_Id,0, item.Code_Small).Any())
+                    // تمام کالاهای زیر ساخت ماژول باید حذف شوند
+                    List<Models.Module> modules = new List<Models.Module>();
+                    if (Stack.Use_Web)
+                        modules = await HttpClientExtensions.GetT<List<Models.Module>>
+                            (Stack.API_Uri_start_read + "/Modules?all=no&company_Id=" + Stack.Company_Id
+                            + "&EnableType=0&ModuleSmallCode=" + item.Code_Small, Stack.token);
+                    else modules = Program.dbOperations.GetAllModulesAsync(Stack.Company_Id, 0, item.Code_Small);
+
+                    if (modules.Any())
                     {
                         //MessageBox.Show(item.Code_Small);
-                        List<Models.Module> lst = Program.dbOperations.GetAllModulesAsync(Stack.Company_Id,0, item.Code_Small);
-                        foreach (var m in lst) Program.dbOperations.DeleteModule(m);
+                        //List<Models.Module> lst = Program.dbOperations.GetAllModulesAsync(Stack.Company_Id,0, item.Code_Small);
+                        if (Stack.Use_Web)
+                            foreach (var m in modules)
+                                await HttpClientExtensions.DeleteAsJsonAsync2
+                                    (Stack.API_Uri_start_read + "/Modules/" + m.Id,Stack.token);
+                        else
+                            foreach (var m in modules) Program.dbOperations.DeleteModule(m);
                     }
                 }
-                Program.dbOperations.DeleteItemAsync(item);
+                #endregion
+
+                if (Stack.Use_Web)
+                    await HttpClientExtensions.DeleteAsJsonAsync2(Stack.API_Uri_start_read
+                        + "/Items/" + item.Id, Stack.token);
+                else
+                    Program.dbOperations.DeleteItemAsync(item);
+
+                lstItems.Remove(item);
+
                 BtnSearch_Click(null, null);
                 //dgvData.DataSource = Program.dbOperations.GetAllItemsAsync(Stack.Company_Id);
                 if (dgvData.Rows.Count > 0)
                 {
                     if (row_index > 0) dgvData.CurrentCell = dgvData["Name_Samll", row_index - 1];
-                    else dgvData.CurrentCell = dgvData["Name_Samll", row_index + 1];
+                    else if (row_index < dgvData.Rows.Count-1) dgvData.CurrentCell = dgvData["Name_Samll", row_index + 1];
                 }
                 //dataGridView1.DataSource =  Program.dbOperations.GetAllModulesAsync();
             }
@@ -262,16 +349,18 @@ namespace OrdersProgress
             InitailValue = dgvData[e.ColumnIndex, e.RowIndex].Value;//.ToString();
         }
 
-        private void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private async void DgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
             if (dgvData[e.ColumnIndex, e.RowIndex].Value == InitailValue) return;
 
             bool bSaveChange = true;   // آیا تغییر ذخیره شود؟
+            panel1.Enabled = !Stack.Use_Web;
+            pictureBox3.Visible = Stack.Use_Web;
 
-            long index = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
+            long id = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
 
-            Models.Item item = Program.dbOperations.GetItemAsync(index);
+            Models.Item item = lstItems.First(d => d.Id == id); // Program.dbOperations.GetItemAsync(index);
             switch (dgvData.Columns[e.ColumnIndex].Name)
             {
                 case "Code_Small":
@@ -279,7 +368,7 @@ namespace OrdersProgress
                     if (string.IsNullOrWhiteSpace(item.Code_Small))
                         return;
                     #region اگر کالایی دیگر با این کد تعریف شده باشد
-                    else if (Program.dbOperations.GetAllItemsAsync(Stack.Company_Id).Where(d => d.Id != index)
+                    else if (lstItems.Where(d => d.Id != id)
                         .Any(j => j.Code_Small.ToLower().Equals(item.Code_Small.ToLower())))
                     {
                         bSaveChange = MessageBox.Show("کد قبلا استفاده شده است. آیا مایل به تعریف ورژن جدیدی از این کد می باشید؟"
@@ -287,11 +376,14 @@ namespace OrdersProgress
                             , "اخطار", MessageBoxButtons.YesNo) == DialogResult.Yes;
                         if (bSaveChange)
                         {
-                            foreach (Models.Item it1 in Program.dbOperations.GetAllItemsAsync(Stack.Company_Id).Where(d => d.Id != index)
+                            foreach (Models.Item it1 in lstItems.Where(d => d.Id != id)
                                 .Where(j => j.Code_Small.ToLower().Equals(item.Code_Small.ToLower())).ToList())
                             {
                                 it1.Enable = false;
-                                Program.dbOperations.UpdateItemAsync(it1);
+                                if (Stack.Use_Web)
+                                    await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                                        + "/Items/" + id, item, Stack.token);
+                                else Program.dbOperations.UpdateItemAsync(it1);
                             }
 
                         }
@@ -307,7 +399,7 @@ namespace OrdersProgress
                     if (string.IsNullOrWhiteSpace(item.Code_Full))
                         return;
                     #region اگر کالایی دیگر با این کد تعریف شده باشد
-                    else if (Program.dbOperations.GetAllItemsAsync(Stack.Company_Id).Where(d => d.Id != index)
+                    else if (lstItems.Where(d => d.Id != id)
                         .Any(j => j.Code_Full.ToLower().Equals(item.Code_Full.ToLower())))
                     {
                         MessageBox.Show("کد قبلا استفاده شده است" , "خطا");
@@ -336,12 +428,12 @@ namespace OrdersProgress
                     break;
                 case "Enable":
                     item.Enable = Convert.ToBoolean(dgvData["Enable", e.RowIndex].Value);
+
                     #region if 'item.Enable = false', remove this from <Module> table 
                     if (item.Enable)
                     {
-                        if (Program.dbOperations.GetAllItemsAsync(Stack.Company_Id, 1,100)
-                            .Where(j => j.Code_Small.ToLower().Equals(item.Code_Small.ToLower()))
-                            .Any(d => d.Id != index))
+                        if (lstItems.Where(d=>d.Enable).Where(j => j.Code_Small.ToLower().Equals(item.Code_Small.ToLower()))
+                            .Any(d => d.Id != id))
                         {
                             MessageBox.Show("امکان فعال سازی این کالا وجود ندارد، زیرا ورژن دیگری از این کالا فعال است","خطا");
                             bSaveChange = false;
@@ -349,7 +441,17 @@ namespace OrdersProgress
                     }
                     else
                     {
-                        List<Models.Module> lstModules = Program.dbOperations.GetAllModulesAsync(Stack.Company_Id,1);
+                        List<Models.Module> lstModules = new List<Models.Module>();
+                        if (Stack.Use_Web)
+                            try
+                            {
+                                lstModules = await HttpClientExtensions.GetT<List<Models.Module>>
+                                    (Stack.API_Uri_start_read + "/Modules?all=no&company_Id=" + Stack.Company_Id
+                                    + "&EnableType=1", Stack.token);
+                            }
+                            catch { }
+                        lstModules = Program.dbOperations.GetAllModulesAsync(Stack.Company_Id, 1);
+                        
                         bool b1 = lstModules.Any(d => d.Module_Code_Small.ToLower().Equals(item.Code_Small));
                         bool b2 = lstModules.Any(d => d.Item_Code_Small.ToLower().Equals(item.Code_Small));
                         if (b1 || b2)
@@ -358,17 +460,42 @@ namespace OrdersProgress
                                 + "با سایر کالاها خواهد شد. آیا از انجام عمل اطمینان دارید؟"
                                 , "اخطار", MessageBoxButtons.YesNo,MessageBoxIcon.Warning) == DialogResult.Yes)
                             {
-                                if (b1)
-                                    foreach (Models.Module md in lstModules.Where(d => d.Module_Code_Small.ToLower().Equals(item.Code_Small)).ToList())
-                                        Program.dbOperations.DeleteModule(md);
-                                if (b2)
-                                    foreach (Models.Module md in lstModules.Where(d => d.Item_Code_Small.ToLower().Equals(item.Code_Small)).ToList())
-                                        Program.dbOperations.DeleteModule(md);
+                                if (Stack.Use_Web)
+                                {
+                                    if (b1)
+                                        foreach (Models.Module md in lstModules.Where(d => d.Module_Code_Small.ToLower().Equals(item.Code_Small)).ToList())
+                                            await HttpClientExtensions.DeleteAsJsonAsync2(Stack.API_Uri_start_read
+                                                + "/Modules/" + md.Id, Stack.token);
+                                    if (b2)
+                                        foreach (Models.Module md in lstModules.Where(d => d.Item_Code_Small.ToLower().Equals(item.Code_Small)).ToList())
+                                            await HttpClientExtensions.DeleteAsJsonAsync2(Stack.API_Uri_start_read
+                                                + "/Modules/" + md.Id, Stack.token);
 
-                                Program.dbOperations.UpdateItemAsync(item);
-                                return;
+                                    await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                                        + "/Items/" + item.Id, item, Stack.token);
+                                }
+                                else
+                                {
+                                    if (b1)
+                                        foreach (Models.Module md in lstModules.Where(d => d.Module_Code_Small.ToLower().Equals(item.Code_Small)).ToList())
+                                            Program.dbOperations.DeleteModule(md);
+                                    if (b2)
+                                        foreach (Models.Module md in lstModules.Where(d => d.Item_Code_Small.ToLower().Equals(item.Code_Small)).ToList())
+                                            Program.dbOperations.DeleteModule(md);
+
+                                    Program.dbOperations.UpdateItemAsync(item);
+                                    //return;
+                                }
+
+                                lstItems.Remove(lstItems.First(d => d.Id == id));
+                                lstItems.Add(item);
+
+                                Application.DoEvents();
+                                panel1.Enabled = true;
+                                pictureBox3.Visible = false;
                             }
-                            else bSaveChange = false;
+
+                            bSaveChange = false;
                         }
                     }
                     #endregion
@@ -378,9 +505,18 @@ namespace OrdersProgress
             if (bSaveChange)
             {
                 // برای ذخیره تغییرات در ردیف جدید ، پیغامی نمایش داده نشود
-                if ((e.RowIndex == iNewRow))
+                if (e.RowIndex == iNewRow)
                 {
-                    Program.dbOperations.UpdateItemAsync(item);
+                    if (Stack.Use_Web)
+                        await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read + "/Items/" + item.Id
+                            , item, Stack.token);
+                    else
+                        Program.dbOperations.UpdateItemAsync(item);
+
+                    lstItems.Remove(lstItems.First(d => d.Id == id));
+                    lstItems.Add(item);
+
+                    bSaveChange = false;
                     //AddUpdateItem_to_WarehouseInventory(item, true,JustEdit);
                     //JustEdit = true;
                 }
@@ -397,12 +533,15 @@ namespace OrdersProgress
                 }
             }
 
-
             if (bSaveChange)
             {
-                Program.dbOperations.UpdateItemAsync(item);
+                if (Stack.Use_Web)
+                    await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read + "/Items/" + item.Id, item, Stack.token);
+                else
+                    Program.dbOperations.UpdateItemAsync(item);
 
-                //AddUpdateItem_to_WarehouseInventory(item, false,true);
+                lstItems.Remove(lstItems.First(d => d.Id == id));
+                lstItems.Add(item);
             }
             else dgvData[e.ColumnIndex, e.RowIndex].Value = InitailValue;
         }
@@ -430,16 +569,16 @@ namespace OrdersProgress
 
         }
 
-        private void BtnImportDataFromExcel_Click(object sender, EventArgs e)
+        private async void BtnImportDataFromExcel_Click(object sender, EventArgs e)
         {
             if(Program.dbOperations.GetAllModulesAsync(Stack.Company_Id,0).Any())
-                MessageBox.Show("دقت نمایید که کدهایی که قبلا در جدول وارد شده اند، مجددا وارد نمی شوند", "مهم");
+                MessageBox.Show("دقت نمایید که کدهایی که قبلا در جدول ثبت شده اند، مجددا وارد نمی شوند", "مهم");
 
-            GetDataFromExcel_OneSheet2(Application.StartupPath + @"\_Requirements\MainData.xlsx", "Modules_Items");
+            await GetDataFromExcel_OneSheet2(Application.StartupPath + @"\_Requirements\MainData.xlsx", "Modules_Items");
         }
 
         // امکان استفاده از حالت مِرژ ماژولها در اکسل
-        private void GetDataFromExcel_OneSheet2(string ExcelFilePath, string SheetName)
+        private async Task<bool> GetDataFromExcel_OneSheet2(string ExcelFilePath, string SheetName)
         {
             if (MessageBox.Show(
                 "لطفا در فایل اکسل باز شده، و در شیت " + SheetName + " اطلاعات خود را وارد نموده و سپس آنرا ذخیره نمایید."
@@ -497,6 +636,14 @@ namespace OrdersProgress
                         progressBar1.Maximum = n;
                         progressBar1.Value = 0;
 
+                        #region لیست تمام ماژول ها
+                        List<Models.Module> modules = new List<Models.Module>();
+                        if (Stack.Use_Web)
+                            modules = await HttpClientExtensions.GetT<List<Models.Module>>
+                                (Stack.API_Uri_start_read + "/Modules?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+                        else modules = Program.dbOperations.GetAllModulesAsync(Stack.Company_Id,0);
+                        #endregion
+
                         string module_name = null;
                         string module_Small_code = null;
                         int i = 1;
@@ -531,9 +678,11 @@ namespace OrdersProgress
                             {
                                 // کد ماژول
                                 module_Small_code = ws.Cells[i, 3].Value.ToString();
-                                if (Program.dbOperations.GetItemAsync(Stack.Company_Id,module_Small_code,true) == null)
+                                //if (Program.dbOperations.GetItemAsync(Stack.Company_Id,module_Small_code,true) == null)
+                                if (lstItems.Where(d => d.Enable == true)
+                                    .FirstOrDefault(d => d.Code_Small.ToLower().Equals(module_Small_code.ToLower())) == null)
                                 {
-                                    Program.dbOperations.AddItem(new Models.Item
+                                    Models.Item item1 = new Models.Item
                                     {
                                         Company_Id = Stack.Company_Id,
                                         Warehouse_Id = 1,
@@ -542,7 +691,15 @@ namespace OrdersProgress
                                         Enable = true,
                                         Module = true,
                                         Salable = true,
-                                    });
+                                    };
+
+                                    if (Stack.Use_Web)
+                                        await HttpClientExtensions.PostAsJsonAsync(Stack.API_Uri_start_read
+                                            + "/Items", item1, Stack.token);
+                                    else
+                                        Program.dbOperations.AddItem(item1);
+
+                                    lstItems.Add(item1);
                                 }
                             }
                             #endregion
@@ -551,11 +708,12 @@ namespace OrdersProgress
                             string item_Small_code = ws.Cells[i, 5].Value.ToString();
                             double quantity = Convert.ToDouble(ws.Cells[i, 7].Value);
 
-                            Models.Item item = Program.dbOperations.GetItemAsync(Stack.Company_Id,item_Small_code, true);
-                            if (item == null)
+                            Models.Item item2 = lstItems.Where(d => d.Enable == true)
+                                    .FirstOrDefault(d => d.Code_Small.ToLower().Equals(item_Small_code.ToLower()));
+                            if (item2 == null)
                             {
                                 //long index = Program.dbOperations.GetNewIndex_Item();
-                                item = new Models.Item
+                                item2 = new Models.Item
                                 {
                                     Company_Id = Stack.Company_Id,
                                     Warehouse_Id = 1,
@@ -564,29 +722,42 @@ namespace OrdersProgress
                                     Enable = true,
                                     Salable = true,
                                 };
-                                Program.dbOperations.AddItem(item);
+
+                                if (Stack.Use_Web)
+                                    await HttpClientExtensions.PostAsJsonAsync(Stack.API_Uri_start_read
+                                        + "/Items", item2, Stack.token);
+                                else
+                                    Program.dbOperations.AddItem(item2);
+
+                                lstItems.Add(item2);
                             }
                             #endregion
                             #endregion
-
+                            
                             #region رابطه بین ماژول و کالاها
                             // در جدول ماژول ها نباید رکوردی وجود داشته باشد که کد ماژول و کد کالای آن 
                             // با کد ماژول و کد کالای وارد شده یکسان باشد
                             if (!string.IsNullOrEmpty(module_Small_code) && !string.IsNullOrEmpty(item_Small_code))
                             {
                                 // غیر فعال کردن رابطه قبلی در صورت وجود
-                                if (Program.dbOperations.GetModuleAsync(module_Small_code, item_Small_code) != null)
+                                Models.Module module1 = modules.FirstOrDefault(d => 
+                                    d.Module_Code_Small.Equals(module_Small_code)
+                                    && d.Item_Code_Small.Equals(item_Small_code));
+                                
+                                if (module1 != null)
                                 {
-                                    Models.Module module = Program.dbOperations.GetModuleAsync(module_Small_code, item_Small_code);
-                                    module.Enable = false;
-                                    Program.dbOperations.UpdateModuleAsync(module);
+                                    //Models.Module module = Program.dbOperations.GetModuleAsync(module_Small_code, item_Small_code);
+                                    module1.Enable = false;
+                                    if(Stack.Use_Web)
+                                        await HttpClientExtensions.PutAsJsonAsync(Stack)
+                                    Program.dbOperations.UpdateModuleAsync(module1);
                                 }
 
                                 Program.dbOperations.AddModuleAsync(new Models.Module
                                 {
                                     Company_Id = Stack.Company_Id,
                                     Module_Code_Small = module_Small_code,
-                                    Item_Id = item.Id,
+                                    Item_Id = item2.Id,
                                     Item_Code_Small = item_Small_code,
                                     Quantity = quantity,
                                     Enable = true,
@@ -634,7 +805,7 @@ namespace OrdersProgress
             panel1.Enabled = true;
             progressBar1.Visible = false;
             //pictureBox1.Visible = false;
-
+            return true;
         }
 
         private void ChkCanEdit_CheckedChanged(object sender, EventArgs e)
@@ -667,9 +838,9 @@ namespace OrdersProgress
             panel1.Enabled = false;
             //dgvData.Visible = false;
             Application.DoEvents();
-            List<Models.Item> lstItems = GetData();
+            //List<Models.Item> lstItems = GetData();
             //dgvData.DataSource = GetData();
-            //List<Models.Item> lstItems = (List<Models.Item>)dgvData.DataSource;
+            List<Models.Item> lstItems = (List<Models.Item>)dgvData.DataSource;
             //MessageBox.Show(lstItems.Count.ToString());
 
             //if (!string.IsNullOrWhiteSpace(txtST_Name.Text)
@@ -810,10 +981,10 @@ namespace OrdersProgress
             AcceptButton = null;
         }
 
-        private void BtnShowAll_Click(object sender, EventArgs e)
+        private async void BtnShowAll_Click(object sender, EventArgs e)
         {
             //RadModule_CheckedChanged(null, null);
-            dgvData.DataSource = GetData();
+            dgvData.DataSource = await GetData();
         }
 
         private void TsmiProperties_Click(object sender, EventArgs e)
@@ -847,11 +1018,6 @@ namespace OrdersProgress
         private void TsmiDiagram_Click(object sender, EventArgs e)
         {
             new K1322_Module_Diagram(dgvData.CurrentRow.Cells["Code_Small"].Value.ToString()).ShowDialog();
-        }
-
-        private void K1300_Items_Load(object sender, EventArgs e)
-        {
-
         }
 
         private void DgvData_Enter(object sender, EventArgs e)

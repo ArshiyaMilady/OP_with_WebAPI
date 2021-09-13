@@ -19,7 +19,15 @@ namespace OrdersProgress
             InitializeComponent();
         }
 
-        private async void K1200_Properties_Shown(object sender, EventArgs e)
+        private async void K1200_Properties_Load(object sender, EventArgs e)
+        {
+            comboBox1.SelectedIndex = 0;
+
+            dgvData.DataSource = await GetData();
+            ShowData();
+        }
+
+        private void K1200_Properties_Shown(object sender, EventArgs e)
         {
             //btnDeleteAll.Visible = Stack.UserLevel_Type==1;
             panel2.Visible = (Stack.UserLevel_Type == 1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn1110");
@@ -27,10 +35,6 @@ namespace OrdersProgress
 
             cmbST_Name.SelectedIndex = 0;
             cmbST_Description.SelectedIndex = 0;
-            comboBox1.SelectedIndex = 0;
-
-            dgvData.DataSource = await GetData();
-            ShowData();
         }
 
         private async Task<List<Models.Property>> GetData(bool bForceReset = false)
@@ -47,7 +51,7 @@ namespace OrdersProgress
             switch (comboBox1.SelectedIndex)
             {
                 case 0: return lstProperties.Where(d => d.Enable).ToList();
-                case 2: return lstProperties.Where(d => !d.Enable).ToList();
+                case 1: return lstProperties.Where(d => !d.Enable).ToList();
             }
 
             return lstProperties;
@@ -247,6 +251,7 @@ namespace OrdersProgress
                         }
                     }
                     #endregion
+
                     dgvData.DataSource = await GetData(true);
                     dgvData.CurrentCell = dgvData["Name", e.RowIndex];
 
@@ -479,6 +484,8 @@ namespace OrdersProgress
         {
             dgvData.DataSource = await GetData();
         }
+
+      
 
         private async void TsmiDelete_Click(object sender, EventArgs e)
         {

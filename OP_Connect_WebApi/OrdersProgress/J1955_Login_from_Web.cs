@@ -40,19 +40,20 @@ namespace OrdersProgress
 
             int login_type = radUseName.Checked ? 1 : 2;
             Models.User user = null;
-            //try
-            {  user = await GetUser_by_Name_or_Mobile(login_type, txtNM.Text, txtPassword.Text); }
-            //catch { }
+            Stack.sx = null;  // برای اعلام پیام درست در صورت بروز خطا
+            try
+            { user = await GetUser_by_Name_or_Mobile(login_type, txtNM.Text, txtPassword.Text); }
+            catch
+            {
+                Stack.sx = "اشکال در برقراری ارتباط با سرور. لطفا ارتباط اینترنت را بررسی نمایید"
+                + "\n#icf13"; return;
+            }
 
             if (user == null)
             {
                 panel2.Enabled = true;
                 pictureBox1.Visible = false;
-                if(Stack.bx)
-                    MessageBox.Show(label1.Text.Substring(0, label1.Text.Length - 2) + " یا رمز ورود نادرست است", "خطا");
-                else
-                    MessageBox.Show("اشکال در ارتباط با سرور. لطفا مجددا امتحان نمایید", "خطا");
-                return;
+                MessageBox.Show(label1.Text.Substring(0, label1.Text.Length - 2) + " یا رمز ورود نادرست است", "خطا");
             }
             else
             {
@@ -93,11 +94,20 @@ namespace OrdersProgress
 
         private async Task<Models.User> GetUser_by_Name_or_Mobile(int login_type, string name_mobile, string password)
         {
-            Stack.bx = true;
+            //Stack.bx = true;
             Models.User user = null;
+            string response = null;
 
-            string response = await HttpClientExtensions.GetToken(Stack.API_Uri_start + "/Token"
-                , login_type, name_mobile, password);
+            try
+            {
+                response = await HttpClientExtensions.GetToken(Stack.API_Uri_start + "/Token"
+                    , login_type, name_mobile, password);
+            }
+            catch
+            {
+                Stack.sx = "اشکال در برقراری ارتباط با سرور. لطفا ارتباط اینترنت را بررسی نمایید"
+                + "\n#icf11"; return null;
+            }
             //MessageBox.Show(response);
             if (!string.IsNullOrEmpty(response))
             {
@@ -108,7 +118,9 @@ namespace OrdersProgress
                     user = await HttpClientExtensions.GetT<Models.User>(Stack.API_Uri_start_read
                         + "/Users/0?name_mobile=" + name_mobile + "&login_type=" + login_type, Stack.token);
                 }
-                catch { Stack.bx = false; }
+                catch { Stack.sx = "اشکال در برقراری ارتباط با سرور. لطفا ارتباط اینترنت را بررسی نمایید"
+                        +"\n#icf12"; return null; }
+                //catch { Stack.bx = false; }
                 //MessageBox.Show(user.Real_Name);
             }
 

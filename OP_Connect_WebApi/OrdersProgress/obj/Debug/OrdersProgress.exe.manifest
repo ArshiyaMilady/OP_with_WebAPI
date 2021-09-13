@@ -79,14 +79,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OrdersProgress.exe" size="3400696">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OrdersProgress.exe" size="3409400">
       <assemblyIdentity name="OrdersProgress" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>pqqhTwgRnKdfUoeRv+ydqE9Uu6PdwJ+KJ7UrbjV79do=</dsig:DigestValue>
+        <dsig:DigestValue>UP0izW7wWJEl0zT9JoKZmvjxcKGlHe8VdvdKKW6m9GU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -1347,13 +1347,13 @@
       <dsig:DigestValue>d0ychf1ebGQq2rC+p8ElNcJFlEzKPe/XLXFBTJ8DRuk=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Documentation\Errors.txt" size="75">
+  <file name="Documentation\Errors.txt" size="368">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>Q516+qIqZZ95M45EuxY/YoNNAKKGnqQ/hdVTWwYPlIQ=</dsig:DigestValue>
+      <dsig:DigestValue>K+1czFkvAXrhVuYa6noMroYeE89dxvkHcjNPGQzUmqw=</dsig:DigestValue>
     </hash>
   </file>
   <file name="OrdersProgress.exe.config" size="1023">

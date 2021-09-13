@@ -21,11 +21,24 @@ namespace OP_WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/Modules
+        // GET: api/Modules?all=vvv&company_Id=xxx&EnableType=yyy&ModuleSmallCode=zzz
         [HttpGet, Authorize]
-        public async Task<ActionResult<IEnumerable<Module>>> GetModule()
+        public async Task<ActionResult<IEnumerable<Module>>> GetModule
+            (string all = "yes", long company_Id = 0, int EnableType = 0, string ModuleSmallCode = null)
         {
-            return await _context.Module.ToListAsync();
+            if(all.Equals("yes"))
+                return await _context.Module.ToListAsync();
+            else
+            {
+                List<Module> modules = await _context.Module.Where(d=>d.Company_Id==company_Id).ToListAsync();
+                if (EnableType == 1) modules = modules.Where(d => d.Enable).ToList();
+                else if (EnableType == -1) modules = modules.Where(d => !d.Enable).ToList();
+
+                if (!string.IsNullOrEmpty(ModuleSmallCode))
+                    modules = modules.Where(d => d.Module_Code_Small.ToLower().Equals(ModuleSmallCode.ToLower())).ToList();
+
+                return modules;
+            }
         }
 
         // GET: api/Modules/5

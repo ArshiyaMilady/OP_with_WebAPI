@@ -36,6 +36,7 @@
             this.tsmiDeleteFromAllItems = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnShowAll = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtST_Name = new System.Windows.Forms.TextBox();
             this.txtST_Description = new System.Windows.Forms.TextBox();
@@ -55,7 +56,6 @@
             this.dgvData = new System.Windows.Forms.DataGridView();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.btnShowAll = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -72,12 +72,12 @@
             this.tsmiDeleteFromAllItems});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(244, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(233, 70);
             // 
             // tsmiDelete
             // 
             this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(243, 22);
+            this.tsmiDelete.Size = new System.Drawing.Size(232, 22);
             this.tsmiDelete.Text = "حذف";
             this.tsmiDelete.Visible = false;
             this.tsmiDelete.Click += new System.EventHandler(this.TsmiDelete_Click);
@@ -85,14 +85,14 @@
             // tsmiAddToAllItems
             // 
             this.tsmiAddToAllItems.Name = "tsmiAddToAllItems";
-            this.tsmiAddToAllItems.Size = new System.Drawing.Size(243, 22);
+            this.tsmiAddToAllItems.Size = new System.Drawing.Size(232, 22);
             this.tsmiAddToAllItems.Text = "اضافه کردن مشخصه به تمام کالاها";
             this.tsmiAddToAllItems.Click += new System.EventHandler(this.TsmiAddToAllItems_Click);
             // 
             // tsmiDeleteFromAllItems
             // 
             this.tsmiDeleteFromAllItems.Name = "tsmiDeleteFromAllItems";
-            this.tsmiDeleteFromAllItems.Size = new System.Drawing.Size(243, 22);
+            this.tsmiDeleteFromAllItems.Size = new System.Drawing.Size(232, 22);
             this.tsmiDeleteFromAllItems.Text = "حذف مشخصه به تمام کالاها";
             this.tsmiDeleteFromAllItems.Click += new System.EventHandler(this.TsmiDeleteFromAllItems_Click);
             // 
@@ -111,7 +111,7 @@
             this.panel1.Controls.Add(this.dgvData);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(869, 317);
+            this.panel1.Size = new System.Drawing.Size(951, 317);
             this.panel1.TabIndex = 1;
             // 
             // groupBox1
@@ -125,12 +125,23 @@
             this.groupBox1.Controls.Add(this.cmbST_Description);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(628, 91);
+            this.groupBox1.Location = new System.Drawing.Point(710, 91);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(238, 133);
             this.groupBox1.TabIndex = 77;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "جستجو";
+            // 
+            // btnShowAll
+            // 
+            this.btnShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnShowAll.Location = new System.Drawing.Point(151, 101);
+            this.btnShowAll.Name = "btnShowAll";
+            this.btnShowAll.Size = new System.Drawing.Size(79, 26);
+            this.btnShowAll.TabIndex = 57;
+            this.btnShowAll.Text = "نمایش همه";
+            this.btnShowAll.UseVisualStyleBackColor = true;
+            this.btnShowAll.Click += new System.EventHandler(this.BtnShowAll_Click);
             // 
             // btnSearch
             // 
@@ -221,7 +232,7 @@
             this.panel2.Controls.Add(this.chkCanEdit);
             this.panel2.Controls.Add(this.comboBox1);
             this.panel2.Controls.Add(this.chkShowUpdateMessage);
-            this.panel2.Location = new System.Drawing.Point(628, 1);
+            this.panel2.Location = new System.Drawing.Point(710, 1);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(238, 90);
             this.panel2.TabIndex = 6;
@@ -276,19 +287,19 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Maroon;
-            this.label1.Location = new System.Drawing.Point(197, 231);
+            this.label1.Location = new System.Drawing.Point(38, 231);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(669, 18);
             this.label1.TabIndex = 3;
-            this.label1.Text = "با توجه به آنکه هر یک از موارد ثبت شده، ممکن است در قسمتهای دیگر استفاده شده باشد" +
-    "، امکان حذف وجود نداشته و تنها غیرفعال کردن آن ممکن می باشد";
+            this.label1.Text = "با توجه به آنکه هر یک از موارد فوق، ممکن است در قسمتهای دیگر استفاده شده باشد، ام" +
+    "کان حذف وجود نداشته و تنها غیرفعال کردن آن ممکن می باشد";
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.Maroon;
-            this.label2.Location = new System.Drawing.Point(197, 253);
+            this.label2.Location = new System.Drawing.Point(38, 253);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(669, 18);
             this.label2.TabIndex = 3;
@@ -321,7 +332,7 @@
             // btnAddNew
             // 
             this.btnAddNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddNew.Location = new System.Drawing.Point(482, 282);
+            this.btnAddNew.Location = new System.Drawing.Point(564, 282);
             this.btnAddNew.Name = "btnAddNew";
             this.btnAddNew.Size = new System.Drawing.Size(141, 32);
             this.btnAddNew.TabIndex = 1;
@@ -339,7 +350,7 @@
             this.dgvData.Location = new System.Drawing.Point(3, 2);
             this.dgvData.Name = "dgvData";
             this.dgvData.ReadOnly = true;
-            this.dgvData.Size = new System.Drawing.Size(620, 222);
+            this.dgvData.Size = new System.Drawing.Size(702, 222);
             this.dgvData.TabIndex = 0;
             this.dgvData.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.DgvData_CellBeginEdit);
             this.dgvData.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvData_CellEndEdit);
@@ -349,7 +360,7 @@
             // progressBar1
             // 
             this.progressBar1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.progressBar1.Location = new System.Drawing.Point(398, 134);
+            this.progressBar1.Location = new System.Drawing.Point(439, 134);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(100, 23);
             this.progressBar1.TabIndex = 78;
@@ -360,7 +371,7 @@
             this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(431, 273);
+            this.pictureBox3.Location = new System.Drawing.Point(472, 273);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(46, 44);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -368,23 +379,12 @@
             this.pictureBox3.TabStop = false;
             this.pictureBox3.Visible = false;
             // 
-            // btnShowAll
-            // 
-            this.btnShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnShowAll.Location = new System.Drawing.Point(151, 101);
-            this.btnShowAll.Name = "btnShowAll";
-            this.btnShowAll.Size = new System.Drawing.Size(79, 26);
-            this.btnShowAll.TabIndex = 57;
-            this.btnShowAll.Text = "نمایش همه";
-            this.btnShowAll.UseVisualStyleBackColor = true;
-            this.btnShowAll.Click += new System.EventHandler(this.BtnShowAll_Click);
-            // 
             // K1200_Properties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnReturn;
-            this.ClientSize = new System.Drawing.Size(868, 317);
+            this.ClientSize = new System.Drawing.Size(950, 317);
             this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.panel1);
@@ -392,6 +392,7 @@
             this.Text = "مشخصات";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.K1200_Properties_FormClosing);
+            this.Load += new System.EventHandler(this.K1200_Properties_Load);
             this.Shown += new System.EventHandler(this.K1200_Properties_Shown);
             this.contextMenuStrip1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);

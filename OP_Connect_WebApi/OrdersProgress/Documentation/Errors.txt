@@ -1,1 +1,5 @@
 ﻿#nol11 : تعریف نشدن پیش نیازهای مراحل سفارش
+
+#icf11 : internet connection failed : اشکال در برقراری ارتباط با سرور
+#icf12 : internet connection failed : اشکال در برقراری ارتباط با سرور
+#icf13 : internet connection failed : اشکال در برقراری ارتباط با سرور
