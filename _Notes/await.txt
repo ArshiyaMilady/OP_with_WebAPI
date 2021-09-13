@@ -1,0 +1,34 @@
+﻿           get list :     
+
+try {
+                   List<Models.Warehouse> lstWarehousess = await HttpClientExtensions.GetT<List<Models.Warehouse>>
+                        (Stack.API_Uri_start_read + "/Warehouses?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+      }
+      catch { }
+
+----------------------------------------------------------------------------------------
+put : 
+                        await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                            + "/Items/" + item.Id, item, Stack.token);
+----------------------------------------------------------------------------------------
+post :
+var response = await HttpClientExtensions.PostAsJsonAsync
+                    (Stack.API_Uri_start_read + "/UL_Feature", ulf, Stack.token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("اشکال در ثبت اطلاعات", "خطا");
+                    return;
+                }
+                else
+                {
+                    var responseString = response.Content.ReadAsStringAsync().Result;
+                    Models.UL_Feature ulf1 = JsonConvert.DeserializeObject<Models.UL_Feature>(responseString);
+                    id = ulf1.Id;
+                }
+
+----------------------------------------------------------------------------------------
+
+
+
+
+----------------------------------------------------------------------------------------

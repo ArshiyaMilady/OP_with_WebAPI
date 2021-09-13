@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,12 +13,16 @@ namespace OrdersProgress
 {
     public partial class K1302_Item_Details : X210_ExampleForm_Normal
     {
+        List<Models.Warehouse> lstWarehousess = new List<Models.Warehouse>();
+        List<Models.Category> lstCats = new List<Models.Category>();
         Models.Item item;
         int type = -1;
 
         // type = 0  :  view
         // type = 1  :  edit
         // type = 2  :  add
+        // type = 3  :  edit -> حالتی از ویرایش که نباید کد و شرح کوتاه (اصلی) کالا تغییر نماید
+
         public K1302_Item_Details(int _type = 0, Models.Item _item = null)
         {
             InitializeComponent();
@@ -31,6 +36,8 @@ namespace OrdersProgress
 
         private async void K1302_Item_Details_Load(object sender, EventArgs e)
         {
+            pictureBox3.Visible = Stack.Use_Web;
+
             #region تنظیمات کنترلها با توجه به نوع استفاده از فرم
             if (type == 2)     // add
             {
@@ -47,14 +54,15 @@ namespace OrdersProgress
                             .GetT<List<Models.Warehouse_Remittance_Row>>(Stack.API_Uri_start_read 
                             + "/Warehouse_Remittance_Rows?all=no&company_Id=" + Stack.Company_Id
                             + "&WarehouseRemittance_Id=0&ItemSmallcode=" + item.Code_Small, Stack.token);
-                        type=3???
+                        if(rows.Any())
+                            type = 3;   // همه چیز قابل ویرایش باشد به غیر از کد و نام کوتاه کالا
                     }
                     else
                     {
                         // اگر از این کالا در حواله ای استفاده شده باشد، نباید امکان تغییر داشته باشد
                         if (Program.dbOperations.GetWarehouse_Remittance_RowAsync
                             (item.Code_Small, Stack.Company_Id) != null)
-                            type = 0;
+                            type = 3;    // همه چیز قابل ویرایش باشد به غیر از کد و نام کوتاه کالا
                     }
                 }
 
@@ -68,7 +76,9 @@ namespace OrdersProgress
                     .Where(d => d.Name.Substring(0, 4).Equals("text")).ToList())
                 {
                     TextBox txt = (TextBox)c;
-                    txt.ReadOnly = false;
+                    // حالتی از ویرایش که نباید کد و شرح کوتاه (اصلی) کالا تغییر نماید
+                    bool b = (type == 3) && (txt.Name.Equals("textBox1") || txt.Name.Equals("textBox2"));
+                    txt.ReadOnly = b;
                 }
 
                 cmbCategories.Enabled = true;
@@ -78,15 +88,35 @@ namespace OrdersProgress
                 chkBookable.Enabled = true;
                 btnSave.Visible = true;
             }
-            #endregion        }
+            #endregion        
         }
 
-        private void K1302_Item_Details_Shown(object sender, EventArgs e)
+        private async void K1302_Item_Details_Shown(object sender, EventArgs e)
         {
-            cmbWarehouses.Items.AddRange(Program.dbOperations.GetAllWarehousesAsync(Stack.Company_Id)
-                 .Select(d => d.Name).ToArray());
-            cmbCategories.Items.AddRange(Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id)
-                 .Select(d => d.Name).ToArray());
+            if(Stack.Use_Web)
+            {
+                try
+                {
+                    lstWarehousess = await HttpClientExtensions.GetT<List<Models.Warehouse>>
+                        (Stack.API_Uri_start_read + "/Warehouses?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+                }
+                catch { }
+
+                try
+                {
+                    lstCats = await HttpClientExtensions.GetT<List<Models.Category>>
+                        (Stack.API_Uri_start_read + "/Category?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+                }
+                catch { }
+            }
+            else
+            {
+                lstWarehousess = Program.dbOperations.GetAllWarehousesAsync(Stack.Company_Id);
+                lstCats = Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id);
+            }
+
+            if(lstWarehousess.Any()) cmbWarehouses.Items.AddRange(lstWarehousess.Select(d => d.Name).ToArray());
+            if(lstCats.Any()) cmbCategories.Items.AddRange(lstCats.Select(d => d.Name).ToArray());
 
             if (type == 2)  // add
             {
@@ -116,6 +146,9 @@ namespace OrdersProgress
                 if (Program.dbOperations.GetWarehouseAsync(item.Category_Id) != null)
                     cmbCategories.Text = Program.dbOperations.GetCategoryAsync(item.Category_Id).Name;
             }
+
+            panel1.Enabled = true;
+            pictureBox3.Visible = false;
         }
 
         private void BtnReturn_Click(object sender, EventArgs e)
@@ -141,7 +174,7 @@ namespace OrdersProgress
             }
         }
 
-        private void BtnSave_Click(object sender, EventArgs e)
+        private async void BtnSave_Click(object sender, EventArgs e)
         {
             bool bEverythingOK = true;
 
@@ -217,8 +250,10 @@ namespace OrdersProgress
 
             if (bEverythingOK)
             {
+                pictureBox3.Visible = Stack.Use_Web;
+
                 item.Company_Id = Stack.Company_Id;
-                item.Category_Id = Program.dbOperations.GetCategoryAsync(cmbCategories.Text, Stack.Company_Id).Id;
+                item.Category_Id = lstCats.First(d => d.Name.Equals(cmbCategories.Text)).Id;// Program.dbOperations.GetCategoryAsync(cmbCategories.Text, Stack.Company_Id).Id;
                 item.Name_Samll = textBox1.Text;
                 item.Code_Small = textBox2.Text;
                 item.Name_Full = textBox3.Text;
@@ -230,7 +265,7 @@ namespace OrdersProgress
                 item.FixedPrice = Convert.ToInt64(textBox7.Text);
                 if (string.IsNullOrWhiteSpace(textBox8.Text)) textBox8.Text = "0";
                 item.SalesPrice = Convert.ToInt64(textBox8.Text);
-                item.Warehouse_Id = Program.dbOperations.GetWarehouseAsync(Stack.Company_Id, cmbWarehouses.Text).Id;
+                item.Warehouse_Id = lstWarehousess.First(d => d.Name.Equals(cmbWarehouses.Text)).Id;// Program.dbOperations.GetWarehouseAsync(Stack.Company_Id, cmbWarehouses.Text).Id;
                 if (string.IsNullOrWhiteSpace(textBox9.Text)) textBox9.Text = "0";
                 item.Wh_OrderPoint = Convert.ToDouble(textBox9.Text);
                 if (string.IsNullOrWhiteSpace(textBox10.Text)) textBox10.Text = "0";
@@ -241,17 +276,40 @@ namespace OrdersProgress
 
                 pictureBox1.Visible = true;
                 Application.DoEvents();
-                if (type == 1)  // edit
+                if ((type == 1)  || (type == 3)) // edit
                 {
-                    Program.dbOperations.UpdateItem(item);
+                    if (Stack.Use_Web)
+                        await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                            + "/Items/" + item.Id, item, Stack.token);
+                    else
+                        Program.dbOperations.UpdateItem(item);
                 }
                 else if (type == 2) // add
                 {
-                    Stack.lx = Program.dbOperations.AddItem(item);
+                    if (Stack.Use_Web)
+                    {
+                        var response = await HttpClientExtensions.PostAsJsonAsync
+                                            (Stack.API_Uri_start_read + "/Items", item, Stack.token);
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show("اشکال در ثبت اطلاعات", "خطا");
+                            return;
+                        }
+                        else
+                        {
+                            var responseString = response.Content.ReadAsStringAsync().Result;
+                            Models.Item item1 = JsonConvert.DeserializeObject<Models.Item>(responseString);
+                            Stack.lx = item1.Id;
+                        }
+                    }
+                    else
+                        Stack.lx = Program.dbOperations.AddItem(item);
                 }
 
                 Stack.bx = true;
                 timer1.Enabled = true;
+                Application.DoEvents();
+                pictureBox3.Visible = false;
             }
         }
 

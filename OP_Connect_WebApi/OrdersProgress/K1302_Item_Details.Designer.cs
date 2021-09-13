@@ -146,6 +146,7 @@
             this.panel2.Controls.Add(this.textBox5);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.textBox1);
+            this.panel2.Enabled = false;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(446, 429);

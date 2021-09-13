@@ -67,29 +67,31 @@ namespace OrdersProgress
             {
                 lstWarehousess = Program.dbOperations.GetAllWarehousesAsync(Stack.Company_Id, true);
             }
-            if(lstWarehousess.Any())
-                cmbWarehouses.Items.AddRange(lstWarehousess.Select(d => d.Name).ToArray());
-            cmbWarehouses.SelectedIndex = 0;
+
+            cmbWarehouses.Items.AddRange(lstWarehousess.Select(d => d.Name).ToArray());
+            if(cmbWarehouses.Items.Count>0)
+                cmbWarehouses.SelectedIndex = 0;
             #endregion
 
             #region تهیه فهرست دسته ها در کامبوباکس مربوطه
-            cmbWarehouses.Items.Add("تمام دسته ها");
+            cmbCategories.Items.Add("تمام دسته ها");
             if (Stack.Use_Web)
             {
-                try
+                //try
                 {
                     lstCats = await HttpClientExtensions.GetT<List<Models.Category>>
-                        (Stack.API_Uri_start_read + "/Category?all=no&company_Id=" + Stack.Company_Id,Stack.token);
+                        (Stack.API_Uri_start_read + "/Categories?all=no&company_Id=" + Stack.Company_Id,Stack.token);
                 }
-                catch { }
+                //catch { }
             }
             else
             {
                 lstCats = Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id);
             }
-            if(lstCats.Any())
-                cmbCategories.Items.AddRange(lstCats.Select(d => d.Name).ToArray());
-            cmbCategories.SelectedIndex = 0;
+
+            cmbCategories.Items.AddRange(lstCats.Select(d => d.Name).ToArray());
+            if (cmbCategories.Items.Count>0)
+                cmbCategories.SelectedIndex = 0;
             #endregion
 
             dgvData.DataSource = await GetData();
@@ -98,6 +100,7 @@ namespace OrdersProgress
             Application.DoEvents();
             panel1.Visible = true;
             progressBar1.Visible = false;
+            pictureBox3.Visible = false;
         }
 
         private async Task<List<Models.Item>> GetData(bool bForceReset = false)
