@@ -51,6 +51,8 @@
             this.cmbST_Name = new System.Windows.Forms.ComboBox();
             this.cmbST_FullCode = new System.Windows.Forms.ComboBox();
             this.cmbST_SmallCode = new System.Windows.Forms.ComboBox();
+            this.BtnChangeWarehouseForAll = new System.Windows.Forms.Button();
+            this.btnChangeCategoryForAll = new System.Windows.Forms.Button();
             this.btnShowAll = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
             this.cmbWarehouses = new System.Windows.Forms.ComboBox();
@@ -251,6 +253,8 @@
             this.groupBox1.Controls.Add(this.cmbST_Name);
             this.groupBox1.Controls.Add(this.cmbST_FullCode);
             this.groupBox1.Controls.Add(this.cmbST_SmallCode);
+            this.groupBox1.Controls.Add(this.BtnChangeWarehouseForAll);
+            this.groupBox1.Controls.Add(this.btnChangeCategoryForAll);
             this.groupBox1.Controls.Add(this.btnShowAll);
             this.groupBox1.Controls.Add(this.btnSearch);
             this.groupBox1.Controls.Add(this.cmbWarehouses);
@@ -267,9 +271,9 @@
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(665, 40);
+            this.groupBox1.Location = new System.Drawing.Point(665, 7);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(215, 441);
+            this.groupBox1.Size = new System.Drawing.Size(215, 474);
             this.groupBox1.TabIndex = 20;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "جستجو";
@@ -286,7 +290,7 @@
             "شامل",
             "شروع شود با",
             "برابر باشد با"});
-            this.cmbST_FullName.Location = new System.Drawing.Point(76, 349);
+            this.cmbST_FullName.Location = new System.Drawing.Point(76, 325);
             this.cmbST_FullName.Name = "cmbST_FullName";
             this.cmbST_FullName.Size = new System.Drawing.Size(91, 23);
             this.cmbST_FullName.TabIndex = 40;
@@ -301,7 +305,7 @@
             "شامل",
             "شروع شود با",
             "برابر باشد با"});
-            this.cmbST_Name.Location = new System.Drawing.Point(95, 235);
+            this.cmbST_Name.Location = new System.Drawing.Point(95, 232);
             this.cmbST_Name.Name = "cmbST_Name";
             this.cmbST_Name.Size = new System.Drawing.Size(91, 23);
             this.cmbST_Name.TabIndex = 40;
@@ -316,7 +320,7 @@
             "شامل",
             "شروع شود با",
             "برابر باشد با"});
-            this.cmbST_FullCode.Location = new System.Drawing.Point(76, 283);
+            this.cmbST_FullCode.Location = new System.Drawing.Point(76, 269);
             this.cmbST_FullCode.Name = "cmbST_FullCode";
             this.cmbST_FullCode.Size = new System.Drawing.Size(91, 23);
             this.cmbST_FullCode.TabIndex = 30;
@@ -331,15 +335,39 @@
             "شامل",
             "شروع شود با",
             "برابر باشد با"});
-            this.cmbST_SmallCode.Location = new System.Drawing.Point(95, 206);
+            this.cmbST_SmallCode.Location = new System.Drawing.Point(95, 203);
             this.cmbST_SmallCode.Name = "cmbST_SmallCode";
             this.cmbST_SmallCode.Size = new System.Drawing.Size(91, 23);
             this.cmbST_SmallCode.TabIndex = 30;
             // 
+            // BtnChangeWarehouseForAll
+            // 
+            this.BtnChangeWarehouseForAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnChangeWarehouseForAll.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnChangeWarehouseForAll.Location = new System.Drawing.Point(6, 417);
+            this.BtnChangeWarehouseForAll.Name = "BtnChangeWarehouseForAll";
+            this.BtnChangeWarehouseForAll.Size = new System.Drawing.Size(203, 26);
+            this.BtnChangeWarehouseForAll.TabIndex = 56;
+            this.BtnChangeWarehouseForAll.Text = "تغییر انبار برای موارد نمایش داده شده";
+            this.BtnChangeWarehouseForAll.UseVisualStyleBackColor = true;
+            this.BtnChangeWarehouseForAll.Click += new System.EventHandler(this.BtnChangeWarehouseForAll_Click);
+            // 
+            // btnChangeCategoryForAll
+            // 
+            this.btnChangeCategoryForAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnChangeCategoryForAll.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnChangeCategoryForAll.Location = new System.Drawing.Point(6, 446);
+            this.btnChangeCategoryForAll.Name = "btnChangeCategoryForAll";
+            this.btnChangeCategoryForAll.Size = new System.Drawing.Size(203, 26);
+            this.btnChangeCategoryForAll.TabIndex = 56;
+            this.btnChangeCategoryForAll.Text = "تغییر دسته برای موارد نمایش داده شده";
+            this.btnChangeCategoryForAll.UseVisualStyleBackColor = true;
+            this.btnChangeCategoryForAll.Click += new System.EventHandler(this.BtnChangeCategoryForAll_Click);
+            // 
             // btnShowAll
             // 
             this.btnShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnShowAll.Location = new System.Drawing.Point(130, 411);
+            this.btnShowAll.Location = new System.Drawing.Point(130, 382);
             this.btnShowAll.Name = "btnShowAll";
             this.btnShowAll.Size = new System.Drawing.Size(79, 26);
             this.btnShowAll.TabIndex = 56;
@@ -350,7 +378,7 @@
             // btnSearch
             // 
             this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSearch.Location = new System.Drawing.Point(6, 411);
+            this.btnSearch.Location = new System.Drawing.Point(6, 382);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(79, 26);
             this.btnSearch.TabIndex = 50;
@@ -429,13 +457,11 @@
             // 
             this.radModule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.radModule.AutoSize = true;
-            this.radModule.Checked = true;
             this.radModule.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.radModule.Location = new System.Drawing.Point(114, 127);
             this.radModule.Name = "radModule";
             this.radModule.Size = new System.Drawing.Size(92, 19);
             this.radModule.TabIndex = 22;
-            this.radModule.TabStop = true;
             this.radModule.Text = "نمایش ماژول ها";
             this.radModule.UseVisualStyleBackColor = true;
             this.radModule.CheckedChanged += new System.EventHandler(this.RadModule_CheckedChanged);
@@ -444,7 +470,7 @@
             // 
             this.txtST_FullName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtST_FullName.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtST_FullName.Location = new System.Drawing.Point(7, 378);
+            this.txtST_FullName.Location = new System.Drawing.Point(7, 350);
             this.txtST_FullName.Name = "txtST_FullName";
             this.txtST_FullName.Size = new System.Drawing.Size(160, 22);
             this.txtST_FullName.TabIndex = 45;
@@ -456,7 +482,7 @@
             // 
             this.txtST_Name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtST_Name.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtST_Name.Location = new System.Drawing.Point(7, 237);
+            this.txtST_Name.Location = new System.Drawing.Point(7, 234);
             this.txtST_Name.Name = "txtST_Name";
             this.txtST_Name.Size = new System.Drawing.Size(82, 22);
             this.txtST_Name.TabIndex = 45;
@@ -468,7 +494,7 @@
             // 
             this.txtST_FullCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtST_FullCode.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtST_FullCode.Location = new System.Drawing.Point(7, 312);
+            this.txtST_FullCode.Location = new System.Drawing.Point(7, 296);
             this.txtST_FullCode.Name = "txtST_FullCode";
             this.txtST_FullCode.Size = new System.Drawing.Size(160, 22);
             this.txtST_FullCode.TabIndex = 34;
@@ -480,7 +506,7 @@
             // 
             this.txtST_SmallCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtST_SmallCode.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtST_SmallCode.Location = new System.Drawing.Point(7, 208);
+            this.txtST_SmallCode.Location = new System.Drawing.Point(7, 205);
             this.txtST_SmallCode.Name = "txtST_SmallCode";
             this.txtST_SmallCode.Size = new System.Drawing.Size(82, 22);
             this.txtST_SmallCode.TabIndex = 34;
@@ -493,7 +519,7 @@
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(166, 352);
+            this.label6.Location = new System.Drawing.Point(166, 328);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(46, 15);
             this.label6.TabIndex = 29;
@@ -504,7 +530,7 @@
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(186, 239);
+            this.label5.Location = new System.Drawing.Point(186, 236);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(23, 15);
             this.label5.TabIndex = 29;
@@ -515,7 +541,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(167, 286);
+            this.label1.Location = new System.Drawing.Point(167, 272);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 15);
             this.label1.TabIndex = 29;
@@ -526,7 +552,7 @@
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(186, 210);
+            this.label3.Location = new System.Drawing.Point(186, 207);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(22, 15);
             this.label3.TabIndex = 29;
@@ -771,5 +797,7 @@
         private System.Windows.Forms.ComboBox cmbWarehouses;
         private System.Windows.Forms.ComboBox cmbCategories;
         private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.Button btnChangeCategoryForAll;
+        private System.Windows.Forms.Button BtnChangeWarehouseForAll;
     }
 }

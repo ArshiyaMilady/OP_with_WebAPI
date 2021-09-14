@@ -71,13 +71,14 @@ namespace OrdersProgress
 
             if (type != 0)   // Add or Edit
             {
+                //MessageBox.Show(type.ToString(), "10");
                 //panel2.Enabled = true;
                 foreach (Control c in panel2.Controls.Cast<Control>()
                     .Where(d => d.Name.Substring(0, 4).Equals("text")).ToList())
                 {
                     TextBox txt = (TextBox)c;
                     // حالتی از ویرایش که نباید کد و شرح کوتاه (اصلی) کالا تغییر نماید
-                    bool b = (type == 3) && (txt.Name.Equals("textBox1") || txt.Name.Equals("textBox2"));
+                    bool b = (type == 3) && (c.Name.Equals("textBox1") || c.Name.Equals("textBox2"));
                     txt.ReadOnly = b;
                 }
 
@@ -95,6 +96,7 @@ namespace OrdersProgress
         {
             if(Stack.Use_Web)
             {
+                //MessageBox.Show(type.ToString(),"20");
                 try
                 {
                     lstWarehousess = await HttpClientExtensions.GetT<List<Models.Warehouse>>
@@ -105,7 +107,7 @@ namespace OrdersProgress
                 try
                 {
                     lstCats = await HttpClientExtensions.GetT<List<Models.Category>>
-                        (Stack.API_Uri_start_read + "/Category?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+                        (Stack.API_Uri_start_read + "/Categories?all=no&company_Id=" + Stack.Company_Id, Stack.token);
                 }
                 catch { }
             }
@@ -120,8 +122,10 @@ namespace OrdersProgress
 
             if (type == 2)  // add
             {
-                cmbWarehouses.SelectedIndex = 0;
-                cmbCategories.SelectedIndex = 0;
+                if(cmbWarehouses.Items.Count>0)
+                    cmbWarehouses.SelectedIndex = 0;
+                if (cmbCategories.Items.Count > 0)
+                    cmbCategories.SelectedIndex = 0;
                 chkEnable.Checked = true;
                 //chkSalable.Checked = true;
             }
@@ -141,10 +145,10 @@ namespace OrdersProgress
                 chkSalable.Checked = item.Salable;
                 chkBookable.Checked = item.Bookable;
 
-                if (Program.dbOperations.GetWarehouseAsync(item.Warehouse_Id) != null)
-                    cmbWarehouses.Text = Program.dbOperations.GetWarehouseAsync(item.Warehouse_Id).Name;
-                if (Program.dbOperations.GetWarehouseAsync(item.Category_Id) != null)
-                    cmbCategories.Text = Program.dbOperations.GetCategoryAsync(item.Category_Id).Name;
+                if (lstWarehousess.Any(d=>d.Id == item.Warehouse_Id))
+                    cmbWarehouses.Text = lstWarehousess.First(d => d.Id == item.Warehouse_Id).Name;
+                if (lstCats.Any(d => d.Id == item.Category_Id))
+                    cmbCategories.Text = lstCats.First(d => d.Id == item.Category_Id).Name;
             }
 
             panel1.Enabled = true;
@@ -274,7 +278,6 @@ namespace OrdersProgress
                 item.Salable = chkSalable.Checked;
                 item.Bookable = chkBookable.Checked;
 
-                pictureBox1.Visible = true;
                 Application.DoEvents();
                 if ((type == 1)  || (type == 3)) // edit
                 {
@@ -307,9 +310,10 @@ namespace OrdersProgress
                 }
 
                 Stack.bx = true;
-                timer1.Enabled = true;
-                Application.DoEvents();
                 pictureBox3.Visible = false;
+                Application.DoEvents();
+                pictureBox1.Visible = true;
+                timer1.Enabled = true;
             }
         }
 

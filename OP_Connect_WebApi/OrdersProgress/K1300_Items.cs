@@ -19,6 +19,7 @@ namespace OrdersProgress
         List<Models.Item> lstItems = new List<Models.Item>();
         List<Models.Warehouse> lstWarehousess = new List<Models.Warehouse>();
         List<Models.Category> lstCats = new List<Models.Category>();
+        bool bAnySearch = false; // آیا جستجویی انجام شده است؟
 
         public K1300_Items()
         {
@@ -94,7 +95,8 @@ namespace OrdersProgress
                 cmbCategories.SelectedIndex = 0;
             #endregion
 
-            dgvData.DataSource = await GetData();
+            await GetData();
+            dgvData.DataSource = lstItems;
             ShowData();
 
             Application.DoEvents();
@@ -211,9 +213,11 @@ namespace OrdersProgress
 
             if (Stack.bx)
             {
-                dgvData.DataSource = await GetData(true);
+                await GetData(true);
+                dgvData.DataSource = lstItems;
                 radNotModule.Checked = true;
-                BtnSearch_Click(null, null);
+                if(bAnySearch)
+                    BtnSearch_Click(null, null);
                 DataGridViewRow row = null;
                 if ((row = dgvData.Rows.Cast<DataGridViewRow>().ToList().FirstOrDefault
                     (d => d.Cells["Id"].Value.ToString().Equals(Stack.lx.ToString()))) != null)
@@ -316,10 +320,11 @@ namespace OrdersProgress
             iY = e.Y;
         }
 
-        private void dgvData_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        private async void dgvData_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
             dgvData.CurrentCell = dgvData[e.ColumnIndex, e.RowIndex];
+            long id = Convert.ToInt64(dgvData["Id", e.RowIndex].Value);
             string sc = Convert.ToString(dgvData["Code_Small", e.RowIndex].Value);
             //#region نمایش تصویر کالا در صورت وجود
             //Models.Item_File item_file = Program.dbOperations.GetItem_FileAsync(sc, 1,true);
@@ -332,7 +337,14 @@ namespace OrdersProgress
             if (e.Button == MouseButtons.Right)
             {
                 /////// Do something ///////
-                Models.Item item2 = Program.dbOperations.GetItemAsync(Stack.Company_Id,sc);
+                Models.Item item2 = null;
+                if (Stack.Use_Web)
+                    item2 = await HttpClientExtensions.GetT<Models.Item>
+                        (Stack.API_Uri_start_read + "/Items/" + id, Stack.token);
+                else
+                    item2 = Program.dbOperations.GetItemAsync(Stack.Company_Id,sc);
+
+                if (item2 == null) return;
                 //tsmiShowModuleItems.Visible = item2.Module;
                 tsmiDiagram.Visible = item2.Module;
                 //if (Program.dbOperations.GetWarehouse_InventoryAsync(sc) == null)
@@ -817,7 +829,8 @@ namespace OrdersProgress
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
 
-                    dgvData.DataSource = await GetData();// Program.dbOperations.GetAllItemsAsync(Stack.Company_Id);
+                    await GetData(true);
+                    dgvData.DataSource = lstItems;
                     Application.DoEvents();
                     //panel1.Enabled = true;
                 }
@@ -860,6 +873,7 @@ namespace OrdersProgress
             //List<Models.Item> lstItems = GetData();
             //dgvData.DataSource = GetData();
             List<Models.Item> lstItems1 = (List<Models.Item>)dgvData.DataSource;
+
             //MessageBox.Show(lstItems.Count.ToString());
 
             //if (!string.IsNullOrWhiteSpace(txtST_Name.Text)
@@ -909,6 +923,7 @@ namespace OrdersProgress
             Application.DoEvents();
             panel1.Enabled = true;
             //dgvData.Visible = true;
+            bAnySearch = lstItems.Count != lstItems1.Count;
             
         }
 
@@ -985,7 +1000,8 @@ namespace OrdersProgress
 
                 if (Stack.bx)
                 {
-                    dgvData.DataSource = await GetData(true);
+                    await GetData(true);
+                    dgvData.DataSource = lstItems;
                 }
             }
         }
@@ -1027,8 +1043,11 @@ namespace OrdersProgress
 
         private async void BtnShowAll_Click(object sender, EventArgs e)
         {
+            radModule.Checked = radNotModule.Checked = false;
             //RadModule_CheckedChanged(null, null);
-            dgvData.DataSource = await GetData();
+            await GetData();
+            dgvData.DataSource = lstItems;
+            bAnySearch = false;
         }
 
         private void TsmiProperties_Click(object sender, EventArgs e)
@@ -1111,15 +1130,27 @@ namespace OrdersProgress
                 , MessageBoxButtons.YesNo) != DialogResult.Yes) return;
 
             string code_cmall = Convert.ToString(dgvData.CurrentRow.Cells["Code_Small"].Value);
-            Models.Item_File item_file = Program.dbOperations.GetItem_FileAsync(code_cmall, 1, true);
-            item_file.Enable = false;
+            Models.Item_File item_file = null;
 
-            if(Stack.Use_Web)
-                await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
-                    + "/Item_File/" + item_file.Id, item_file, Stack.token);
+            if (Stack.Use_Web)
+            {
+                List<Models.Item_File> item_files = await HttpClientExtensions.GetT<List< Models.Item_File>>
+                    (Stack.API_Uri_start_read + "/Item_File?all=no&company_Id=" + Stack.Company_Id
+                    + "&ItemSmallCode=" + code_cmall, Stack.token);
+                if (item_files.Any(d => d.Enable))
+                {
+                    item_file = item_files.First(d => d.Enable);
+                    item_file.Enable = false;
+                    await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                        + "/Item_File/" + item_file.Id, item_file, Stack.token);
+                }
+            }
             else
+            {
+                item_file = Program.dbOperations.GetItem_FileAsync(code_cmall, 1, true);
+                item_file.Enable = false;
                 Program.dbOperations.UpdateItem_FileAsync(item_file);
-
+            }
             pictureBox1.Visible = true;
             timer1.Enabled = true;
             pictureBox2.Image = null;
@@ -1133,8 +1164,18 @@ namespace OrdersProgress
             //return;
 
             string ImageDirectoryPath = Application.StartupPath + @"\_Requirements\Images\";
-            foreach (string file in Directory.EnumerateFiles(
-                           ImageDirectoryPath, "*.jpg", SearchOption.AllDirectories))
+            List<string> files = Directory.EnumerateFiles(
+                ImageDirectoryPath, "*.jpg", SearchOption.AllDirectories).ToList();
+
+            progressBar1.Style = ProgressBarStyle.Blocks;
+            progressBar1.Value = 0;
+            progressBar1.Maximum = files.Count;
+            panel1.Enabled = false;
+            progressBar1.Visible = true;
+
+            //foreach (string file in Directory.EnumerateFiles(
+            //               ImageDirectoryPath, "*.jpg", SearchOption.AllDirectories))
+            foreach (string file in files)
             {
                 string item_code = Path.GetFileNameWithoutExtension(file);
                 Models.Item item = lstItems.Where(d => d.Enable).FirstOrDefault(d => d.Code_Small.ToLower()
@@ -1148,7 +1189,13 @@ namespace OrdersProgress
                     if (Stack.Use_Web) await Add_ChangeImage_web(item, file);
                     else  Add_ChangeImage(item, file);
                 }
+
+                progressBar1.Value++;
+                Application.DoEvents();
             }
+
+            progressBar1.Visible = false;
+            panel1.Enabled = true;
         }
 
         private void btnDeleteAllImages_Click(object sender, EventArgs e)
@@ -1185,7 +1232,8 @@ namespace OrdersProgress
             {
                 List<Models.Item_File> item_files = await HttpClientExtensions.GetT<List<Models.Item_File>>
                     (Stack.API_Uri_start_read + "/Item_File?all=no&company_Id=" + Stack.Company_Id + "&ItemSmallCode=" + sc, Stack.token);
-                item_file = item_files.First(d => d.Enable);
+                if((item_files!=null) && item_files.Any(d=>d.Enable))
+                    item_file = item_files.First(d => d.Enable);
             }
             else
                 item_file = Program.dbOperations.GetItem_FileAsync(sc, 1, true);
@@ -1211,7 +1259,7 @@ namespace OrdersProgress
             long id = Convert.ToInt64(dgvData.CurrentRow.Cells["Id"].Value);
             Models.Item item = lstItems.First(d => d.Id == id); // Program.dbOperations.GetItemAsync(id);
 
-            int type = Stack.lstUser_ULF_UniquePhrase.Contains("jn2110") ? 1 : 0;
+            int type = (Stack.UserLevel_Type==1) || Stack.lstUser_ULF_UniquePhrase.Contains("jn2110") ? 1 : 0;
             new K1302_Item_Details(type,item).ShowDialog();
 
             if (Stack.bx)
@@ -1220,9 +1268,12 @@ namespace OrdersProgress
                 pictureBox3.Visible = true;
                 //dgvData.Enabled = false;
                 Application.DoEvents();
-                dgvData.DataSource = await GetData(true);
+                lstItems = await GetData(true);
                 //radNotModule.Checked = true;
-                BtnSearch_Click(null, null);
+                if (bAnySearch)
+                    BtnSearch_Click(null, null);
+                else dgvData.DataSource = lstItems;
+
                 DataGridViewRow row = null;
                 if ((row = dgvData.Rows.Cast<DataGridViewRow>().ToList().FirstOrDefault
                     (d => d.Cells["Id"].Value.ToString().Equals(id.ToString()))) != null)
@@ -1289,6 +1340,106 @@ namespace OrdersProgress
             });
         }
 
+        private async void BtnChangeCategoryForAll_Click(object sender, EventArgs e)
+        {
+            List<Models.Item> lstItems1 = (List<Models.Item>) dgvData.DataSource;
+
+            if (!lstItems1.Any()) return;
+
+            //if (MessageBox.Show("آیا از تغییر دسته اطمینان دارید؟", "اخطار"
+            //    , MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+
+            new K1306_Item_ChooseCategory().ShowDialog();
+
+            if(Stack.lx>0)
+            {
+                panel1.Enabled = false;
+                Application.DoEvents();
+
+                if (Stack.Use_Web)
+                {
+                    pictureBox3.Visible = true;
+                    foreach(Models.Item item in lstItems1.Where(d=>d.Category_Id!=Stack.lx).ToList())
+                    {
+                        item.Category_Id = Stack.lx;
+                        await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                          + "/Items/" + item.Id, item, Stack.token);
+                    }
+                }
+                else
+                {
+                    progressBar1.Style = ProgressBarStyle.Marquee;
+                    progressBar1.Visible = true;
+                    foreach (Models.Item item in lstItems1.Where(d => d.Category_Id != Stack.lx).ToList())
+                    {
+                        item.Category_Id = Stack.lx;
+                        Program.dbOperations.UpdateItem(item);
+                        Application.DoEvents();
+                    }
+                }
+
+                lstItems = await GetData(true);
+                //radNotModule.Checked = true;
+                if (bAnySearch)
+                    BtnSearch_Click(null, null);
+                else dgvData.DataSource = lstItems;
+
+                panel1.Enabled = true;
+                pictureBox3.Visible = false;
+                progressBar1.Visible = false;
+            }
+        }
+
+        private async void BtnChangeWarehouseForAll_Click(object sender, EventArgs e)
+        {
+            List<Models.Item> lstItems1 = (List<Models.Item>)dgvData.DataSource;
+
+            if (!lstItems1.Any()) return;
+
+            //if (MessageBox.Show("آیا از تغییر دسته اطمینان دارید؟", "اخطار"
+            //    , MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+
+            new K1304_Item_ChooseWarehouse().ShowDialog();
+
+            if (Stack.lx > 0)
+            {
+                panel1.Enabled = false;
+                Application.DoEvents();
+
+                if (Stack.Use_Web)
+                {
+                    pictureBox3.Visible = true;
+                    foreach (Models.Item item in lstItems1.Where(d => d.Warehouse_Id != Stack.lx).ToList())
+                    {
+                        item.Warehouse_Id = Stack.lx;
+                        await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
+                          + "/Items/" + item.Id, item, Stack.token);
+                    }
+                }
+                else
+                {
+                    progressBar1.Style = ProgressBarStyle.Marquee;
+                    progressBar1.Visible = true;
+                    foreach (Models.Item item in lstItems1.Where(d => d.Warehouse_Id != Stack.lx).ToList())
+                    {
+                        item.Warehouse_Id = Stack.lx;
+                        Program.dbOperations.UpdateItem(item);
+                        Application.DoEvents();
+                    }
+                }
+
+                lstItems = await GetData(true);
+                //radNotModule.Checked = true;
+                if (bAnySearch)
+                    BtnSearch_Click(null, null);
+                else dgvData.DataSource = lstItems;
+
+                panel1.Enabled = true;
+                pictureBox3.Visible = false;
+                progressBar1.Visible = false;
+            }
+        }
+
         private async Task<bool> Add_ChangeImage_web(Models.Item item,string file,bool prepare_form=false)
         {
             if(prepare_form)
@@ -1304,6 +1455,8 @@ namespace OrdersProgress
             // اگر کالا قبلا تصویری داشته باشد، ابتدا آنرا غیرفعال می کند
             if (item_files.Any(d=>d.Enable))
             {
+                return false;
+
                 foreach (Models.Item_File item_file in item_files)
                 {
                     item_file.Enable = false;

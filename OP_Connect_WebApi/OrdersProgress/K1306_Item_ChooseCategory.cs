@@ -10,12 +10,12 @@ using System.Windows.Forms;
 
 namespace OrdersProgress
 {
-    public partial class K1304_Item_ChooseWarehouse : X210_ExampleForm_Normal
+    public partial class K1306_Item_ChooseCategory : Form
     {
         Models.Item item = null;
-        List<Models.Warehouse> lstWarehouses = new List<Models.Warehouse>();
+        List<Models.Category> lstCategories = new List<Models.Category>();
 
-        public K1304_Item_ChooseWarehouse(Models.Item _item = null)
+        public K1306_Item_ChooseCategory(Models.Item _item = null)
         {
             InitializeComponent();
 
@@ -27,23 +27,23 @@ namespace OrdersProgress
             }
         }
 
-        private async void K1304_Item_ChooseWarehouse_Shown(object sender, EventArgs e)
+        private async void K1306_Item_ChooseCategory_Shown(object sender, EventArgs e)
         {
             if (Stack.Use_Web)
             {
                 try
                 {
-                    lstWarehouses = await HttpClientExtensions.GetT<List<Models.Warehouse>>
-                         (Stack.API_Uri_start_read + "/Warehouses?all=no&company_Id=" + Stack.Company_Id, Stack.token);
+                    lstCategories = await HttpClientExtensions.GetT<List<Models.Category>>
+                         (Stack.API_Uri_start_read + "/Categories?all=no&company_Id=" + Stack.Company_Id, Stack.token);
                 }
                 catch { }
             }
             else
-                lstWarehouses = Program.dbOperations.GetAllWarehousesAsync(Stack.Company_Id);
+                lstCategories = Program.dbOperations.GetAllCategoriesAsync(Stack.Company_Id);
 
-            if (lstWarehouses.Any())
+            if (lstCategories.Any())
             {
-                comboBox1.Items.AddRange(lstWarehouses.Select(d => d.Name).ToArray());
+                comboBox1.Items.AddRange(lstCategories.Select(d => d.Name).ToArray());
                 if (item == null)
                 {
                     if (comboBox1.Items.Count > 0)
@@ -53,8 +53,8 @@ namespace OrdersProgress
                 {
                     if (comboBox1.Items.Count > 0)
                     {
-                        if (lstWarehouses.Any(d => d.Id == item.Warehouse_Id))
-                            comboBox1.Text = lstWarehouses.First(d => d.Id == item.Warehouse_Id).Name;
+                        if (lstCategories.Any(d=>d.Id == item.Category_Id))
+                            comboBox1.Text = lstCategories.First(d => d.Id == item.Category_Id).Name;
                         else
                             comboBox1.SelectedIndex = 0;
                     }
@@ -67,7 +67,7 @@ namespace OrdersProgress
             if (MessageBox.Show("آیا از انتخاب خود اطمینان دارید?", ""
                 , MessageBoxButtons.YesNo) != DialogResult.Yes) return;
 
-            Stack.lx = lstWarehouses.First(d => d.Name.Equals(comboBox1.Text)).Id;
+            Stack.lx =  lstCategories.First(d=>d.Name.Equals(comboBox1.Text)).Id;
             Close();
         }
 

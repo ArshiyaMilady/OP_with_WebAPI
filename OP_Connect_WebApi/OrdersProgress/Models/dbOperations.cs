@@ -2283,13 +2283,13 @@ namespace OrdersProgress.Models
 
         // Enable_is_important : با توجه به اینکه برای یک کد می توان ورژن های متواتی تعریف نمود
         //                       با درست بودن این پارامتر تنها کدهایی استفاده می شوند که فعال باشند
-        public Item GetItemAsync(long company_index, string SmallCode, bool Enable_is_important = false)
+        public Item GetItemAsync(long company_id, string SmallCode, bool Enable_is_important = false)
         {
             if (Enable_is_important)
-                return _db.Table<Item>().Where(b=>b.Company_Id == company_index).Where(d => d.Enable == true)
+                return _db.Table<Item>().Where(b=>b.Company_Id == company_id).Where(d => d.Enable == true)
                     .FirstOrDefaultAsync(d => d.Code_Small.ToLower().Equals(SmallCode.ToLower())).Result;
             else
-                return _db.Table<Item>().Where(b => b.Company_Id == company_index)
+                return _db.Table<Item>().Where(b => b.Company_Id == company_id)
                     .FirstOrDefaultAsync(d => d.Code_Small.ToLower().Equals(SmallCode.ToLower())).Result;
         }
 

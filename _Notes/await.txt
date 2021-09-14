@@ -1,4 +1,10 @@
-﻿           get list :     
+﻿GetT :
+
+                item_file = await HttpClientExtensions.GetT<Models.Item_File>
+                    (Stack.API_Uri_start_read + "/Item_File/" + id, Stack.token);
+
+----------------------------------------------------------------------------------------
+GetT list :     
 
 try {
                    List<Models.Warehouse> lstWarehousess = await HttpClientExtensions.GetT<List<Models.Warehouse>>
@@ -8,10 +14,12 @@ try {
 
 ----------------------------------------------------------------------------------------
 put : 
+
                         await HttpClientExtensions.PutAsJsonAsync(Stack.API_Uri_start_read
                             + "/Items/" + item.Id, item, Stack.token);
 ----------------------------------------------------------------------------------------
 post :
+
 var response = await HttpClientExtensions.PostAsJsonAsync
                     (Stack.API_Uri_start_read + "/UL_Feature", ulf, Stack.token);
                 if (!response.IsSuccessStatusCode)

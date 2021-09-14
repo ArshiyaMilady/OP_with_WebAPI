@@ -218,6 +218,12 @@
     <Compile Include="K1304_Item_ChooseWarehouse.Designer.cs">
       <DependentUpon>K1304_Item_ChooseWarehouse.cs</DependentUpon>
     </Compile>
+    <Compile Include="K1306_Item_ChooseCategory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="K1306_Item_ChooseCategory.Designer.cs">
+      <DependentUpon>K1306_Item_ChooseCategory.cs</DependentUpon>
+    </Compile>
     <Compile Include="K1320_Modules.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -501,6 +507,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="K1304_Item_ChooseWarehouse.resx">
       <DependentUpon>K1304_Item_ChooseWarehouse.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="K1306_Item_ChooseCategory.resx">
+      <DependentUpon>K1306_Item_ChooseCategory.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="K1320_Modules.resx">
       <DependentUpon>K1320_Modules.cs</DependentUpon>
